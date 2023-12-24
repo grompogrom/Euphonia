@@ -15,5 +15,3 @@ dependencyResolutionManagement {
 
 rootProject.name = "Euphonia"
 include(":app")
-include(":Domain")
-include(":Data")
