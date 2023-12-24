@@ -34,6 +34,7 @@
                 android:textSize="16dp" />
 
             <com.google.android.material.switchmaterial.SwitchMaterial
+                android:id="@+id/switch_history"
                 android:layout_width="88dp"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
@@ -74,6 +75,7 @@
                 android:textSize="16dp" />
 
             <com.google.android.material.switchmaterial.SwitchMaterial
+                android:id="@+id/switch_recording_audio"
                 android:layout_width="88dp"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
@@ -114,6 +116,7 @@
                 android:textSize="16dp" />
 
             <com.google.android.material.switchmaterial.SwitchMaterial
+                android:id="@+id/switch_recording_stave"
                 android:layout_width="88dp"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
@@ -154,6 +157,7 @@
                 android:textSize="16dp" />
 
             <com.google.android.material.slider.Slider
+                android:id="@+id/slider_piano_size"
                 android:layout_width="88dp"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
@@ -196,6 +200,7 @@
                 android:textSize="16dp" />
 
             <com.google.android.material.slider.Slider
+                android:id="@+id/slider_stave_size"
                 android:layout_width="88dp"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
@@ -237,6 +242,7 @@
                 android:textSize="16dp" />
 
             <com.google.android.material.switchmaterial.SwitchMaterial
+                android:id="@+id/switch_showing_stave"
                 android:layout_width="88dp"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
