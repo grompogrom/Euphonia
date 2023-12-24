@@ -13,6 +13,9 @@
         <action
             android:id="@+id/action_navigation_home_to_pianoFragment"
             app:destination="@id/pianoFragment" />
+        <action
+            android:id="@+id/action_navigation_home_to_homeListenFragment"
+            app:destination="@id/homeListenFragment" />
     </fragment>
 
     <fragment
@@ -31,4 +34,13 @@
         android:name="com.euphoiniateam.euphonia.ui.piano.PianoFragment"
         android:label="fragment_piano"
         tools:layout="@layout/fragment_piano" />
+    <fragment
+        android:id="@+id/homeListenFragment"
+        android:name="com.euphoiniateam.euphonia.ui.home.HomeListenFragment"
+        android:label="fragment_home_listen"
+        tools:layout="@layout/fragment_home_listen" >
+        <action
+            android:id="@+id/action_homeListenFragment_to_navigation_home"
+            app:destination="@id/navigation_home" />
+    </fragment>
 </navigation>
