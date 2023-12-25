@@ -16,9 +16,6 @@
         <action
             android:id="@+id/action_navigation_home_to_homeListenFragment"
             app:destination="@id/homeListenFragment" />
-        <action
-            android:id="@+id/action_navigation_home_to_creationFragment"
-            app:destination="@id/creationFragment" />
     </fragment>
 
     <fragment
@@ -43,12 +40,14 @@
         android:label="fragment_home_listen"
         tools:layout="@layout/fragment_home_listen" >
         <action
-            android:id="@+id/action_homeListenFragment_to_navigation_home"
-            app:destination="@id/navigation_home" />
+            android:id="@+id/action_homeListenFragment_to_creationFragment"
+            app:destination="@id/creationFragment"
+            app:popUpTo="@id/homeListenFragment"
+            app:popUpToInclusive="true" />
     </fragment>
     <fragment
         android:id="@+id/creationFragment"
         android:name="com.euphoiniateam.euphonia.ui.creation.CreationFragment"
-        android:label="@string/title_home"
+        android:label="fragment_creation2"
         tools:layout="@layout/fragment_creation2" />
 </navigation>

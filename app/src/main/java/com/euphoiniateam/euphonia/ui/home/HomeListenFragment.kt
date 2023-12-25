@@ -39,7 +39,7 @@ class HomeListenFragment : Fragment() {
         val btnOpenHome: ImageButton = binding.btnToEndMicro
         btnOpenHome.setOnClickListener {
             val extras = FragmentNavigatorExtras(binding.v1After to "v1", binding.v2After to "v2", binding.btnToEndMicro to "micro")
-            val action = HomeListenFragmentDirections.actionHomeListenFragmentToNavigationHome()
+            val action = HomeListenFragmentDirections.actionHomeListenFragmentToCreationFragment()
             val navController = findNavController()
             navController.navigate(action, navigatorExtras = extras)
         }

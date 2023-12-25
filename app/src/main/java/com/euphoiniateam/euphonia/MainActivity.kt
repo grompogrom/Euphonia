@@ -28,7 +28,7 @@ class MainActivity : AppCompatActivity() {
                 binding.navView.visibility = View.VISIBLE
             else
                 binding.navView.visibility = View.GONE
-
+            Log.d("navigation", "${ destination.label }")
 
         }
     }
