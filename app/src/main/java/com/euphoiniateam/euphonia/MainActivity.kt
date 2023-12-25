@@ -23,12 +23,12 @@ class MainActivity : AppCompatActivity() {
 
         val navController = findNavController(R.id.nav_host_fragment_activity_main)
         navView.setupWithNavController(navController)
+
         navController.addOnDestinationChangedListener { _, destination, _ ->
-            if (destination.label?.endsWith("Tab") == true)
+            if (destination.label in listOf("History", "Create", "Settings"))
                 binding.navView.visibility = View.VISIBLE
             else
                 binding.navView.visibility = View.GONE
-            Log.d("navigation", "${ destination.label }")
 
         }
     }
