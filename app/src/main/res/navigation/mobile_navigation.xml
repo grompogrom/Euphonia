@@ -13,22 +13,30 @@
         <action
             android:id="@+id/action_navigation_home_to_pianoFragment"
             app:destination="@id/pianoFragment" />
+        <action
+            android:id="@+id/action_navigation_home_to_creationFragment"
+            app:destination="@id/creationFragment" />
     </fragment>
 
     <fragment
         android:id="@+id/navigation_dashboard"
         android:name="com.euphoiniateam.euphonia.ui.history.HistoryFragment"
-        android:label="@string/title_dashboard"
+        android:label="@string/title_history"
         tools:layout="@layout/fragment_history" />
 
     <fragment
         android:id="@+id/navigation_notifications"
         android:name="com.euphoiniateam.euphonia.ui.settings.SettingsFragment"
-        android:label="@string/title_notifications"
+        android:label="@string/title_settings"
         tools:layout="@layout/fragment_settings" />
     <fragment
         android:id="@+id/pianoFragment"
         android:name="com.euphoiniateam.euphonia.ui.piano.PianoFragment"
         android:label="fragment_piano"
         tools:layout="@layout/fragment_piano" />
+    <fragment
+        android:id="@+id/creationFragment"
+        android:name="com.euphoiniateam.euphonia.ui.creation.CreationFragment"
+        android:label="@string/title_home"
+        tools:layout="@layout/fragment_creation2" />
 </navigation>
