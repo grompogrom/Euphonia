@@ -14,7 +14,12 @@ class StaveRepositoryImpl(
 ): StaveRepository{
 
     override suspend fun getStave(): Stave {
-        return localDataStore.loadData().toStave()
+        try {
+
+            return localDataStore.loadData().toStave()
+        } catch (e: Exception){
+            return Stave(0,0, emptyList(), emptyList())
+        }
     }
 
     override suspend fun generateStave(): Stave {
