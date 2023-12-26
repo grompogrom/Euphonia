@@ -48,11 +48,11 @@
             tools:layout_editor_absoluteY="2dp" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <FrameLayout
+    <androidx.compose.ui.platform.ComposeView
+        android:id="@+id/stave_compose_view"
         android:layout_width="match_parent"
-        android:layout_height="170dp">
-
-    </FrameLayout>
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
 
     <LinearLayout
         android:id="@+id/linear1"

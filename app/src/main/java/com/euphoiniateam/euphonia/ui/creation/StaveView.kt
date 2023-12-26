@@ -1,5 +1,6 @@
 package com.euphoiniateam.euphonia.ui.creation
 
+import android.util.Log
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
@@ -34,7 +35,7 @@ fun StaveView(
     Canvas(modifier = modifier){
         val lineHeight = 4.dp.value
         val lineWidth = size.width - lineHeight
-        val topMargin = 150.dp.value
+        val topMargin = 110.dp.value
         val staveLinesDelta = 40.dp.value
         val verticalOffset = 230.dp.value
 
@@ -43,7 +44,7 @@ fun StaveView(
 
         state.setViewSize(size.width, size.height)
         repeat(state.linesCount){line ->
-            val lineDelta = if (line !=0 && line != 4) (verticalOffset + noteLinesHeight) * line else 0f
+            val lineDelta = if (line !=0 && line != state.lineNotesCount-1) (verticalOffset + noteLinesHeight) * line else 0f
             repeat(5) {
                 drawLine(
                     color = Color.White,
@@ -130,6 +131,7 @@ class StaveConfig(
     private val notes = mutableStateListOf<Note>()
 
     val visibleNotes by derivedStateOf {
+        Log.d("stave", "linesCount $linesCount")
         if (notes.isNotEmpty()) {
             notes.subList(
                 0,
@@ -151,6 +153,5 @@ class StaveConfig(
     fun updateNotes(newNotes: List<Note>){
         notes.clear()
         notes.addAll(newNotes)
-//        visibleNotes = notes
     }
 }

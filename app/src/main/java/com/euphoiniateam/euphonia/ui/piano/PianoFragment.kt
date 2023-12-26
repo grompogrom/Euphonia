@@ -11,8 +11,17 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.LinearLayout
 import androidx.appcompat.widget.AppCompatButton
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.darkColorScheme
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.navigation.fragment.findNavController
 import com.euphoiniateam.euphonia.R
+import com.euphoiniateam.euphonia.ui.creation.StaveConfig
+import com.euphoiniateam.euphonia.ui.creation.StaveView
 import kotlin.concurrent.thread
 
 class PianoFragment : Fragment() {
@@ -27,6 +36,24 @@ class PianoFragment : Fragment() {
     ): View? {
         val rootView = inflater.inflate(R.layout.fragment_piano, container, false)
         val LLayout = rootView.findViewById<LinearLayout>(R.id.linear1)
+
+        val noteView = rootView.findViewById<ComposeView>(R.id.stave_compose_view)
+        val applyBtn = rootView.findViewById<Button>(R.id.button2)
+        applyBtn.setOnClickListener {
+            val action = PianoFragmentDirections.actionPianoFragmentToCreationFragment()
+            findNavController().navigate(action)
+        }
+        noteView.apply {
+            setViewCompositionStrategy(ViewCompositionStrategy.Default)
+            setContent {
+                MaterialTheme(
+                    colorScheme = darkColorScheme()
+                ) {
+                    StaveView(state = StaveConfig(linesCount = 1))
+                }
+            }
+        }
+
 
         for(i in 0..1) {
             val pianoView : View = inflater.inflate(R.layout.piano, container, false)
