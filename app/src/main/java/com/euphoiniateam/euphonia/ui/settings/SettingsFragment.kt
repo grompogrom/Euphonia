@@ -29,12 +29,12 @@ class SettingsFragment : Fragment() {
     private val binding get() = _binding!!
     private lateinit var viewModel: SettingsViewModel
 
-    val switchHistory : SwitchMaterial = binding.switchHistory
-    val switchRecordingAudio : SwitchMaterial = binding.switchRecordingAudio
-    val switchRecordingStave : SwitchMaterial = binding.switchRecordingStave
-    val sliderPianoSize : Slider = binding.sliderPianoSize
-    val sliderStaveSize : Slider = binding.sliderStaveSize
-    val switchShowingStave :SwitchMaterial = binding.switchShowingStave
+//    val switchHistory : SwitchMaterial = binding.switchHistory
+//    val switchRecordingAudio : SwitchMaterial = binding.switchRecordingAudio
+//    val switchRecordingStave : SwitchMaterial = binding.switchRecordingStave
+//    val sliderPianoSize : Slider = binding.sliderPianoSize
+//    val sliderStaveSize : Slider = binding.sliderStaveSize
+//    val switchShowingStave :SwitchMaterial = binding.switchShowingStave
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -49,16 +49,16 @@ class SettingsFragment : Fragment() {
         val duration = Toast.LENGTH_SHORT
         val toast = Toast.makeText(context, text, duration)
 
-        val btnSave: Button = binding.saveBtn
-        btnSave.setOnClickListener {
+        binding.saveBtn.setOnClickListener {
             viewModel.saveSettings()
             toast.show()
         }
 
-        val btnDefault: Button = binding.defaultBtn
-        btnDefault.setOnClickListener {
+        binding.defaultBtn.setOnClickListener {
             viewModel.defaultSettings()
         }
+
+
 
         return root
     }
@@ -66,6 +66,10 @@ class SettingsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         viewModel = ViewModelProvider(this, SettingsViewModel.provideFactory(requireContext()))
             .get(SettingsViewModel::class.java)
+        viewModel.settingsLiveData.observe(viewLifecycleOwner) {settings ->
+            binding.sliderPianoSize.value = settings.piano_size
+            binding.switchHistory.isChecked = settings.history
+        }
         super.onViewCreated(view, savedInstanceState)
     }
 
