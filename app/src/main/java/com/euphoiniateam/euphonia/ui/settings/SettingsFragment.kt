@@ -2,6 +2,7 @@ package com.euphoiniateam.euphonia.ui.settings
 
 import android.app.Application
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -28,14 +29,6 @@ class SettingsFragment : Fragment() {
     // onDestroyView.
     private val binding get() = _binding!!
     private lateinit var viewModel: SettingsViewModel
-
-//    val switchHistory : SwitchMaterial = binding.switchHistory
-//    val switchRecordingAudio : SwitchMaterial = binding.switchRecordingAudio
-//    val switchRecordingStave : SwitchMaterial = binding.switchRecordingStave
-//    val sliderPianoSize : Slider = binding.sliderPianoSize
-//    val sliderStaveSize : Slider = binding.sliderStaveSize
-//    val switchShowingStave :SwitchMaterial = binding.switchShowingStave
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -49,8 +42,23 @@ class SettingsFragment : Fragment() {
         val duration = Toast.LENGTH_SHORT
         val toast = Toast.makeText(context, text, duration)
 
+        val switchHistory : SwitchMaterial = binding.switchHistory
+        val switchRecordingAudio : SwitchMaterial = binding.switchRecordingAudio
+        val switchRecordingStave : SwitchMaterial = binding.switchRecordingStave
+        val sliderPianoSize : Slider = binding.sliderPianoSize
+        val sliderStaveSize : Slider = binding.sliderStaveSize
+        val switchShowingStave :SwitchMaterial = binding.switchShowingStave
+
+
         binding.saveBtn.setOnClickListener {
-            viewModel.saveSettings()
+            viewModel.saveSettings(
+                switchHistory.isChecked,
+                switchRecordingAudio.isChecked,
+                switchRecordingStave.isChecked,
+                sliderPianoSize.value,
+                sliderStaveSize.value,
+                switchShowingStave.isChecked
+            )
             toast.show()
         }
 
@@ -69,7 +77,12 @@ class SettingsFragment : Fragment() {
         viewModel.settingsLiveData.observe(viewLifecycleOwner) {settings ->
             binding.sliderPianoSize.value = settings.piano_size
             binding.switchHistory.isChecked = settings.history
+            binding.switchRecordingAudio.isChecked = settings.recording_audio
+            binding.switchRecordingStave.isChecked = settings.recording_stave
+            binding.sliderStaveSize.value = settings.stave_size
+            binding.switchShowingStave.isChecked = settings.showing_stave
         }
+        //viewModel.loadSettings()
         super.onViewCreated(view, savedInstanceState)
     }
 
