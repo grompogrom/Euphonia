@@ -5,7 +5,7 @@ import com.euphoiniateam.euphonia.domain.repos.SettingsRepository
 
 class GetSettingsUseCase(private val settingsRepository: SettingsRepository) {
 
-    fun execute(): Settings {
+    suspend fun execute(): Settings {
         return settingsRepository.getSettings()
     }
 }

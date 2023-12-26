@@ -4,6 +4,6 @@ import com.euphoiniateam.euphonia.domain.models.Settings
 
 interface SettingsRepository {
 
-    fun saveSettings(saveParam: Settings): Boolean
-    fun getSettings(): Settings
+    suspend fun saveSettings(saveParam: Settings): Boolean
+    suspend fun getSettings(): Settings
 }
