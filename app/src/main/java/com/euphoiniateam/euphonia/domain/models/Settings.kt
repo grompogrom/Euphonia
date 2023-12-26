@@ -1,11 +1,10 @@
 package com.euphoiniateam.euphonia.domain.models
 
-class Settings(val history: Boolean,
-               val recording_audio: Boolean,
-               val recording_stave:Boolean,
-               val piano_size: Float,
-               val stave_size: Float,
-               val showing_stave: Boolean) {
-
-
-}
+data class Settings(
+    val history: Boolean = true,
+    val recording_audio: Boolean = true,
+    val recording_stave:Boolean = true,
+    val piano_size: Float = 7f,
+    val stave_size: Float = 5f,
+    val showing_stave: Boolean = true
+)

@@ -17,7 +17,7 @@ class SettingsRepositoryImpl(private val context: Context) : SettingsRepository 
 
     val sharedPreferences = context.getSharedPreferences(SHARED_PREFS_SETTINGS, Context.MODE_PRIVATE)
 
-    override fun saveSettings(saveParam: Settings): Boolean {
+    override suspend fun saveSettings(saveParam: Settings): Boolean {
 
         sharedPreferences.edit().putBoolean(KEY_HISTORY, saveParam.history).apply()
         sharedPreferences.edit().putBoolean(KEY_RECORDING_AUDIO, saveParam.recording_audio).apply()
@@ -29,7 +29,7 @@ class SettingsRepositoryImpl(private val context: Context) : SettingsRepository 
         return true
     }
 
-    override fun getSettings(): Settings {
+    override suspend fun getSettings(): Settings {
 
         val history = sharedPreferences.getBoolean(KEY_HISTORY, true)
         val recordingAudio = sharedPreferences.getBoolean(KEY_RECORDING_AUDIO, true)

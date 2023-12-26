@@ -131,7 +131,6 @@ class StaveConfig(
     private val notes = mutableStateListOf<Note>()
 
     val visibleNotes by derivedStateOf {
-        Log.d("stave", "linesCount $linesCount")
         if (notes.isNotEmpty()) {
             notes.subList(
                 0,
