@@ -96,6 +96,5 @@ class PianoFragment : Fragment() {
                 mp.release()
             }
         }
-        Log.d("PianoKey", key)
     }
 }
