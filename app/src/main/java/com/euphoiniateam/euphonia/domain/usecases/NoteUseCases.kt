@@ -1,9 +1,7 @@
 package com.euphoiniateam.euphonia.domain.usecases
 
-fun getStaveUseCase(){
-
+fun getStaveUseCase() {
 }
 
-fun regenStaveUseCase(){
-
+fun regenStaveUseCase() {
 }

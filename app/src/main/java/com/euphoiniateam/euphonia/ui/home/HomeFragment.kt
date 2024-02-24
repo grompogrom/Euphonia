@@ -1,32 +1,20 @@
 package com.euphoiniateam.euphonia.ui.home
 
 import android.Manifest
-import android.app.Activity
-import android.content.ContentProvider
-import android.content.Context
-import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.provider.Settings
 import android.transition.TransitionInflater
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.Toast
-import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.contract.ActivityResultContract
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.annotation.CallSuper
-import androidx.core.net.toFile
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import com.euphoiniateam.euphonia.databinding.FragmentHomeBinding
-import java.io.File
-
 
 class HomeFragment : Fragment() {
 
@@ -44,26 +32,25 @@ class HomeFragment : Fragment() {
 //            Log.e("TAG", "onActivityResult: PERMISSION DENIED");
 //        }}
 //    )
-val getContent = registerForActivityResult(
-    ActivityResultContracts.GetContent()) { uri: Uri? ->
-    if(uri != null){
-        val fileName = uri
-        Toast.makeText(context, "Открыта файл: $fileName", Toast.LENGTH_SHORT).show()
+    val getContent = registerForActivityResult(
+        ActivityResultContracts.GetContent()
+    ) { uri: Uri? ->
+        if (uri != null) {
+            val fileName = uri
+            Toast.makeText(context, "Открыта файл: $fileName", Toast.LENGTH_SHORT).show()
+        }
     }
-}
 
     val requstPermission = registerForActivityResult(
-        ActivityResultContracts.RequestPermission(),{ isGranted ->
+        ActivityResultContracts.RequestPermission(),
+        { isGranted ->
             if (isGranted) {
                 getContent.launch("*/*")
             } else {
                 Toast.makeText(context, "permisson not granted", Toast.LENGTH_SHORT).show()
-
             }
         }
     )
-
-
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -75,10 +62,10 @@ val getContent = registerForActivityResult(
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        val animation = TransitionInflater.from(requireContext()).inflateTransition(android.R.transition.move)
+        val animation = TransitionInflater.from(requireContext()).inflateTransition(
+            android.R.transition.move
+        )
         sharedElementEnterTransition = animation
-
-
 
         val btnOpenPiano: ImageButton = binding.btnToPiano
         btnOpenPiano.setOnClickListener {
@@ -93,7 +80,11 @@ val getContent = registerForActivityResult(
 
         val btnStartMicro: ImageButton = binding.btnToMicro
         btnStartMicro.setOnClickListener {
-            val extras = FragmentNavigatorExtras(binding.v1Before to "v1", binding.v2Before to "v2", binding.btnToMicro to "micro")
+            val extras = FragmentNavigatorExtras(
+                binding.v1Before to "v1",
+                binding.v2Before to "v2",
+                binding.btnToMicro to "micro"
+            )
             val action = HomeFragmentDirections.actionNavigationHomeToHomeListenFragment()
             val navController = findNavController()
             navController.navigate(
@@ -102,16 +93,11 @@ val getContent = registerForActivityResult(
             )
         }
 
-
         return root
     }
-    fun getFileReadPermission(){
+    fun getFileReadPermission() {
         requstPermission.launch(Manifest.permission.READ_MEDIA_AUDIO)
-
-        }
-
-
-
+    }
 
     override fun onDestroyView() {
         super.onDestroyView()

@@ -2,7 +2,6 @@ package com.euphoiniateam.euphonia.ui.piano
 
 import android.media.MediaPlayer
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -23,12 +22,12 @@ import kotlin.concurrent.thread
 
 class PianoFragment : Fragment() {
 
-
     private lateinit var viewModel: PianoViewModel
     private val notes = arrayListOf("C", "D", "C#", "E", "D#", "F", "G", "F#", "A", "G#", "B", "A#")
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         val rootView = inflater.inflate(R.layout.fragment_piano, container, false)
@@ -51,11 +50,10 @@ class PianoFragment : Fragment() {
             }
         }
 
-
-        for(i in 0..1) {
-            val pianoView : View = inflater.inflate(R.layout.piano, container, false)
+        for (i in 0..1) {
+            val pianoView: View = inflater.inflate(R.layout.piano, container, false)
             val octave: ConstraintLayout = pianoView.findViewById(R.id.octave)
-            for(x in 0 until octave.childCount){
+            for (x in 0 until octave.childCount) {
                 (octave.getChildAt(x) as Button).setOnClickListener {
                     pianoKey(notes[x], i)
                 }
@@ -72,9 +70,9 @@ class PianoFragment : Fragment() {
         // TODO: Use the ViewModel
     }
 
-    fun pianoKey(key : String, pitch : Int) : Unit {
-        val resource : Int =
-            when(key) {
+    fun pianoKey(key: String, pitch: Int) {
+        val resource: Int =
+            when (key) {
                 "C" -> R.raw.c
                 "D" -> R.raw.d
                 "C#" -> R.raw.cb

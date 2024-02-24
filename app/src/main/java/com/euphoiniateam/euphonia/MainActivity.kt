@@ -1,6 +1,5 @@
 package com.euphoiniateam.euphonia
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
@@ -8,7 +7,6 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.euphoiniateam.euphonia.databinding.ActivityMainBinding
 import com.google.android.material.bottomnavigation.BottomNavigationView
-
 
 class MainActivity : AppCompatActivity() {
 
@@ -34,7 +32,6 @@ class MainActivity : AppCompatActivity() {
                 binding.navView.visibility = View.VISIBLE
             else
                 binding.navView.visibility = View.GONE
-
         }
     }
 }

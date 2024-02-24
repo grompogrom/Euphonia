@@ -1,6 +1,5 @@
 package com.euphoiniateam.euphonia.ui.creation
 
-import android.util.Log
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
@@ -31,8 +30,7 @@ fun StaveView(
     val scripKeyVector = ImageVector.vectorResource(id = R.drawable.notekey)
     val scripKeyPainter = rememberVectorPainter(image = scripKeyVector)
 
-
-    Canvas(modifier = modifier){
+    Canvas(modifier = modifier) {
         val lineHeight = 4.dp.value
         val lineWidth = size.width - lineHeight
         val topMargin = 110.dp.value
@@ -41,43 +39,52 @@ fun StaveView(
 
         val noteLinesHeight = staveLinesDelta * 4
 
-
         state.setViewSize(size.width, size.height)
-        repeat(state.linesCount){line ->
-            val lineDelta = if (line !=0 && line != state.lineNotesCount-1) (verticalOffset + noteLinesHeight) * line else 0f
+        repeat(state.linesCount) { line ->
+            val lineDelta = if (line != 0 && line != state.lineNotesCount - 1) (verticalOffset + noteLinesHeight) * line else 0f
             repeat(5) {
                 drawLine(
                     color = Color.White,
                     strokeWidth = lineHeight,
-                    start = Offset(lineHeight,
-                        topMargin + lineDelta + staveLinesDelta * it),
-                    end = Offset(lineWidth,
-                        topMargin +lineDelta + staveLinesDelta * it)
+                    start = Offset(
+                        lineHeight,
+                        topMargin + lineDelta + staveLinesDelta * it
+                    ),
+                    end = Offset(
+                        lineWidth,
+                        topMargin + lineDelta + staveLinesDelta * it
+                    )
                 )
-
             }
             drawLine(
                 color = Color.White,
                 strokeWidth = lineHeight,
-                start = Offset(lineWidth,
-                    topMargin  + line * (verticalOffset + noteLinesHeight) - lineHeight / 2   ),
-                end = Offset(lineWidth,
-                    topMargin + line * (verticalOffset + noteLinesHeight) + noteLinesHeight +  lineHeight / 2 )
+                start = Offset(
+                    lineWidth,
+                    topMargin + line * (verticalOffset + noteLinesHeight) - lineHeight / 2
+                ),
+                end = Offset(
+                    lineWidth,
+                    topMargin + line * (verticalOffset + noteLinesHeight) + noteLinesHeight + lineHeight / 2
+                )
             )
             drawLine(
                 color = Color.White,
                 strokeWidth = lineHeight,
-                start = Offset(lineHeight,
-                    topMargin  + line * (verticalOffset + noteLinesHeight) - lineHeight / 2   ),
-                end = Offset(lineHeight,
-                    topMargin + line * (verticalOffset + noteLinesHeight) + noteLinesHeight +  lineHeight / 2 )
+                start = Offset(
+                    lineHeight,
+                    topMargin + line * (verticalOffset + noteLinesHeight) - lineHeight / 2
+                ),
+                end = Offset(
+                    lineHeight,
+                    topMargin + line * (verticalOffset + noteLinesHeight) + noteLinesHeight + lineHeight / 2
+                )
             )
         }
 
-
         translate(
             10f,
-            topMargin /2
+            topMargin / 2
         ) {
 
             with(scripKeyPainter) {
@@ -95,15 +102,15 @@ fun StaveView(
             val noteIndex = index.mod(state.lineNotesCount)
             translate(
                 horizontalNoteDelta * (noteIndex + 1),
-                topNoteDelta + (verticalOffset + noteLinesHeight) * lineIndex
-                    - state.visibleNotes[lineIndex * state.lineNotesCount + noteIndex].pitch * staveLinesDelta / 2f
+                topNoteDelta + (verticalOffset + noteLinesHeight) * lineIndex -
+                    state.visibleNotes[lineIndex * state.lineNotesCount + noteIndex].pitch * staveLinesDelta / 2f
             ) {
-            with(notePainter) {
-                draw(
-                    this.intrinsicSize
-                )
+                with(notePainter) {
+                    draw(
+                        this.intrinsicSize
+                    )
+                }
             }
-        }
         }
     }
 }
@@ -111,10 +118,10 @@ fun StaveView(
 @Preview
 @Composable
 fun StaveViewPrev() {
-    MaterialTheme{
+    MaterialTheme {
         StaveView(
             StaveConfig(),
-            modifier=Modifier.fillMaxSize()
+            modifier = Modifier.fillMaxSize()
         )
     }
 }
@@ -123,7 +130,7 @@ class StaveConfig(
     initial_notes: List<Note> = emptyList(),
     val linesCount: Int = 3,
     var lineNotesCount: Int = 7,
-){
+) {
 
     private var viewWidth = 0f
     private var viewHeight = 0f
@@ -134,7 +141,7 @@ class StaveConfig(
         if (notes.isNotEmpty()) {
             notes.subList(
                 0,
-                min(lineNotesCount * linesCount, notes.size-1)
+                min(lineNotesCount * linesCount, notes.size - 1)
             )
         } else {
             emptyList()
@@ -149,7 +156,7 @@ class StaveConfig(
         viewHeight = height
     }
 
-    fun updateNotes(newNotes: List<Note>){
+    fun updateNotes(newNotes: List<Note>) {
         notes.clear()
         notes.addAll(newNotes)
     }
