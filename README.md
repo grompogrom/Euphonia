@@ -7,7 +7,7 @@
 - [Владимир Громов](https://github.com/LionZXY)
 - [Никита Романов](https://github.com/bigronimax)
 - [Лев Остапенко](https://github.com/Levostap)
-- [Кирилл Метелёв](https://github.com/Ansile)
+- [Кирилл Метелёв](https://github.com/mrcrashban)
 ```
 
 Добавляем новый код через feature-ветки. Не делайте изменения прямо в `master`!
