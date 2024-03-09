@@ -9,11 +9,9 @@ import android.widget.ArrayAdapter
 import android.widget.ListView
 import android.widget.SearchView
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
 import com.euphoiniateam.euphonia.R
 import com.euphoiniateam.euphonia.databinding.FragmentHistoryBinding
 import com.google.gson.Gson
-
 
 class HistoryFragment : Fragment() {
 
@@ -38,12 +36,15 @@ class HistoryFragment : Fragment() {
         searchList = rootView.findViewById(R.id.searchResults)
         searchView = rootView.findViewById(R.id.idSV)
 
-        val sharedPreferences = requireContext().getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
+        val sharedPreferences = requireContext().getSharedPreferences(
+            PREF_NAME,
+            Context.MODE_PRIVATE
+        )
         val editor = sharedPreferences.edit()
 
         if (sharedPreferences.contains(KEY_ARRAY)) {
             val savedArray = getArrayFromSharedPreferences(requireContext())
-            for(i in savedArray.indices){
+            for (i in savedArray.indices) {
                 dataList.add(savedArray[i])
             }
         } else {
@@ -67,18 +68,20 @@ class HistoryFragment : Fragment() {
             dataList
         )
         searchList.adapter = listAdapter
-        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String?): Boolean {
-                if (dataList.contains(query)) {
-                    listAdapter.filter.filter(query)
+        searchView.setOnQueryTextListener(
+            object : SearchView.OnQueryTextListener {
+                override fun onQueryTextSubmit(query: String?): Boolean {
+                    if (dataList.contains(query)) {
+                        listAdapter.filter.filter(query)
+                    }
+                    return false
                 }
-                return false
+                override fun onQueryTextChange(newText: String?): Boolean {
+                    listAdapter.filter.filter(newText)
+                    return false
+                }
             }
-            override fun onQueryTextChange(newText: String?): Boolean {
-                listAdapter.filter.filter(newText)
-                return false
-            }
-        })
+        )
 
         return rootView
     }
@@ -99,9 +102,8 @@ class HistoryFragment : Fragment() {
             emptyArray()
         }
     }
-    companion object{
+    companion object {
         private const val PREF_NAME = "Music"
         private const val KEY_ARRAY = "MusicVault"
     }
 }
-

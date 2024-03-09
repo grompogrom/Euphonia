@@ -11,14 +11,14 @@ import kotlinx.coroutines.delay
 class StaveRepositoryImpl(
     private val localDataStore: StaveLocalDataStore,
     private val remoteDataStore: StaveRemoteDataStore
-): StaveRepository{
+) : StaveRepository {
 
     override suspend fun getStave(): Stave {
         try {
 
             return localDataStore.loadData().toStave()
-        } catch (e: Exception){
-            return Stave(0,0, emptyList(), emptyList())
+        } catch (e: Exception) {
+            return Stave(0, 0, emptyList(), emptyList())
         }
     }
 
@@ -30,5 +30,4 @@ class StaveRepositoryImpl(
 
         return newStave.toStave()
     }
-
 }

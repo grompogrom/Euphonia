@@ -13,11 +13,9 @@ import com.euphoiniateam.euphonia.data.dataStore
 import com.euphoiniateam.euphonia.data.datasources.stave.StaveApi
 import com.euphoiniateam.euphonia.data.datasources.stave.StaveCache
 import com.euphoiniateam.euphonia.data.repos.StaveRepositoryImpl
-import com.euphoiniateam.euphonia.domain.models.Note
 import com.euphoiniateam.euphonia.domain.repos.StaveRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlin.random.Random
 
 class CreationViewModel(
     private val repository: StaveRepository
@@ -28,26 +26,23 @@ class CreationViewModel(
         loadStave()
     }
 
-    fun updateStave(){
-        viewModelScope.launch(Dispatchers.IO){
+    fun updateStave() {
+        viewModelScope.launch(Dispatchers.IO) {
             screenState = screenState.copy(isLoading = true)
             val newStave = repository.generateStave()
             staveConfig.updateNotes(newStave.initialNotes + newStave.generatedNotes)
             screenState = screenState.copy(isLoading = false)
-
         }
     }
 
-    fun loadStave(){
-        viewModelScope.launch(Dispatchers.IO){
+    fun loadStave() {
+        viewModelScope.launch(Dispatchers.IO) {
             screenState = screenState.copy(isLoading = true)
             val newStave = repository.getStave()
             staveConfig.updateNotes(newStave.initialNotes + newStave.generatedNotes)
             screenState = screenState.copy(isLoading = false)
-
         }
     }
-
 
     companion object {
         fun provideFactory(context: Context): ViewModelProvider.Factory = viewModelFactory {

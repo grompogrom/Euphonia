@@ -11,7 +11,7 @@ data class LocalStave(
 )
 
 data class LocalNote(
-    val pitch:Int,
+    val pitch: Int,
     val duration: Float
 )
 

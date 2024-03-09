@@ -11,7 +11,7 @@ data class RemoteStave(
 )
 
 data class RemoteNote(
-    val pitch:Int,
+    val pitch: Int,
     val duration: Float
 )
 

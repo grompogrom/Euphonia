@@ -4,13 +4,13 @@ import com.euphoiniateam.euphonia.data.datamodels.RemoteNote
 import com.euphoiniateam.euphonia.data.datamodels.RemoteStave
 import kotlin.random.Random
 
-class StaveApi():StaveRemoteDataStore  {
+class StaveApi() : StaveRemoteDataStore {
     override suspend fun getData(): RemoteStave {
         return RemoteStave(
             tempo = Random.nextInt(),
             tonal = Random.nextInt(),
             initialNotes = genRandomNotes(5),
-            generatedNotes = genRandomNotes(Random.nextInt(3,12))
+            generatedNotes = genRandomNotes(Random.nextInt(3, 12))
         )
     }
 

@@ -1,14 +1,11 @@
 package com.euphoiniateam.euphonia.ui.home
 
 import android.os.Bundle
-import android.transition.Transition
 import android.transition.TransitionInflater
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.ImageButton
-import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.FragmentNavigatorExtras
@@ -33,18 +30,22 @@ class HomeListenFragment : Fragment() {
         _binding = FragmentHomeListenBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        val animation = TransitionInflater.from(requireContext()).inflateTransition(android.R.transition.move)
+        val animation = TransitionInflater.from(requireContext()).inflateTransition(
+            android.R.transition.move
+        )
         sharedElementEnterTransition = animation
 
         val btnOpenHome: ImageButton = binding.btnToEndMicro
         btnOpenHome.setOnClickListener {
-            val extras = FragmentNavigatorExtras(binding.v1After to "v1", binding.v2After to "v2", binding.btnToEndMicro to "micro")
+            val extras = FragmentNavigatorExtras(
+                binding.v1After to "v1",
+                binding.v2After to "v2",
+                binding.btnToEndMicro to "micro"
+            )
             val action = HomeListenFragmentDirections.actionHomeListenFragmentToCreationFragment()
             val navController = findNavController()
             navController.navigate(action, navigatorExtras = extras)
         }
-
-
 
         return root
     }

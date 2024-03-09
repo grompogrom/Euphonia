@@ -4,13 +4,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.compose.animation.core.FastOutLinearInEasing
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animate
-import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
-import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -40,7 +37,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.compose.ui.res.stringResource
@@ -57,7 +53,8 @@ class CreationFragment : Fragment() {
     private lateinit var viewModel: CreationViewModel
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         val binding = FragmentCreation2Binding.inflate(inflater, container, false)
@@ -86,10 +83,9 @@ class CreationFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
     }
 
-    private fun navigateBack(){
+    private fun navigateBack() {
         findNavController().navigateUp()
     }
-
 
     @Composable
     fun Stave(
@@ -109,12 +105,12 @@ class CreationFragment : Fragment() {
                         animation = tween(500, easing = LinearEasing),
                         repeatMode = RepeatMode.Reverse
                     ),
-                    block = { value, _ -> alpha = value })
+                    block = { value, _ -> alpha = value }
+                )
             } else {
                 alpha = 1f
             }
         }
-
 
         Surface(
             color = MaterialTheme.colorScheme.surfaceVariant,
@@ -130,7 +126,7 @@ class CreationFragment : Fragment() {
     @Composable
     fun ButtonsSection(
         modifier: Modifier = Modifier,
-        onRegenerateClick: ()-> Unit,
+        onRegenerateClick: () -> Unit,
         onExitClick: () -> Unit
     ) {
         Row(
@@ -172,19 +168,21 @@ class CreationFragment : Fragment() {
                             .fillMaxWidth(0.5f)
                             .padding(end = 10.dp),
                         containerColor = MaterialTheme.colorScheme.tertiaryContainer,
-                        onClick = { /*TODO*/ }) {
+                        onClick = { /*TODO*/ }
+                    ) {
                         Icon(Icons.Default.Done, null)
                     }
                     FloatingActionButton(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(start = 10.dp),
-                        onClick = { /*TODO*/ }) {
+                        onClick = { /*TODO*/ }
+                    ) {
                         Icon(Icons.Outlined.PlayArrow, null)
                     }
                 }
                 ExtendedFloatingActionButton(
-                    onClick = {  },
+                    onClick = { },
 
                     icon = { Icon(Icons.Default.Add, null) },
                     text = { Text(text = stringResource(R.string.btn_generate_creation_fragment)) },
@@ -196,12 +194,12 @@ class CreationFragment : Fragment() {
 
     @Composable
     fun Screen(
-        viewModel: CreationViewModel ,
+        viewModel: CreationViewModel,
         onExitClick: () -> Unit,
         modifier: Modifier = Modifier
     ) {
         Column(
-            modifier=modifier,
+            modifier = modifier,
             verticalArrangement = Arrangement.SpaceBetween
         ) {
             Stave(
@@ -209,7 +207,8 @@ class CreationFragment : Fragment() {
                 isLoading = viewModel.screenState.isLoading,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .requiredHeight(500.dp))
+                    .requiredHeight(500.dp)
+            )
             ButtonsSection(
                 onRegenerateClick = { viewModel.updateStave() },
                 onExitClick = onExitClick,
@@ -252,15 +251,14 @@ class CreationFragment : Fragment() {
         ) {
 
             Surface(
-                modifier= Modifier
+                modifier = Modifier
                     .fillMaxSize()
                     .graphicsLayer(alpha = 1f),
-                color= MaterialTheme.colorScheme.background
+                color = MaterialTheme.colorScheme.background
             ) {
 
-                Stave( StaveConfig(), isLoading = true)
+                Stave(StaveConfig(), isLoading = true)
             }
         }
     }
-
 }

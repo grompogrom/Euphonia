@@ -4,5 +4,5 @@ import com.euphoiniateam.euphonia.data.datamodels.LocalStave
 
 interface StaveLocalDataStore {
     suspend fun loadData(): LocalStave
-    suspend fun saveData(stave:LocalStave)
+    suspend fun saveData(stave: LocalStave)
 }
