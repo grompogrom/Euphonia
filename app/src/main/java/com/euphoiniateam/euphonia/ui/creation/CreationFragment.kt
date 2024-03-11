@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animate
@@ -79,6 +80,8 @@ class CreationFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         viewModel = ViewModelProvider(this, CreationViewModel.provideFactory(requireContext()))
             .get(CreationViewModel::class.java)
+        val uri = arguments?.getString("uri")
+        Toast.makeText(context, "Файл получен: $uri", Toast.LENGTH_SHORT).show()
         super.onViewCreated(view, savedInstanceState)
     }
 

@@ -14,43 +14,37 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
+import com.euphoiniateam.euphonia.R
 import com.euphoiniateam.euphonia.databinding.FragmentHomeBinding
+
 
 class HomeFragment : Fragment() {
 
     private var _binding: FragmentHomeBinding? = null
-
-    // This property is only valid between onCreateView and
-    // onDestroyView.
     private val binding get() = _binding!!
 
-//    private val mPermissionResult: ActivityResultLauncher<String> = registerForActivityResult(
-//        ActivityResultContracts.RequestPermission(),
-//        {  if(it) {
-//            Log.e("TAG", "onActivityResult: PERMISSION GRANTED");
-//        } else {
-//            Log.e("TAG", "onActivityResult: PERMISSION DENIED");
-//        }}
-//    )
     val getContent = registerForActivityResult(
         ActivityResultContracts.GetContent()
     ) { uri: Uri? ->
         if (uri != null) {
             val fileName = uri
-            Toast.makeText(context, "Открыта файл: $fileName", Toast.LENGTH_SHORT).show()
+            val bundle = Bundle()
+            bundle.putString("uri", uri.toString())
+            val action = HomeFragmentDirections.actionNavigationHomeToPianoFragment()
+            val navController = findNavController()
+            navController.navigate(R.id.action_navigation_home_to_creationFragment, bundle)
         }
     }
 
     val requstPermission = registerForActivityResult(
-        ActivityResultContracts.RequestPermission(),
-        { isGranted ->
-            if (isGranted) {
-                getContent.launch("*/*")
-            } else {
-                Toast.makeText(context, "permisson not granted", Toast.LENGTH_SHORT).show()
-            }
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted ->
+        if (isGranted) {
+            getContent.launch("*/*")
+        } else {
+            Toast.makeText(context, "permisson not granted", Toast.LENGTH_SHORT).show()
         }
-    )
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
