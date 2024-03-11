@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.LinearLayout
+import android.widget.Toast
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.ui.platform.ComposeView
@@ -89,6 +90,7 @@ class PianoFragment : Fragment() {
                 "A#" -> R.raw.ab
                 else -> R.raw.c
             }
+        Toast.makeText(requireContext(), "$key Octave: $pitch", Toast.LENGTH_SHORT).show()
         thread(true) {
             val player = MediaPlayer.create(context, resource)
             player.start()
