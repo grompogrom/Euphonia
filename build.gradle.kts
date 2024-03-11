@@ -7,3 +7,9 @@ plugins {
     id("com.android.library") version "8.2.0" apply false
     id("androidx.navigation.safeargs") version "2.5.0" apply false
 }
+
+repositories {
+    maven {
+        url = uri("$rootDir/maven-libs/")
+    }
+}

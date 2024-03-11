@@ -63,5 +63,7 @@ dependencies {
 
     implementation("androidx.datastore:datastore-preferences:1.0.0")
 
+    implementation("jp.kshoji:javax-sound-midi:0.0.4")
+
     implementation("com.google.code.gson:gson:2.8.6")
 }

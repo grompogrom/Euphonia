@@ -47,7 +47,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.euphoiniateam.euphonia.R
 import com.euphoiniateam.euphonia.databinding.FragmentCreation2Binding
-
 class CreationFragment : Fragment() {
 
     private lateinit var viewModel: CreationViewModel
