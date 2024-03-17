@@ -5,26 +5,22 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
-import android.widget.ListView
 import android.widget.SearchView
 import androidx.fragment.app.Fragment
-import com.euphoiniateam.euphonia.R
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.euphoiniateam.euphonia.databinding.FragmentHistoryBinding
 import com.google.gson.Gson
 
 class HistoryFragment : Fragment() {
 
     private var _binding: FragmentHistoryBinding? = null
-
-    lateinit var searchList: ListView
-    lateinit var listAdapter: ArrayAdapter<String>
-    var dataList = arrayListOf<String>()
-    lateinit var searchView: SearchView
-
-    // This property is only valid between onCreateView and
-    // onDestroyView.
     private val binding get() = _binding!!
+
+    private lateinit var recyclerView: RecyclerView
+    private lateinit var searchView: SearchView
+    lateinit var listAdapter: HistoryAdapter
+    var dataList = arrayListOf<String>()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -32,9 +28,15 @@ class HistoryFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
 
-        val rootView = inflater.inflate(R.layout.fragment_history, container, false)
-        searchList = rootView.findViewById(R.id.searchResults)
-        searchView = rootView.findViewById(R.id.idSV)
+        _binding = FragmentHistoryBinding.inflate(inflater, container, false)
+        val rootView = binding.root
+
+        recyclerView = binding.searchResults
+        searchView = binding.idSV
+
+        recyclerView.layoutManager = LinearLayoutManager(requireContext())
+        listAdapter = HistoryAdapter(requireContext(), dataList)
+        recyclerView.adapter = listAdapter
 
         val sharedPreferences = requireContext().getSharedPreferences(
             PREF_NAME,
@@ -62,22 +64,15 @@ class HistoryFragment : Fragment() {
             editor.apply()
         }
 
-        listAdapter = ArrayAdapter<String>(
-            requireContext(),
-            android.R.layout.simple_list_item_1,
-            dataList
-        )
-        searchList.adapter = listAdapter
         searchView.setOnQueryTextListener(
             object : SearchView.OnQueryTextListener {
                 override fun onQueryTextSubmit(query: String?): Boolean {
-                    if (dataList.contains(query)) {
-                        listAdapter.filter.filter(query)
-                    }
+                    listAdapter.filter(query)
                     return false
                 }
+
                 override fun onQueryTextChange(newText: String?): Boolean {
-                    listAdapter.filter.filter(newText)
+                    listAdapter.filter(newText)
                     return false
                 }
             }
@@ -102,8 +97,10 @@ class HistoryFragment : Fragment() {
             emptyArray()
         }
     }
+
     companion object {
         private const val PREF_NAME = "Music"
         private const val KEY_ARRAY = "MusicVault"
     }
 }
+
