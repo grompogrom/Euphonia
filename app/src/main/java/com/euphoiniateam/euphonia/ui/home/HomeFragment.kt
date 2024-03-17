@@ -18,6 +18,7 @@ import com.euphoiniateam.euphonia.R
 import com.euphoiniateam.euphonia.databinding.FragmentHomeBinding
 
 
+
 class HomeFragment : Fragment() {
 
     private var _binding: FragmentHomeBinding? = null

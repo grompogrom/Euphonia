@@ -1,10 +1,11 @@
 package com.euphoiniateam.euphonia.ui.creation
 
+import android.media.MediaPlayer
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animate
@@ -21,7 +22,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Done
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.outlined.PlayArrow
 import androidx.compose.material3.ExtendedFloatingActionButton
@@ -48,9 +49,14 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.euphoiniateam.euphonia.R
 import com.euphoiniateam.euphonia.databinding.FragmentCreation2Binding
+
+
 class CreationFragment : Fragment() {
 
     private lateinit var viewModel: CreationViewModel
+    private lateinit var mediaPlayer: MediaPlayer
+    private lateinit var uri: Uri
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -80,9 +86,31 @@ class CreationFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         viewModel = ViewModelProvider(this, CreationViewModel.provideFactory(requireContext()))
             .get(CreationViewModel::class.java)
-        val uri = arguments?.getString("uri")
-        Toast.makeText(context, "Файл получен: $uri", Toast.LENGTH_SHORT).show()
+
+
+        uri = Uri.parse(arguments?.getString("uri"))
+        mediaPlayer = MediaPlayer.create(requireContext(), uri)
+
+//        val midiFile = Midi1Track()
+//
+//        for (track in midiFile.tracks) {
+//            for (event in track.events) {
+//                val noteNumber = event.note
+//                val velocity = event.velocity
+//                println("Note: $noteNumber, Velocity: $velocity")
+//
+//            }
+//        }
+
+
+
+
         super.onViewCreated(view, savedInstanceState)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        mediaPlayer.release()
     }
 
     private fun navigateBack() {
@@ -170,15 +198,21 @@ class CreationFragment : Fragment() {
                             .fillMaxWidth(0.5f)
                             .padding(end = 10.dp),
                         containerColor = MaterialTheme.colorScheme.tertiaryContainer,
-                        onClick = { /*TODO*/ }
+                        onClick = { }
                     ) {
-                        Icon(Icons.Default.Done, null)
+                        Icon(Icons.Default.Check, null)
                     }
                     FloatingActionButton(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(start = 10.dp),
-                        onClick = { /*TODO*/ }
+                        onClick = {
+                            if (mediaPlayer.isPlaying) {
+                                mediaPlayer.pause();
+                            } else {
+                                mediaPlayer.start();
+                            }
+                        }
                     ) {
                         Icon(Icons.Outlined.PlayArrow, null)
                     }
