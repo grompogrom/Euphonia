@@ -70,6 +70,7 @@ dependencies {
 
     implementation("androidx.media3:media3-exoplayer-midi:1.2.1")
     implementation("dev.atsushieno:ktmidi-android:0.7.0")
+    implementation("jp.kshoji:javax-sound-midi:0.0.4")
 
     implementation("com.google.code.gson:gson:2.8.6")
 }

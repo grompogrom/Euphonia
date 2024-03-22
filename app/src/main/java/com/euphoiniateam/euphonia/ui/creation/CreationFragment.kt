@@ -3,6 +3,7 @@ package com.euphoiniateam.euphonia.ui.creation
 import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -49,7 +50,12 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.euphoiniateam.euphonia.R
 import com.euphoiniateam.euphonia.databinding.FragmentCreation2Binding
+import com.euphoiniateam.euphonia.domain.models.Note
+import jp.kshoji.javax.sound.midi.MidiSystem
+import jp.kshoji.javax.sound.midi.ShortMessage
+import java.math.RoundingMode
 
+class JvmMidiSequencer
 
 class CreationFragment : Fragment() {
 
@@ -91,21 +97,70 @@ class CreationFragment : Fragment() {
         uri = Uri.parse(arguments?.getString("uri"))
         mediaPlayer = MediaPlayer.create(requireContext(), uri)
 
-//        val midiFile = Midi1Track()
-//
-//        for (track in midiFile.tracks) {
-//            for (event in track.events) {
-//                val noteNumber = event.note
-//                val velocity = event.velocity
-//                println("Note: $noteNumber, Velocity: $velocity")
-//
-//            }
-//        }
+
+        //val midiStream = JvmMidiSequencer::class.java.getResourceAsStream("/elise.mid")
+        // val midiStream = JvmMidiSequencer::class.java.getResourceAsStream(stream.toString())
+        val stream = context?.contentResolver?.openInputStream(uri)
+        val sequencer = MidiSystem.getSequencer().apply {
+            if (stream != null) {
+                setSequence(stream)
+            }
+        }
+
+        sequencer.sequence?.tracks?.forEachIndexed { index, track ->
+            Log.d("aaa","Track $index")
+            (0 until track.size()).asSequence().map { idx ->
+                val event = track[idx]
+                Log.d("aaa", "Tick ${event.tick}, message: ${event.message}")
+                when (val message = event.message) {
+                    is ShortMessage -> {
+                        val command = message.command
+                        val data1 = message.data1
+                        val data2 = message.data2
+                        Log.d("bbb", "Tick ${event.tick}, command: $command, data1: $data1, data2: $data2")
+                    }
+
+                    else -> {}
+                }
+            }.take(10).toList()
 
 
+        }
+
+        val initial_notes = sequencer.sequence?.toNotes()?.slice(0..10)
+        if (initial_notes != null) {
+            for (note in initial_notes) {
+                Log.d("note", note.toString())
+            }
+        }
 
 
-        super.onViewCreated(view, savedInstanceState)
+                super.onViewCreated(view, savedInstanceState)
+
+    }
+
+    private fun jp.kshoji.javax.sound.midi.Sequence.toNotes(): List<Note> {
+        return tracks.flatMap { track ->
+            (0 until track.size()).asSequence().map { idx ->
+                val event = track[idx]
+                when (val message = event.message) {
+                    is ShortMessage -> {
+                        val command = message.command
+                        val midinote = message.data1
+                        val amp = message.data2
+                        val note = (midinote - 24) % 12
+                        if (command == ShortMessage.NOTE_ON && amp.toDouble() != 0.0) {
+                            val beat = (event.tick / resolution.toDouble())
+                                .toBigDecimal().setScale(2, RoundingMode.HALF_UP)
+                                .toDouble()
+                            //return@map Note(beat, midinote, 0.25, amp / 127.0f)
+                            return@map Note(note, 0.25f)
+                        }
+                    }
+                }
+                null
+            }.filterNotNull()
+        }
     }
 
     override fun onDestroy() {
