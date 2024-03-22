@@ -53,9 +53,7 @@ import com.euphoiniateam.euphonia.databinding.FragmentCreation2Binding
 import com.euphoiniateam.euphonia.domain.models.Note
 import jp.kshoji.javax.sound.midi.MidiSystem
 import jp.kshoji.javax.sound.midi.ShortMessage
-import java.math.RoundingMode
 
-class JvmMidiSequencer
 
 class CreationFragment : Fragment() {
 
@@ -150,9 +148,9 @@ class CreationFragment : Fragment() {
                         val amp = message.data2
                         val note = (midinote - 24) % 12
                         if (command == ShortMessage.NOTE_ON && amp.toDouble() != 0.0) {
-                            val beat = (event.tick / resolution.toDouble())
-                                .toBigDecimal().setScale(2, RoundingMode.HALF_UP)
-                                .toDouble()
+                            //val beat = (event.tick / resolution.toDouble())
+                                //.toBigDecimal().setScale(2, RoundingMode.HALF_UP)
+                                //.toDouble()
                             //return@map Note(beat, midinote, 0.25, amp / 127.0f)
                             return@map Note(note, 0.25f)
                         }
@@ -263,9 +261,9 @@ class CreationFragment : Fragment() {
                             .padding(start = 10.dp),
                         onClick = {
                             if (mediaPlayer.isPlaying) {
-                                mediaPlayer.pause();
+                                mediaPlayer.pause()
                             } else {
-                                mediaPlayer.start();
+                                mediaPlayer.start()
                             }
                         }
                     ) {
