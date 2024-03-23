@@ -42,15 +42,14 @@ class HomeFragment : Fragment() {
     }
 
     val requstPermission = registerForActivityResult(
-        ActivityResultContracts.RequestPermission(),
-        { isGranted ->
-            if (isGranted) {
-                getContent.launch("*/*")
-            } else {
-                Toast.makeText(context, "permisson not granted", Toast.LENGTH_SHORT).show()
-            }
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted ->
+        if (isGranted) {
+            getContent.launch("*/*")
+        } else {
+            Toast.makeText(context, "permisson not granted", Toast.LENGTH_SHORT).show()
         }
-    )
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
