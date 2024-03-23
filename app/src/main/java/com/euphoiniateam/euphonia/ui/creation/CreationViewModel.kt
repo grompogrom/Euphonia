@@ -11,11 +11,12 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.euphoiniateam.euphonia.data.dataStore
-import com.euphoiniateam.euphonia.data.datasources.stave.StaveApi
+import com.euphoiniateam.euphonia.data.datasources.stave.StaveApiMock
 import com.euphoiniateam.euphonia.data.datasources.stave.StaveCache
-import com.euphoiniateam.euphonia.data.repos.NotesRepositoryImpl
 import com.euphoiniateam.euphonia.data.repos.StaveRepositoryImpl
 import com.euphoiniateam.euphonia.domain.repos.NotesRepository
+import com.euphoiniateam.euphonia.data.repos.NotesRepositoryImpl
+
 import com.euphoiniateam.euphonia.domain.repos.StaveRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -66,7 +67,7 @@ class CreationViewModel(
                 CreationViewModel(
                     staveRepository = StaveRepositoryImpl(
                         StaveCache(context.dataStore),
-                        StaveApi()
+                        StaveApiMock()
                     ),
                     notesRepository = NotesRepositoryImpl(
                         context
