@@ -35,7 +35,7 @@ fun StaveView(
         val lineWidth = size.width - lineHeight
         val topMargin = 110.dp.value
         val staveLinesDelta = 40.dp.value
-        val verticalOffset = 230.dp.value
+        val verticalOffset = 230.dp.value 
 
         val noteLinesHeight = staveLinesDelta * 4
 
@@ -83,8 +83,8 @@ fun StaveView(
         }
 
         translate(
-            10f,
-            topMargin / 2
+            5f,
+            topMargin / 2 - 10
         ) {
 
             with(scripKeyPainter) {

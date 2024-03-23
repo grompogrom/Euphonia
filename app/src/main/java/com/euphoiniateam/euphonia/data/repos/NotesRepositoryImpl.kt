@@ -2,10 +2,12 @@ package com.euphoiniateam.euphonia.data.repos
 
 import android.content.Context
 import android.net.Uri
+import android.util.Log
 import com.euphoiniateam.euphonia.domain.models.Note
 import com.euphoiniateam.euphonia.domain.repos.NotesRepository
 import jp.kshoji.javax.sound.midi.MidiSystem
 import jp.kshoji.javax.sound.midi.ShortMessage
+import java.math.RoundingMode
 
 class NotesRepositoryImpl(private val context: Context) :NotesRepository {
 
@@ -16,6 +18,7 @@ class NotesRepositoryImpl(private val context: Context) :NotesRepository {
                 setSequence(stream)
             }
         }
+
         return sequencer.sequence?.toNotes()
     }
 
@@ -30,11 +33,11 @@ class NotesRepositoryImpl(private val context: Context) :NotesRepository {
                         val amp = message.data2
                         val note = (midinote - 24) % 12
                         if (command == ShortMessage.NOTE_ON && amp.toDouble() != 0.0) {
-                            //val beat = (event.tick / resolution.toDouble())
-                            //.toBigDecimal().setScale(2, RoundingMode.HALF_UP)
-                            //.toDouble()
-                            //return@map Note(beat, midinote, 0.25, amp / 127.0f)
-                            return@map Note(note, 0.25f)
+                            val beat = (event.tick / resolution.toDouble())
+                            .toBigDecimal().setScale(2, RoundingMode.HALF_UP)
+                            .toFloat()
+                            Log.d("note", note.toString() + "  " + beat)
+                            return@map Note(note, beat)
                         }
                     }
                 }
