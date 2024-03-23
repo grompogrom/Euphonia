@@ -34,6 +34,10 @@ jobs:
         with:
           path: build/bin
           key: ${{ runner.os }}
+      - name: 💙 Ktlint prepare
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: chmod +x ./ktlint
       - name: 💙 Ktlint
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
