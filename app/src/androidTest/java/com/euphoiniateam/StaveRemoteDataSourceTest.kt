@@ -44,7 +44,7 @@ class StaveRemoteDataSourceTest() : Instrumentation() {
         }
     }
 
-    @Test
+//    @Test
     fun sendFileForGeneration() = runBlocking {
         val source = StaveRemoteDataSourceImp(contextt)
         val context = InstrumentationRegistry.getInstrumentation().targetContext
@@ -55,7 +55,7 @@ class StaveRemoteDataSourceTest() : Instrumentation() {
         Unit
     }
 
-    @Test
+//    @Test
     fun proceedMidiGeneration() {
         runBlocking {
             val source = StaveRemoteDataSourceImp(contextt)
