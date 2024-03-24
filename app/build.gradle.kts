@@ -70,4 +70,24 @@ dependencies {
     implementation("com.google.code.gson:gson:2.10")
     implementation ("com.squareup.okhttp3:okhttp:4.10.0")
     implementation ("com.squareup.retrofit2:retrofit:2.7.2")
+
+    // test
+    val androidXTestVersion = "1.5.0"
+    androidTestImplementation ("androidx.test:runner:$androidXTestVersion")
+    androidTestImplementation ("androidx.test:rules:$androidXTestVersion")
+
+    // Required -- JUnit 4 framework
+    testImplementation( "junit:junit:4.13.2")
+    // Optional -- Robolectric environment
+    testImplementation ("androidx.test:core:1.5.0")
+    testImplementation("androidx.test.espresso:espresso-core:3.5.1")
+    implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.3.4")
+
+//     Optional -- Mockito framework
+//    testImplementation ("org.mockito:mockito-core:5.3.0")
+    // Optional -- mockito-kotlin
+    implementation ("org.mockito.kotlin:mockito-kotlin:3.2.0")
+//    // Optional -- Mockk framework
+    testImplementation ("io.mockk:mockk:1.3.0")
+
 }

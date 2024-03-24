@@ -12,7 +12,7 @@ object NetworkClient {
 }
 
 object NetworkService {
-    private val BASE_URL = "http://176.106.243.220:8008/"
+    private val BASE_URL = "http://192.168.31.214:8080/"
     private val retrofit = Retrofit.Builder()
         .client(NetworkClient.client)
         .baseUrl(BASE_URL)
