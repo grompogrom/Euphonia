@@ -7,11 +7,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
+import androidx.navigation.NavController
 import androidx.recyclerview.widget.RecyclerView
 import com.euphoiniateam.euphonia.R
 import java.io.File
 
-class HistoryAdapter(private val context: Context, private val data: ArrayList<String>) :
+class HistoryAdapter(private val context: Context, private val data: ArrayList<String>, private val navController: NavController) :
     RecyclerView.Adapter<HistoryAdapter.ViewHolder>() {
 
     private var filteredDataList: ArrayList<String> = ArrayList(data)
@@ -26,11 +27,8 @@ class HistoryAdapter(private val context: Context, private val data: ArrayList<S
         val item = filteredDataList[position]
         holder.textView.text = item
         holder.itemView.setOnClickListener {
-            val midiFile = File(context.filesDir, item)
-            val mediaPlayer = MediaPlayer()
-            mediaPlayer.setDataSource(midiFile.absolutePath)
-            mediaPlayer.prepare()
-            mediaPlayer.start()
+            val action = HistoryFragmentDirections.actionNavigationDashboardToCreationFragment(item)
+            navController.navigate(action)
         }
 
     }

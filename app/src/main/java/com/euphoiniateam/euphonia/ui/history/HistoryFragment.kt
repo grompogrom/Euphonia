@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.SearchView
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.euphoiniateam.euphonia.R
@@ -38,7 +39,7 @@ class HistoryFragment : Fragment() {
         searchView = binding.idSV
 
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
-        listAdapter = HistoryAdapter(requireContext(), getMidFileNamesFromInternalStorage(requireContext()))
+        listAdapter = HistoryAdapter(requireContext(), getMidFileNamesFromInternalStorage(requireContext()), findNavController())
         recyclerView.adapter = listAdapter
 
         /*val sharedPreferences = requireContext().getSharedPreferences(
