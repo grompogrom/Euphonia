@@ -1,98 +1,161 @@
 package com.euphoiniateam.euphonia.ui.piano
 
-import android.media.MediaPlayer
+
+import android.media.SoundPool
 import android.os.Bundle
+import android.os.SystemClock
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.LinearLayout
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.darkColorScheme
-import androidx.compose.ui.platform.ComposeView
-import androidx.compose.ui.platform.ViewCompositionStrategy
+import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.fragment.findNavController
 import com.euphoiniateam.euphonia.R
-import com.euphoiniateam.euphonia.ui.creation.StaveConfig
-import com.euphoiniateam.euphonia.ui.creation.StaveView
 import kotlin.concurrent.thread
+
 
 class PianoFragment : Fragment() {
 
+
     private lateinit var viewModel: PianoViewModel
+
     private val notes = arrayListOf("C", "D", "C#", "E", "D#", "F", "G", "F#", "A", "G#", "B", "A#")
+    private var noteMap : MutableMap<Int, Int> = mutableMapOf()
+    private var sndPool : SoundPool = SoundPool.Builder().setMaxStreams(5).build()
+
+    private var isRecording = false
+    private lateinit var recordButton : Button
+    private var recordData : MutableList<PianoPlayer> = mutableListOf()
+    private var previousPressTime : Long = 0
+
+
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
+        inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         val rootView = inflater.inflate(R.layout.fragment_piano, container, false)
         val LLayout = rootView.findViewById<LinearLayout>(R.id.linear1)
 
-        val noteView = rootView.findViewById<ComposeView>(R.id.stave_compose_view)
-        val applyBtn = rootView.findViewById<Button>(R.id.button2)
-        applyBtn.setOnClickListener {
-            val action = PianoFragmentDirections.actionPianoFragmentToCreationFragment()
-            findNavController().navigate(action)
-        }
-        noteView.apply {
-            setViewCompositionStrategy(ViewCompositionStrategy.Default)
-            setContent {
-                MaterialTheme(
-                    colorScheme = darkColorScheme()
-                ) {
-                    StaveView(state = StaveConfig(linesCount = 1))
-                }
-            }
-        }
 
-        for (i in 0..1) {
-            val pianoView: View = inflater.inflate(R.layout.piano, container, false)
+        recordButton = rootView.findViewById(R.id.record_button)
+        recordButton.setOnClickListener {
+            isRecording = !isRecording
+            if(isRecording){
+                recordButton.setBackgroundResource(android.R.drawable.presence_online)
+            } else recordButton.setBackgroundResource(R.drawable.record_button)
+            if(!isRecording && recordData.isNotEmpty()){
+                playRecord()
+            }
+//            Toast.makeText(requireContext(), isRecording.toString(), Toast.LENGTH_SHORT).show()
+        }
+        for(i in 0..2) {
+            val pianoView : View = inflater.inflate(R.layout.piano, container, false)
             val octave: ConstraintLayout = pianoView.findViewById(R.id.octave)
-            for (x in 0 until octave.childCount) {
+            for(x in 0 until octave.childCount){
+                noteMap[pianoKey(notes[x],i)] = sndPool.load(
+                    requireContext(),
+                    pianoKey(notes[x],i), 1)
                 (octave.getChildAt(x) as Button).setOnClickListener {
-                    pianoKey(notes[x], i)
+                    if(isRecording) {
+                        val currentTimeMillis = SystemClock.elapsedRealtime()
+                        val elapsedTimeMillis = if (previousPressTime != 0L) {
+                            currentTimeMillis - previousPressTime
+                        } else 0
+                        previousPressTime = currentTimeMillis
+
+                        recordData.add(PianoPlayer(elapsedTimeMillis, x, i))
+                    }
+                    noteMap[pianoKey(notes[x], i)]?.let { it1 -> sndPool.play(it1, 1F,
+                        1F, 1 ,0, 1.0f) }
                 }
             }
             LLayout.addView(pianoView, i)
         }
-
         return rootView
     }
-
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProvider(this).get(PianoViewModel::class.java)
         // TODO: Use the ViewModel
     }
 
-    fun pianoKey(key: String, pitch: Int) {
-        val resource: Int =
-            when (key) {
-                "C" -> R.raw.c
-                "D" -> R.raw.d
-                "C#" -> R.raw.cb
-                "E" -> R.raw.e
-                "D#" -> R.raw.db
-                "F" -> R.raw.f
-                "G" -> R.raw.g
-                "F#" -> R.raw.fb
-                "A" -> R.raw.a
-                "G#" -> R.raw.gb
-                "B" -> R.raw.b
-                "A#" -> R.raw.ab
-                else -> R.raw.c
+    private fun pianoKey(key : String, pitch : Int) : Int {
+//        Log.d("key", key)
+        var resource : Int = R.raw.c
+
+        if(pitch == 1) { //C5
+            resource =
+                when (key) {
+                    "C" -> R.raw.c
+                    "D" -> R.raw.d
+                    "C#" -> R.raw.cb
+                    "E" -> R.raw.e
+                    "D#" -> R.raw.db
+                    "F" -> R.raw.f
+                    "G" -> R.raw.g
+                    "F#" -> R.raw.fb
+                    "A" -> R.raw.a
+                    "G#" -> R.raw.gb
+                    "B" -> R.raw.b
+                    "A#" -> R.raw.ab
+                    else -> R.raw.c
+                }
+        } else if(pitch == 0){ //C4
+            resource =
+                when (key) {
+                    "C" -> R.raw.c4
+                    "D" -> R.raw.d4
+                    "C#" -> R.raw.cb4
+                    "E" -> R.raw.e4
+                    "D#" -> R.raw.db4
+                    "F" -> R.raw.f4
+                    "G" -> R.raw.g4
+                    "F#" -> R.raw.fb4
+                    "A" -> R.raw.a4
+                    "G#" -> R.raw.gb4
+                    "B" -> R.raw.b4
+                    "A#" -> R.raw.ab4
+                    else -> R.raw.c4
             }
-        thread(true) {
-            val player = MediaPlayer.create(context, resource)
-            player.start()
-            player.setOnCompletionListener { mp ->
-                mp.release()
-            }
+        } else{ //C6
+            resource =
+                when (key) {
+                    "C" -> R.raw.c6
+                    "D" -> R.raw.d6
+                    "C#" -> R.raw.cb6
+                    "E" -> R.raw.e6
+                    "D#" -> R.raw.db6
+                    "F" -> R.raw.f6
+                    "G" -> R.raw.g6
+                    "F#" -> R.raw.fb6
+                    "A" -> R.raw.a6
+                    "G#" -> R.raw.gb6
+                    "B" -> R.raw.b6
+                    "A#" -> R.raw.ab6
+                    else -> R.raw.c6
+                }
         }
+        //Log.d("PianoKey", key)
+        return resource
+    }
+
+    private fun playRecord(){
+        thread(true){
+            for(i in 0 until recordData.size){
+                Log.d("sleep", recordData[i].second.toString())
+                Thread.sleep(recordData[i].second)
+                noteMap[pianoKey(notes[recordData[i].keyNum], recordData[i].pitch)]?.let { it1 -> sndPool.play(it1, 1F,
+                    1F, 1 ,0, 1.0f) }
+            }
+            recordData.clear()
+            previousPressTime = 0
+
+        }
+
     }
 }
