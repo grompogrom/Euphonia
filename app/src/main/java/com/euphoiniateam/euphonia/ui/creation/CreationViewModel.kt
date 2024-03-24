@@ -10,7 +10,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.euphoiniateam.euphonia.data.dataStore
-import com.euphoiniateam.euphonia.data.datasources.stave.StaveApi
+import com.euphoiniateam.euphonia.data.datasources.stave.StaveApiMock
 import com.euphoiniateam.euphonia.data.datasources.stave.StaveCache
 import com.euphoiniateam.euphonia.data.repos.StaveRepositoryImpl
 import com.euphoiniateam.euphonia.domain.repos.StaveRepository
@@ -50,7 +50,7 @@ class CreationViewModel(
                 CreationViewModel(
                     repository = StaveRepositoryImpl(
                         StaveCache(context.dataStore),
-                        StaveApi()
+                        StaveApiMock()
                     )
                 )
             }
