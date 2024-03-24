@@ -16,6 +16,12 @@
         <action
             android:id="@+id/action_navigation_home_to_homeListenFragment"
             app:destination="@id/homeListenFragment" />
+        <action
+                android:id="@+id/action_navigation_home_to_creationFragment"
+                app:destination="@id/creationFragment" />
+        <argument
+                android:name="uri"
+                app:argType="string" />
     </fragment>
 
     <fragment

@@ -1,5 +1,7 @@
 package com.euphoiniateam.euphonia.ui.creation
 
+import android.media.MediaPlayer
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -20,7 +22,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Done
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.outlined.PlayArrow
 import androidx.compose.material3.ExtendedFloatingActionButton
@@ -48,9 +50,13 @@ import androidx.navigation.fragment.findNavController
 import com.euphoiniateam.euphonia.R
 import com.euphoiniateam.euphonia.databinding.FragmentCreation2Binding
 
+
 class CreationFragment : Fragment() {
 
     private lateinit var viewModel: CreationViewModel
+    private lateinit var mediaPlayer: MediaPlayer
+    private lateinit var uri: Uri
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -80,7 +86,82 @@ class CreationFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         viewModel = ViewModelProvider(this, CreationViewModel.provideFactory(requireContext()))
             .get(CreationViewModel::class.java)
-        super.onViewCreated(view, savedInstanceState)
+
+
+        uri = Uri.parse(arguments?.getString("uri"))
+        mediaPlayer = MediaPlayer.create(requireContext(), uri)
+
+        viewModel.getNotes(uri)
+
+
+//        //val midiStream = JvmMidiSequencer::class.java.getResourceAsStream("/elise.mid")
+//        // val midiStream = JvmMidiSequencer::class.java.getResourceAsStream(stream.toString())
+//        val stream = context?.contentResolver?.openInputStream(uri)
+//        val sequencer = MidiSystem.getSequencer().apply {
+//            if (stream != null) {
+//                setSequence(stream)
+//            }
+//        }
+
+//        sequencer.sequence?.tracks?.forEachIndexed { index, track ->
+//            Log.d("aaa","Track $index")
+//            (0 until track.size()).asSequence().map { idx ->
+//                val event = track[idx]
+//                Log.d("aaa", "Tick ${event.tick}, message: ${event.message}")
+//                when (val message = event.message) {
+//                    is ShortMessage -> {
+//                        val command = message.command
+//                        val data1 = message.data1
+//                        val data2 = message.data2
+//                        Log.d("bbb", "Tick ${event.tick}, command: $command, data1: $data1, data2: $data2")
+//                    }
+//
+//                    else -> {}
+//                }
+//            }.take(10).toList()
+//
+//
+//        }
+//
+//        val initial_notes = sequencer.sequence?.toNotes()?.slice(0..10)
+//        if (initial_notes != null) {
+//            for (note in initial_notes) {
+//                Log.d("note", note.toString())
+//            }
+//        }
+
+
+                super.onViewCreated(view, savedInstanceState)
+
+    }
+
+//    private fun jp.kshoji.javax.sound.midi.Sequence.toNotes(): List<Note> {
+//        return tracks.flatMap { track ->
+//            (0 until track.size()).asSequence().map { idx ->
+//                val event = track[idx]
+//                when (val message = event.message) {
+//                    is ShortMessage -> {
+//                        val command = message.command
+//                        val midinote = message.data1
+//                        val amp = message.data2
+//                        val note = (midinote - 24) % 12
+//                        if (command == ShortMessage.NOTE_ON && amp.toDouble() != 0.0) {
+//                            //val beat = (event.tick / resolution.toDouble())
+//                                //.toBigDecimal().setScale(2, RoundingMode.HALF_UP)
+//                                //.toDouble()
+//                            //return@map Note(beat, midinote, 0.25, amp / 127.0f)
+//                            return@map Note(note, 0.25f)
+//                        }
+//                    }
+//                }
+//                null
+//            }.filterNotNull()
+//        }
+//    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        mediaPlayer.release()
     }
 
     private fun navigateBack() {
@@ -168,15 +249,21 @@ class CreationFragment : Fragment() {
                             .fillMaxWidth(0.5f)
                             .padding(end = 10.dp),
                         containerColor = MaterialTheme.colorScheme.tertiaryContainer,
-                        onClick = { /*TODO*/ }
+                        onClick = { }
                     ) {
-                        Icon(Icons.Default.Done, null)
+                        Icon(Icons.Default.Check, null)
                     }
                     FloatingActionButton(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(start = 10.dp),
-                        onClick = { /*TODO*/ }
+                        onClick = {
+                            if (mediaPlayer.isPlaying) {
+                                mediaPlayer.pause()
+                            } else {
+                                mediaPlayer.start()
+                            }
+                        }
                     ) {
                         Icon(Icons.Outlined.PlayArrow, null)
                     }
