@@ -16,7 +16,7 @@
         android:backgroundTint="#141218">
 
         <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/button9"
+            android:id="@+id/record_button"
             style="@style/Widget.AppCompat.Button.Colored"
             android:layout_width="30dp"
             android:layout_height="30dp"

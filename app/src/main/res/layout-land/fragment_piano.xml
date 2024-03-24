@@ -16,7 +16,7 @@
         android:backgroundTint="#141218">
 
         <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/button9"
+            android:id="@+id/record_button"
             style="@style/Widget.AppCompat.Button.Colored"
             android:layout_width="30dp"
             android:layout_height="30dp"
@@ -35,7 +35,9 @@
         android:layout_height="120dp">
 
     </FrameLayout>
-
+    <HorizontalScrollView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
     <LinearLayout
         android:id="@+id/linear1"
         android:layout_width="1150dp"
@@ -43,5 +45,5 @@
         android:orientation="horizontal">
 
     </LinearLayout>
-
+    </HorizontalScrollView>
 </LinearLayout>
