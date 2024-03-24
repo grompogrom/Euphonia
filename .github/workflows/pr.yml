@@ -42,6 +42,10 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: ./ktlint
+      - name: 💜 Detekt prepare
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: chmod +x ./detekt
       - name: 💜 Detekt
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
