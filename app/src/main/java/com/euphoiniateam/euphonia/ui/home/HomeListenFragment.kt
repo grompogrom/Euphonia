@@ -1,6 +1,7 @@
 package com.euphoiniateam.euphonia.ui.home
 
 import android.os.Bundle
+import android.transition.Transition
 import android.transition.TransitionInflater
 import android.view.LayoutInflater
 import android.view.View
@@ -12,11 +13,11 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
-import com.euphoiniateam.euphonia.databinding.FragmentHomeBinding
+import com.euphoiniateam.euphonia.databinding.FragmentHomeListenBinding
 
-class HomeFragment : Fragment() {
+class HomeListenFragment : Fragment() {
 
-    private var _binding: FragmentHomeBinding? = null
+    private var _binding: FragmentHomeListenBinding? = null
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -29,29 +30,20 @@ class HomeFragment : Fragment() {
     ): View {
         val homeViewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
 
-        _binding = FragmentHomeBinding.inflate(inflater, container, false)
+        _binding = FragmentHomeListenBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
         val animation = TransitionInflater.from(requireContext()).inflateTransition(android.R.transition.move)
         sharedElementEnterTransition = animation
 
-        val btnOpenPiano: ImageButton = binding.btnToPiano
-        btnOpenPiano.setOnClickListener {
-            val action = HomeFragmentDirections.actionNavigationHomeToPianoFragment()
+        val btnOpenHome: ImageButton = binding.btnToEndMicro
+        btnOpenHome.setOnClickListener {
+            val extras = FragmentNavigatorExtras(binding.v1After to "v1", binding.v2After to "v2", binding.btnToEndMicro to "micro")
+            val action = HomeListenFragmentDirections.actionHomeListenFragmentToCreationFragment()
             val navController = findNavController()
-            navController.navigate(action)
+            navController.navigate(action, navigatorExtras = extras)
         }
 
-        val btnStartMicro: ImageButton = binding.btnToMicro
-        btnStartMicro.setOnClickListener {
-            val extras = FragmentNavigatorExtras(binding.v1Before to "v1", binding.v2Before to "v2", binding.btnToMicro to "micro")
-            val action = HomeFragmentDirections.actionNavigationHomeToHomeListenFragment()
-            val navController = findNavController()
-            navController.navigate(
-                action,
-                navigatorExtras = extras
-            )
-        }
 
 
         return root

@@ -1,7 +1,11 @@
 package com.euphoiniateam.euphonia.ui.piano
 
+<<<<<<< HEAD
 
 import android.media.SoundPool
+=======
+import android.media.MediaPlayer
+>>>>>>> 37cee7c527a7d374c71f24130da539455ef4005c
 import android.os.Bundle
 import android.os.SystemClock
 import android.util.Log
@@ -11,10 +15,23 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.Toast
+<<<<<<< HEAD
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+=======
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.darkColorScheme
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.ViewCompositionStrategy
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
+>>>>>>> 37cee7c527a7d374c71f24130da539455ef4005c
 import com.euphoiniateam.euphonia.R
+import com.euphoiniateam.euphonia.ui.creation.StaveConfig
+import com.euphoiniateam.euphonia.ui.creation.StaveView
 import kotlin.concurrent.thread
 
 
@@ -41,6 +58,7 @@ class PianoFragment : Fragment() {
         val rootView = inflater.inflate(R.layout.fragment_piano, container, false)
         val LLayout = rootView.findViewById<LinearLayout>(R.id.linear1)
 
+<<<<<<< HEAD
 
         recordButton = rootView.findViewById(R.id.record_button)
         recordButton.setOnClickListener {
@@ -54,6 +72,27 @@ class PianoFragment : Fragment() {
 //            Toast.makeText(requireContext(), isRecording.toString(), Toast.LENGTH_SHORT).show()
         }
         for(i in 0..2) {
+=======
+        val noteView = rootView.findViewById<ComposeView>(R.id.stave_compose_view)
+        val applyBtn = rootView.findViewById<Button>(R.id.button2)
+        applyBtn.setOnClickListener {
+            val action = PianoFragmentDirections.actionPianoFragmentToCreationFragment()
+            findNavController().navigate(action)
+        }
+        noteView.apply {
+            setViewCompositionStrategy(ViewCompositionStrategy.Default)
+            setContent {
+                MaterialTheme(
+                    colorScheme = darkColorScheme()
+                ) {
+                    StaveView(state = StaveConfig(linesCount = 1))
+                }
+            }
+        }
+
+
+        for(i in 0..1) {
+>>>>>>> 37cee7c527a7d374c71f24130da539455ef4005c
             val pianoView : View = inflater.inflate(R.layout.piano, container, false)
             val octave: ConstraintLayout = pianoView.findViewById(R.id.octave)
             for(x in 0 until octave.childCount){
@@ -84,6 +123,7 @@ class PianoFragment : Fragment() {
         // TODO: Use the ViewModel
     }
 
+<<<<<<< HEAD
     private fun pianoKey(key : String, pitch : Int) : Int {
 //        Log.d("key", key)
         var resource : Int = R.raw.c
@@ -121,6 +161,31 @@ class PianoFragment : Fragment() {
                     "B" -> R.raw.b4
                     "A#" -> R.raw.ab4
                     else -> R.raw.c4
+=======
+    fun pianoKey(key : String, pitch : Int) : Unit {
+        val resource : Int =
+            when(key) {
+                "C" -> R.raw.c
+                "D" -> R.raw.d
+                "C#" -> R.raw.cb
+                "E" -> R.raw.e
+                "D#" -> R.raw.db
+                "F" -> R.raw.f
+                "G" -> R.raw.g
+                "F#" -> R.raw.fb
+                "A" -> R.raw.a
+                "G#" -> R.raw.gb
+                "B" -> R.raw.b
+                "A#" -> R.raw.ab
+                else -> R.raw.c
+            }
+        Toast.makeText(requireContext(), "$key Octave: $pitch", Toast.LENGTH_SHORT).show()
+        thread(true) {
+            val player = MediaPlayer.create(context, resource)
+            player.start()
+            player.setOnCompletionListener { mp ->
+                mp.release()
+>>>>>>> 37cee7c527a7d374c71f24130da539455ef4005c
             }
         } else{ //C6
             resource =
@@ -140,6 +205,7 @@ class PianoFragment : Fragment() {
                     else -> R.raw.c6
                 }
         }
+<<<<<<< HEAD
         //Log.d("PianoKey", key)
         return resource
     }
@@ -157,5 +223,7 @@ class PianoFragment : Fragment() {
 
         }
 
+=======
+>>>>>>> 37cee7c527a7d374c71f24130da539455ef4005c
     }
 }

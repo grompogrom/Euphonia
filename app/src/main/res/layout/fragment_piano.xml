@@ -11,7 +11,8 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/frameLayout"
         android:layout_width="match_parent"
-        android:layout_height="53dp"
+        android:layout_height="0dp"
+        android:layout_weight="0.4"
         android:background="#141218"
         android:backgroundTint="#141218">
 
@@ -28,20 +29,43 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.478" />
 
+        <Button
+            android:id="@+id/button2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Button"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/bigger_keys"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:id="@+id/bigger_keys"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:text="+"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/button9"
+            app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <FrameLayout
+    <androidx.compose.ui.platform.ComposeView
+        android:id="@+id/stave_compose_view"
         android:layout_width="match_parent"
-        android:layout_height="170dp">
+        android:layout_height="0dp"
+        android:layout_weight="1.3"/>
 
-    </FrameLayout>
 
-    <LinearLayout
-        android:id="@+id/linear1"
-        android:layout_width="1150dp"
-        android:layout_height="213dp"
-        android:orientation="horizontal">
+    <HorizontalScrollView
+        android:id="@+id/scroll1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1">
 
-    </LinearLayout>
+        <LinearLayout
+            android:id="@+id/linear1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" />
+    </HorizontalScrollView>
 
 </LinearLayout>

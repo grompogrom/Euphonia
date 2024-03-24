@@ -5,4 +5,19 @@
     <string name="title_notifications">Notifications</string>
     <string name="title_settings">Settings</string>
     <string name="title_history">History</string>
+    <string name="home_title">Push micro and play some notes or open piano or select file</string>
+    <string name="home_listen_title">Place your phone closer to piano and play some notes for generation</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="settings_history">Save history automatically</string>
+    <string name="settings_recording_audio">Save the recording in audio format</string>
+    <string name="settings_recording_stave">Save the recording as a stave</string>
+    <string name="settings_piano_size">Piano key size</string>
+    <string name="settings_stave_size">Stave size</string>
+    <string name="settings_showing_stave">Show stave, when playing the piano</string>
+    <string name="settings_save">Save</string>
+    <string name="settings_default">Default</string>
+    <string name="btn_exit_creation_fragment">Exit</string>
+    <string name="btn_remake_creation_fragment">Remake</string>
+    <string name="btn_generate_creation_fragment">Generate</string>
+    <string name="settings_saved">Settings saved</string>
 </resources>

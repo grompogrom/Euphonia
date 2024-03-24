@@ -13,22 +13,47 @@
         <action
             android:id="@+id/action_navigation_home_to_pianoFragment"
             app:destination="@id/pianoFragment" />
+        <action
+            android:id="@+id/action_navigation_home_to_homeListenFragment"
+            app:destination="@id/homeListenFragment" />
     </fragment>
 
     <fragment
         android:id="@+id/navigation_dashboard"
         android:name="com.euphoiniateam.euphonia.ui.history.HistoryFragment"
-        android:label="@string/title_dashboard"
+        android:label="@string/title_history"
         tools:layout="@layout/fragment_history" />
 
     <fragment
         android:id="@+id/navigation_notifications"
         android:name="com.euphoiniateam.euphonia.ui.settings.SettingsFragment"
-        android:label="@string/title_notifications"
+        android:label="@string/title_settings"
         tools:layout="@layout/fragment_settings" />
     <fragment
         android:id="@+id/pianoFragment"
         android:name="com.euphoiniateam.euphonia.ui.piano.PianoFragment"
         android:label="fragment_piano"
-        tools:layout="@layout/fragment_piano" />
+        tools:layout="@layout/fragment_piano" >
+        <action
+            android:id="@+id/action_pianoFragment_to_creationFragment"
+            app:destination="@id/creationFragment"
+            app:popUpTo="@id/pianoFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/homeListenFragment"
+        android:name="com.euphoiniateam.euphonia.ui.home.HomeListenFragment"
+        android:label="fragment_home_listen"
+        tools:layout="@layout/fragment_home_listen" >
+        <action
+            android:id="@+id/action_homeListenFragment_to_creationFragment"
+            app:destination="@id/creationFragment"
+            app:popUpTo="@id/homeListenFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/creationFragment"
+        android:name="com.euphoiniateam.euphonia.ui.creation.CreationFragment"
+        android:label="fragment_creation2"
+        tools:layout="@layout/fragment_creation2" />
 </navigation>

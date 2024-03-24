@@ -11,7 +11,8 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/frameLayout"
         android:layout_width="match_parent"
-        android:layout_height="53dp"
+        android:layout_height="0dp"
+        android:layout_weight="0.4"
         android:background="#141218"
         android:backgroundTint="#141218">
 
@@ -28,22 +29,56 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.478" />
 
+        <Button
+            android:id="@+id/button2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/bigger_keys"
+            android:text="Button"
+            tools:layout_editor_absoluteX="463dp"
+            tools:layout_editor_absoluteY="2dp" />
+
+        <Button
+            android:id="@+id/bigger_keys"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:text="+"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/button9"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.4" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <FrameLayout
+    <androidx.compose.ui.platform.ComposeView
+        android:id="@+id/stave_compose_view"
         android:layout_width="match_parent"
-        android:layout_height="120dp">
+        android:layout_height="wrap_content"
+        android:layout_weight="1" />
 
+<<<<<<< HEAD
     </FrameLayout>
     <HorizontalScrollView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
+=======
+
+    <HorizontalScrollView
+        android:id="@+id/scroll1"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="2.1">
+>>>>>>> 37cee7c527a7d374c71f24130da539455ef4005c
     <LinearLayout
         android:id="@+id/linear1"
         android:layout_width="1150dp"
-        android:layout_height="185dp"
+        android:layout_height="match_parent"
         android:orientation="horizontal">
-
     </LinearLayout>
     </HorizontalScrollView>
+<<<<<<< HEAD
+=======
+
+>>>>>>> 37cee7c527a7d374c71f24130da539455ef4005c
 </LinearLayout>

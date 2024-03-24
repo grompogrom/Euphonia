@@ -37,6 +37,11 @@ android {
     }
     buildFeatures {
         viewBinding = true
+        compose = true
+    }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.5.3"
     }
 }
 
@@ -50,8 +55,15 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.1")
     implementation("androidx.navigation:navigation-fragment-ktx:2.6.0")
     implementation("androidx.navigation:navigation-ui-ktx:2.6.0")
-    implementation("com.google.code.gson:gson:2.8.9")
-    implementation(project(":Domain"))
-    implementation(project(":Data"))
     implementation("androidx.legacy:legacy-support-v4:1.0.0")
+    implementation("androidx.compose.ui:ui-android:1.5.4")
+    implementation("androidx.compose.ui:ui-tooling-preview-android:1.5.4")
+    implementation("androidx.compose.material3:material3:1.1.2")
+    implementation("androidx.datastore:datastore-core:1.0.0")
+    debugImplementation("androidx.compose.ui:ui-tooling:1.5.4")
+
+    implementation("androidx.datastore:datastore-preferences:1.0.0")
+
+    implementation ("com.google.code.gson:gson:2.8.6")
+
 }
