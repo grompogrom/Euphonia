@@ -15,10 +15,8 @@ interface StaveApi {
         @Path("token") token: String
     ): Response<ResponseBody>
 
-//    @Multipart
     @POST("generate")
     suspend fun startGeneration(
-//        @Part file: MultipartBody.Part,
         @Body midi: RequestBody
     ): Response<ResponseBody>
 }
