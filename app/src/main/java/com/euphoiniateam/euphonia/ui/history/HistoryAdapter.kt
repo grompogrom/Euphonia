@@ -1,6 +1,7 @@
 package com.euphoiniateam.euphonia.ui.history
 
 import android.content.Context
+import android.media.MediaPlayer
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,6 +9,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.euphoiniateam.euphonia.R
+import java.io.File
 
 class HistoryAdapter(private val context: Context, private val data: ArrayList<String>) :
     RecyclerView.Adapter<HistoryAdapter.ViewHolder>() {
@@ -24,7 +26,11 @@ class HistoryAdapter(private val context: Context, private val data: ArrayList<S
         val item = filteredDataList[position]
         holder.textView.text = item
         holder.itemView.setOnClickListener {
-            Toast.makeText(context, "Element $position", Toast.LENGTH_SHORT).show()
+            val midiFile = File(context.filesDir, item)
+            val mediaPlayer = MediaPlayer()
+            mediaPlayer.setDataSource(midiFile.absolutePath)
+            mediaPlayer.prepare()
+            mediaPlayer.start()
         }
 
     }
