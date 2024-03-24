@@ -18,5 +18,5 @@ object NetworkService {
         .baseUrl(BASE_URL)
         .build()
 
-    val  euphoniaApi = retrofit.create<StaveApi>()
+    val euphoniaApi = retrofit.create<StaveApi>()
 }

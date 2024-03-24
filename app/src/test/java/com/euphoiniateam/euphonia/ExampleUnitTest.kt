@@ -1,6 +1,6 @@
 package com.euphoiniateam.euphonia
 
-import org.junit.Assert.*
+import junit.framework.TestCase.assertEquals
 import org.junit.Test
 
 /**
