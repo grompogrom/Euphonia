@@ -2,7 +2,6 @@ package com.euphoiniateam.euphonia.data.datasources.stave
 
 import android.content.Context
 import android.net.Uri
-import android.util.Log
 import androidx.core.net.toFile
 import com.euphoiniateam.euphonia.data.NetworkService
 import com.euphoiniateam.euphonia.data.datamodels.RemoteStave
@@ -39,7 +38,6 @@ class StaveRemoteDataSourceImp(
         val response = NetworkService.euphoniaApi
             .startGeneration(requestBody).body()?.string() ?: ""
 
-        Log.d("AAA", response)
         return response
     }
 
@@ -50,18 +48,15 @@ class StaveRemoteDataSourceImp(
             when (response.code()) {
                 202 -> {
                     delay(100)
-                    Log.d("AAA", "Retry")
                 }
                 200 -> break
                 else -> throw Exception()
             }
         }
         if (response?.code() == 200 && response.body() != null) {
-            Log.d("AAA", "Received")
 
             return response.body()?.bytes()!!
         }
-        Log.d("AAA", "Empty body")
         throw Exception("NOT FOUND FILE")
     }
 

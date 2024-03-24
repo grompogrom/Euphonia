@@ -21,7 +21,6 @@ import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
 class StaveRemoteDataSourceTest() : Instrumentation() {
-    val MID_TOKEN = "1d0c7efc-706c-493b-880d-8ab81ddb2b5e"
     lateinit var contextt: Context
 
     @Before
@@ -29,7 +28,6 @@ class StaveRemoteDataSourceTest() : Instrumentation() {
         contextt = InstrumentationRegistry.getInstrumentation().targetContext
     }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun loadFileFromApi() {
         runBlocking {

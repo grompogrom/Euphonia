@@ -89,5 +89,5 @@ dependencies {
     // Optional -- mockito-kotlin
     implementation("org.mockito.kotlin:mockito-kotlin:3.2.0")
 //    // Optional -- Mockk framework
-    implementation("io.mockk:mockk:1.3.0")
+//    testImplementation("io.mockk:mockk:1.13.0")
 }
