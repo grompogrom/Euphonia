@@ -4,7 +4,7 @@
 
 ## Команда авторов
 
-- [Владимир Громов](https://github.com/LionZXY)
+- [Владимир Громов](https://github.com/grompogrom))
 - [Никита Романов](https://github.com/bigronimax)
 - [Лев Остапенко](https://github.com/Levostap)
 - [Кирилл Метелёв](https://github.com/mrcrashban)
