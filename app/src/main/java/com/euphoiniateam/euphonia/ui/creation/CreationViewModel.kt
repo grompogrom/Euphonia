@@ -42,7 +42,7 @@ class CreationViewModel(
         }
     }
 
-    fun loadStave() {
+    private fun loadStave() {
         viewModelScope.launch(Dispatchers.IO) {
             screenState = screenState.copy(isLoading = true)
             val newStave = repository.getStave()

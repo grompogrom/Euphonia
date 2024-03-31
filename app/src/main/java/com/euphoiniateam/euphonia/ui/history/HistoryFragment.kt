@@ -10,9 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.euphoiniateam.euphonia.R
 import com.euphoiniateam.euphonia.databinding.FragmentHistoryBinding
-import com.google.gson.Gson
 import java.io.File
 import java.io.FileOutputStream
 import java.io.InputStream
@@ -39,7 +37,10 @@ class HistoryFragment : Fragment() {
         searchView = binding.idSV
 
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
-        listAdapter = HistoryAdapter(requireContext(), getMidFileNamesFromInternalStorage(requireContext()), findNavController())
+        listAdapter = HistoryAdapter(
+            getMidFileNamesFromInternalStorage(requireContext()),
+            findNavController()
+        )
         recyclerView.adapter = listAdapter
 
         /*val sharedPreferences = requireContext().getSharedPreferences(

@@ -34,7 +34,7 @@ import androidx.compose.material3.darkColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -78,8 +78,7 @@ class CreationFragment : Fragment() {
         return binding.root
     }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        viewModel = ViewModelProvider(this, CreationViewModel.provideFactory(requireContext()))
-            .get(CreationViewModel::class.java)
+        viewModel = ViewModelProvider(this, CreationViewModel.provideFactory(requireContext()))[CreationViewModel::class.java]
         super.onViewCreated(view, savedInstanceState)
     }
 
@@ -93,7 +92,7 @@ class CreationFragment : Fragment() {
         modifier: Modifier = Modifier,
         isLoading: Boolean
     ) {
-        var alpha by remember { mutableStateOf(0.5f) }
+        var alpha by remember { mutableFloatStateOf(0.5f) }
 
         LaunchedEffect(isLoading) {
             if (isLoading) {
