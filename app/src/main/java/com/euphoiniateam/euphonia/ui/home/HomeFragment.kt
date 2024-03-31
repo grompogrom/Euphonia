@@ -2,6 +2,7 @@ package com.euphoiniateam.euphonia.ui.home
 
 import android.Manifest
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.transition.TransitionInflater
 import android.view.LayoutInflater
@@ -14,43 +15,35 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
+import com.euphoiniateam.euphonia.R
 import com.euphoiniateam.euphonia.databinding.FragmentHomeBinding
 
 class HomeFragment : Fragment() {
 
     private var _binding: FragmentHomeBinding? = null
-
-    // This property is only valid between onCreateView and
-    // onDestroyView.
     private val binding get() = _binding!!
 
-//    private val mPermissionResult: ActivityResultLauncher<String> = registerForActivityResult(
-//        ActivityResultContracts.RequestPermission(),
-//        {  if(it) {
-//            Log.e("TAG", "onActivityResult: PERMISSION GRANTED");
-//        } else {
-//            Log.e("TAG", "onActivityResult: PERMISSION DENIED");
-//        }}
-//    )
-    val getContent = registerForActivityResult(
+    private val getContent = registerForActivityResult(
         ActivityResultContracts.GetContent()
     ) { uri: Uri? ->
         if (uri != null) {
             val fileName = uri
-            Toast.makeText(context, "Открыта файл: $fileName", Toast.LENGTH_SHORT).show()
+            val bundle = Bundle()
+            bundle.putString("uri", uri.toString())
+            val navController = findNavController()
+            navController.navigate(R.id.action_navigation_home_to_creationFragment, bundle)
         }
     }
 
-    val requstPermission = registerForActivityResult(
-        ActivityResultContracts.RequestPermission(),
-        { isGranted ->
-            if (isGranted) {
-                getContent.launch("*/*")
-            } else {
-                Toast.makeText(context, "permisson not granted", Toast.LENGTH_SHORT).show()
-            }
+    private val requestPermission = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted ->
+        if (isGranted) {
+            getContent.launch("audio/midi")
+        } else {
+            Toast.makeText(context, "permisson not granted", Toast.LENGTH_SHORT).show()
         }
-    )
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -95,8 +88,13 @@ class HomeFragment : Fragment() {
 
         return root
     }
-    fun getFileReadPermission() {
-        requstPermission.launch(Manifest.permission.READ_MEDIA_AUDIO)
+
+    private fun getFileReadPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            requestPermission.launch(Manifest.permission.READ_MEDIA_AUDIO)
+        } else {
+            requestPermission.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
+        }
     }
 
     override fun onDestroyView() {

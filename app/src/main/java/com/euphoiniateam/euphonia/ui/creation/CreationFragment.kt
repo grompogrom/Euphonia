@@ -1,5 +1,7 @@
 package com.euphoiniateam.euphonia.ui.creation
 
+import android.media.MediaPlayer
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -20,7 +22,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Done
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.outlined.PlayArrow
 import androidx.compose.material3.ExtendedFloatingActionButton
@@ -43,14 +45,20 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.euphoiniateam.euphonia.R
 import com.euphoiniateam.euphonia.databinding.FragmentCreation2Binding
+import kotlinx.coroutines.launch
 
 class CreationFragment : Fragment() {
 
     private lateinit var viewModel: CreationViewModel
+    private lateinit var mediaPlayer: MediaPlayer
+    private lateinit var uri: Uri
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -68,7 +76,6 @@ class CreationFragment : Fragment() {
                         viewModel = viewModel,
                         onExitClick = { navigateBack() },
                         modifier = Modifier.fillMaxSize(),
-
                     )
                 }
             }
@@ -80,7 +87,43 @@ class CreationFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         viewModel = ViewModelProvider(this, CreationViewModel.provideFactory(requireContext()))
             .get(CreationViewModel::class.java)
+
+        val uriArg = arguments?.getString("uri")
+
+        uriArg?.let {
+            uri = Uri.parse(uriArg)
+            mediaPlayer = MediaPlayer.create(requireContext(), uri)
+            viewModel.getNotes(uri)
+        }
+
+        subscribePlayerOnCurrentTrack()
         super.onViewCreated(view, savedInstanceState)
+    }
+
+    private fun subscribePlayerOnCurrentTrack() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.currentTrackState.collect {
+                    if (it != Uri.EMPTY) {
+                        mediaPlayer.reset()
+                        mediaPlayer.setDataSource(requireContext(), it)
+                        mediaPlayer.prepare()
+                    }
+                }
+            }
+        }
+    }
+    override fun onDestroy() {
+        super.onDestroy()
+        mediaPlayer.release()
+    }
+
+    private fun togglePlayer() {
+        if (mediaPlayer.isPlaying) {
+            mediaPlayer.pause()
+        } else {
+            mediaPlayer.start()
+        }
     }
 
     private fun navigateBack() {
@@ -127,7 +170,9 @@ class CreationFragment : Fragment() {
     fun ButtonsSection(
         modifier: Modifier = Modifier,
         onRegenerateClick: () -> Unit,
-        onExitClick: () -> Unit
+        onGenerateClick: () -> Unit,
+        onExitClick: () -> Unit,
+        onPlayClick: () -> Unit
     ) {
         Row(
             modifier = modifier.padding(bottom = 20.dp)
@@ -168,22 +213,21 @@ class CreationFragment : Fragment() {
                             .fillMaxWidth(0.5f)
                             .padding(end = 10.dp),
                         containerColor = MaterialTheme.colorScheme.tertiaryContainer,
-                        onClick = { /*TODO*/ }
+                        onClick = { }
                     ) {
-                        Icon(Icons.Default.Done, null)
+                        Icon(Icons.Default.Check, null)
                     }
                     FloatingActionButton(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(start = 10.dp),
-                        onClick = { /*TODO*/ }
+                        onClick = onPlayClick
                     ) {
                         Icon(Icons.Outlined.PlayArrow, null)
                     }
                 }
                 ExtendedFloatingActionButton(
-                    onClick = { },
-
+                    onClick = onGenerateClick,
                     icon = { Icon(Icons.Default.Add, null) },
                     text = { Text(text = stringResource(R.string.btn_generate_creation_fragment)) },
                     modifier = Modifier.fillMaxWidth()
@@ -212,6 +256,8 @@ class CreationFragment : Fragment() {
             ButtonsSection(
                 onRegenerateClick = { viewModel.updateStave() },
                 onExitClick = onExitClick,
+                onGenerateClick = { viewModel.generateNewPart(uri) },
+                onPlayClick = { togglePlayer() },
                 modifier = Modifier
             )
         }
@@ -237,6 +283,8 @@ class CreationFragment : Fragment() {
         ) {
             ButtonsSection(
                 Modifier.fillMaxWidth(),
+                {},
+                {},
                 {},
                 {}
             )
