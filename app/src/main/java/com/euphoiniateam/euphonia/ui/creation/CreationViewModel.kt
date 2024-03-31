@@ -33,6 +33,8 @@ class CreationViewModel(
 ) : ViewModel() {
     val staveConfig = StaveConfig()
     var currentTrackState = MutableStateFlow(Uri.EMPTY)
+    //lateinit var staveConfig: StaveConfig
+    var staveConfig = StaveConfig()
     var screenState by mutableStateOf(CreationScreenState())
     private var mediaPlayer: MediaPlayer? = null
     init {

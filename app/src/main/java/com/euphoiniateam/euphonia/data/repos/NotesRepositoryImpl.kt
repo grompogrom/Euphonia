@@ -2,14 +2,24 @@ package com.euphoiniateam.euphonia.data.repos
 
 import android.content.Context
 import android.net.Uri
-import android.util.Log
 import com.euphoiniateam.euphonia.domain.models.Note
 import com.euphoiniateam.euphonia.domain.repos.NotesRepository
 import java.math.RoundingMode
 import jp.kshoji.javax.sound.midi.MidiSystem
 import jp.kshoji.javax.sound.midi.ShortMessage
+import java.math.RoundingMode
 
-class NotesRepositoryImpl(private val context: Context) : NotesRepository {
+class NotesRepositoryImpl(private val context: Context) :NotesRepository {
+
+    var notesMap = mapOf(
+        0 to intArrayOf(0),
+        1 to intArrayOf(1, 2),
+        2 to intArrayOf(3, 4),
+        3 to intArrayOf(5),
+        4 to intArrayOf(6, 7),
+        5 to intArrayOf(8, 9),
+        6 to intArrayOf(10, 11)
+    );
 
     override suspend fun getNotes(uri: Uri): List<Note>? {
         val stream = context.contentResolver?.openInputStream(uri)
@@ -18,53 +28,46 @@ class NotesRepositoryImpl(private val context: Context) : NotesRepository {
                 setSequence(stream)
             }
         }
-
-        sequencer.sequence?.tracks?.forEachIndexed { index, track ->
-            (0 until track.size()).asSequence().map { idx ->
-                val event = track[idx]
-                Log.d("aaa", "Tick ${event.tick}, message: ${event.message}")
-                when (val message = event.message) {
-                    is ShortMessage -> {
-                        val command = message.command
-                        val data1 = message.data1
-                        val data2 = message.data2
-                        Log.d(
-                            "bbb",
-                            "Tick ${event.tick}, command: $command, data1: $data1, data2: $data2"
-                        )
-                    }
-
-                    else -> {}
-                }
-            }.take(10).toList()
-        }
+//        val initial_notes = sequencer.sequence?.toNotes()
+//        if (initial_notes != null) {
+//            for (note in initial_notes) {
+//                Log.d("note", note.toString())
+//            }
+//        }
 
         return sequencer.sequence?.toNotes()
     }
 
     private fun jp.kshoji.javax.sound.midi.Sequence.toNotes(): List<Note> {
         return tracks.flatMap { track ->
+            //Log.d("track", "$track")
+            val inflight = mutableMapOf<Int, Note>()
             (0 until track.size()).asSequence().map { idx ->
                 val event = track[idx]
-                var beatStart: Float = 0.0f
                 when (val message = event.message) {
                     is ShortMessage -> {
+                        //Log.d("check", "${message.command} + ${message.data2}")
+                        var pitch = 0
                         val command = message.command
                         val midinote = message.data1
                         val amp = message.data2
-                        val note = (midinote - 24) % 12
-
-                        if (command == ShortMessage.NOTE_ON && amp.toDouble() != 0.0) {
-                            beatStart = (event.tick / resolution.toDouble())
-                                .toBigDecimal().setScale(2, RoundingMode.HALF_UP)
-                                .toFloat()
+                        val noteNum = (midinote - 24) % 12
+                        for (key in notesMap.keys) {
+                            if (notesMap[key]?.contains(noteNum) == true)
+                                pitch = key
                         }
-                        if (command == ShortMessage.NOTE_OFF) {
-                            val beatEnd = (event.tick / resolution.toDouble())
-                                .toBigDecimal().setScale(2, RoundingMode.HALF_UP)
-                                .toFloat()
-                            Log.d("note", note.toString() + "  " + (beatEnd - beatStart).toString())
-                            return@map Note(note, beatEnd - beatStart)
+                        val beat = (event.tick / resolution.toDouble())
+                            .toBigDecimal().setScale(2, RoundingMode.HALF_UP)
+                            .toFloat()
+                        when (command) {
+                            ShortMessage.NOTE_ON -> {
+                                val note = Note(pitch, noteNum,0.25f, beat)
+                                inflight[midinote] = note
+                            }
+                            ShortMessage.NOTE_OFF -> {
+                                val note = inflight.remove(midinote)
+                                return@map note?.let { it.copy(duration = beat - it.beat) }
+                            }
                         }
                     }
                 }
@@ -72,4 +75,5 @@ class NotesRepositoryImpl(private val context: Context) : NotesRepository {
             }.filterNotNull()
         }
     }
+
 }

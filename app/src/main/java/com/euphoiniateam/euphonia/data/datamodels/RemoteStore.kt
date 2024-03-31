@@ -12,7 +12,9 @@ data class RemoteStave(
 
 data class RemoteNote(
     val pitch: Int,
-    val duration: Float
+    val note: Int,
+    val duration: Float,
+    val beat: Float
 )
 
 fun RemoteStave.toStave(): Stave {
@@ -36,13 +38,17 @@ fun Stave.toRemoteStave(): RemoteStave {
 fun RemoteNote.toNote(): Note {
     return Note(
         pitch = this.pitch,
-        duration = this.duration
+        note = this.note,
+        duration = this.duration,
+        beat = this.beat
     )
 }
 
 fun Note.toRemoteNote(): RemoteNote {
     return RemoteNote(
         pitch = this.pitch,
-        duration = this.duration
+        note = this.note,
+        duration = this.duration,
+        beat = this.beat
     )
 }

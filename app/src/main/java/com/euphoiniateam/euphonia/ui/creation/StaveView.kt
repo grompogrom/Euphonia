@@ -25,10 +25,30 @@ fun StaveView(
     state: StaveConfig,
     modifier: Modifier = Modifier
 ) {
-    val noteVector = ImageVector.vectorResource(id = R.drawable.note)
-    val notePainter = rememberVectorPainter(image = noteVector)
+    val note_1_4_vector = ImageVector.vectorResource(id = R.drawable.note_1_4)
+    val note_1_4_painter = rememberVectorPainter(image = note_1_4_vector)
+
+    val note_1_4_c_vector = ImageVector.vectorResource(id = R.drawable.note_1_4_c)
+    val note_1_4_c_painter = rememberVectorPainter(image = note_1_4_c_vector)
+
+    val note_1_8_vector = ImageVector.vectorResource(id = R.drawable.note_1_8)
+    val note_1_8_painter = rememberVectorPainter(image = note_1_8_vector)
+
+    val note_1_8_c_vector = ImageVector.vectorResource(id = R.drawable.note_1_8_c)
+    val note_1_8_c_painter = rememberVectorPainter(image = note_1_8_c_vector)
+
+    val note_1_16_vector = ImageVector.vectorResource(id = R.drawable.note_1_16)
+    val note_1_16_painter = rememberVectorPainter(image = note_1_16_vector)
+
+    val note_1_16_c_vector = ImageVector.vectorResource(id = R.drawable.note_1_16_c)
+    val note_1_16_c_painter = rememberVectorPainter(image = note_1_16_c_vector)
+
+    val diezVector = ImageVector.vectorResource(id = R.drawable.diez)
+    val diezPainter = rememberVectorPainter(image = diezVector)
+
     val scripKeyVector = ImageVector.vectorResource(id = R.drawable.notekey)
     val scripKeyPainter = rememberVectorPainter(image = scripKeyVector)
+
 
     Canvas(modifier = modifier) {
         val lineHeight = 4.dp.value
@@ -109,10 +129,98 @@ fun StaveView(
                     state.visibleNotes[lineIndex * state.lineNotesCount + noteIndex].pitch
                     * staveLinesDelta / 2f
             ) {
-                with(notePainter) {
-                    draw(
-                        this.intrinsicSize
-                    )
+//                with(note_1_4_painter) {
+//                    draw(
+//                        this.intrinsicSize
+//                    )
+//                }
+                if (note.duration in 0.55..5.0) {
+                    if (note.note in intArrayOf(2, 4, 5, 7, 9, 11)) {
+                        with(note_1_4_painter) {
+                            draw(
+                                this.intrinsicSize
+                            )
+                        }
+                    }
+                    else if (note.note in intArrayOf(1, 3, 6, 8, 10)) {
+                        with(diezPainter) {
+                            draw(
+                                this.intrinsicSize
+                            )
+
+                        }
+                        with(note_1_4_painter) {
+                            draw(
+                                this.intrinsicSize
+                            )
+                        }
+                    }
+                    else if (note.note == 0) {
+                        with(note_1_4_c_painter) {
+                            draw(
+                                this.intrinsicSize
+                            )
+
+                        }
+                    }
+                }
+                else if (note.duration in 0.30..0.55) {
+                    if (note.note in intArrayOf(2, 4, 5, 7, 9, 11)) {
+                        with(note_1_8_painter) {
+                            draw(
+                                this.intrinsicSize
+                            )
+                        }
+                    }
+                    else if (note.note in intArrayOf(2, 4, 5, 7, 9, 11)) {
+                        with(diezPainter) {
+                            draw(
+                                this.intrinsicSize
+                            )
+                        }
+                        with(note_1_8_painter) {
+                            draw(
+                                this.intrinsicSize
+                            )
+                        }
+                    }
+                    else if (note.note == 0) {
+                        with(note_1_8_c_painter) {
+                            draw(
+                                this.intrinsicSize
+                            )
+
+                        }
+                    }
+                }
+                else if (note.duration in 0.01..0.30) {
+                    if (note.note in intArrayOf(2, 4, 5, 7, 9, 11)) {
+                        with(note_1_16_painter) {
+                            draw(
+                                this.intrinsicSize
+                            )
+                        }
+                    }
+                    else if (note.note in intArrayOf(2, 4, 5, 7, 9, 11)) {
+                        with(diezPainter) {
+                            draw(
+                                this.intrinsicSize
+                            )
+                        }
+                        with(note_1_16_painter) {
+                            draw(
+                                this.intrinsicSize
+                            )
+                        }
+                    }
+                    else if (note.note == 0) {
+                        with(note_1_16_c_painter) {
+                            draw(
+                                this.intrinsicSize
+                            )
+
+                        }
+                    }
                 }
             }
         }
@@ -124,7 +232,7 @@ fun StaveView(
 fun StaveViewPrev() {
     MaterialTheme {
         StaveView(
-            StaveConfig(),
+            StaveConfig(listOf(Note(1, 2,0.25f, 0.0f), Note(6, 2, 0.6f, 0.0f), Note(6, 2, 0.0f, 0.0f))),
             modifier = Modifier.fillMaxSize()
         )
     }
@@ -132,7 +240,7 @@ fun StaveViewPrev() {
 
 class StaveConfig(
     initial_notes: List<Note> = emptyList(),
-    val linesCount: Int = 3,
+    val linesCount: Int = 10,
     var lineNotesCount: Int = 7,
 ) {
 

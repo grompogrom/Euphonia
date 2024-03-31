@@ -27,7 +27,6 @@ class HomeFragment : Fragment() {
         ActivityResultContracts.GetContent()
     ) { uri: Uri? ->
         if (uri != null) {
-            val fileName = uri
             val bundle = Bundle()
             bundle.putString("uri", uri.toString())
             val navController = findNavController()

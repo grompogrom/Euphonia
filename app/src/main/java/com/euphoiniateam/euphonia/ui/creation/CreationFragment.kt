@@ -116,7 +116,8 @@ class CreationFragment : Fragment() {
     }
     override fun onDestroy() {
         super.onDestroy()
-        mediaPlayer.release()
+        if (arguments?.getString("uri") != null)
+            mediaPlayer.release()
     }
 
     private fun navigateBack() {
