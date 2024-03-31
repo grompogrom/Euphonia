@@ -11,7 +11,6 @@ plugins {
 repositories {
     maven {
         url = uri("$rootDir/maven-libs/")
-
     }
-    maven { url = uri("https://jitpack.io" ) }
+    maven { url = uri("https://jitpack.io") }
 }

@@ -2,11 +2,12 @@ package com.euphoiniateam.euphonia.data.datasources.stave
 
 import android.content.Context
 import android.net.Uri
-import androidx.core.net.toFile
 import com.euphoiniateam.euphonia.data.NetworkService
 import com.euphoiniateam.euphonia.data.datamodels.RemoteStave
 import com.euphoiniateam.euphonia.data.datamodels.RemoteTrackRequest
 import com.euphoiniateam.euphonia.data.datamodels.RemoteTrackResponse
+import com.euphoiniateam.euphonia.domain.UnexpectedServerResponse
+import com.euphoiniateam.euphonia.domain.WaitForGenerationTimeoutException
 import java.io.File
 import kotlinx.coroutines.delay
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -33,12 +34,17 @@ class StaveRemoteDataSourceImp(
     }
 
     suspend fun sendFileForGeneration(uri: Uri, meta: Map<String, String>): String {
-        val file = uri.toFile()
+        val file = createTempFile()
+        context.contentResolver.openInputStream(uri).use { input ->
+            file.outputStream().use { output ->
+                input?.copyTo(output)
+            }
+        }
         val requestBody = file.asRequestBody("audio/midi".toMediaTypeOrNull())
-        val response = NetworkService.euphoniaApi
-            .startGeneration(requestBody).body()?.string() ?: ""
+//        file.delete()
 
-        return response
+        return NetworkService.euphoniaApi
+            .startGeneration(requestBody).body()?.string() ?: ""
     }
 
     suspend fun getFileFromServer(token: String): ByteArray {
@@ -49,15 +55,20 @@ class StaveRemoteDataSourceImp(
                 202 -> {
                     delay(100)
                 }
+
                 200 -> break
-                else -> throw Exception()
+
+                else -> throw UnexpectedServerResponse(
+                    code = response.code(),
+                    body = response.body()?.string() ?: ""
+                )
             }
         }
         if (response?.code() == 200 && response.body() != null) {
 
             return response.body()?.bytes()!!
         }
-        throw Exception("NOT FOUND FILE")
+        throw WaitForGenerationTimeoutException("Server file not ready")
     }
 
     fun saveToCache(file: ByteArray): Uri {

@@ -35,12 +35,17 @@ android {
         jvmTarget = "1.8"
     }
     buildFeatures {
+        buildConfig = true
         viewBinding = true
         compose = true
     }
 
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.3"
+    }
+
+    defaultConfig {
+        buildConfigField("String", "ServerIP", "\"192.168.31.214:8080/\"")
     }
 }
 
