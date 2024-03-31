@@ -2,6 +2,7 @@ package com.euphoiniateam.euphonia.ui.home
 
 import android.Manifest
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.transition.TransitionInflater
 import android.view.LayoutInflater
@@ -17,31 +18,28 @@ import androidx.navigation.fragment.findNavController
 import com.euphoiniateam.euphonia.R
 import com.euphoiniateam.euphonia.databinding.FragmentHomeBinding
 
-
-
 class HomeFragment : Fragment() {
 
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
 
-    val getContent = registerForActivityResult(
+    private val getContent = registerForActivityResult(
         ActivityResultContracts.GetContent()
     ) { uri: Uri? ->
         if (uri != null) {
             val fileName = uri
             val bundle = Bundle()
             bundle.putString("uri", uri.toString())
-            val action = HomeFragmentDirections.actionNavigationHomeToPianoFragment()
             val navController = findNavController()
             navController.navigate(R.id.action_navigation_home_to_creationFragment, bundle)
         }
     }
 
-    val requstPermission = registerForActivityResult(
+    private val requestPermission = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { isGranted ->
         if (isGranted) {
-            getContent.launch("*/*")
+            getContent.launch("audio/midi")
         } else {
             Toast.makeText(context, "permisson not granted", Toast.LENGTH_SHORT).show()
         }
@@ -90,8 +88,13 @@ class HomeFragment : Fragment() {
 
         return root
     }
-    fun getFileReadPermission() {
-        requstPermission.launch(Manifest.permission.READ_MEDIA_AUDIO)
+
+    private fun getFileReadPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            requestPermission.launch(Manifest.permission.READ_MEDIA_AUDIO)
+        } else {
+            requestPermission.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
+        }
     }
 
     override fun onDestroyView() {
