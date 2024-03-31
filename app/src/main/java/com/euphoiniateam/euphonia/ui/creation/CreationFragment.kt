@@ -22,6 +22,7 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material.icons.outlined.PlayArrow
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.FloatingActionButton
@@ -67,7 +68,7 @@ class CreationFragment : Fragment() {
                     Screen(
                         viewModel = viewModel,
                         onExitClick = { navigateBack() },
-                        modifier = Modifier.fillMaxSize(),
+                        modifier = Modifier.fillMaxSize()
 
                     )
                 }
@@ -76,7 +77,6 @@ class CreationFragment : Fragment() {
 
         return binding.root
     }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         viewModel = ViewModelProvider(this, CreationViewModel.provideFactory(requireContext()))
             .get(CreationViewModel::class.java)
@@ -127,7 +127,9 @@ class CreationFragment : Fragment() {
     fun ButtonsSection(
         modifier: Modifier = Modifier,
         onRegenerateClick: () -> Unit,
-        onExitClick: () -> Unit
+        onExitClick: () -> Unit,
+        onPlayClick: () -> Unit,
+        isPlaying: Boolean
     ) {
         Row(
             modifier = modifier.padding(bottom = 20.dp)
@@ -176,14 +178,14 @@ class CreationFragment : Fragment() {
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(start = 10.dp),
-                        onClick = { /*TODO*/ }
+                        onClick = { onPlayClick() }
                     ) {
-                        Icon(Icons.Outlined.PlayArrow, null)
+                        val icon = if (isPlaying) Icons.Outlined.Close else Icons.Outlined.PlayArrow
+                        Icon(icon, null)
                     }
                 }
                 ExtendedFloatingActionButton(
                     onClick = { },
-
                     icon = { Icon(Icons.Default.Add, null) },
                     text = { Text(text = stringResource(R.string.btn_generate_creation_fragment)) },
                     modifier = Modifier.fillMaxWidth()
@@ -212,6 +214,8 @@ class CreationFragment : Fragment() {
             ButtonsSection(
                 onRegenerateClick = { viewModel.updateStave() },
                 onExitClick = onExitClick,
+                onPlayClick = { viewModel.togglePlayPause() },
+                isPlaying = viewModel.isPlaying,
                 modifier = Modifier
             )
         }
@@ -229,7 +233,7 @@ class CreationFragment : Fragment() {
         }
     }
 
-    @Preview(showSystemUi = true)
+  /*  @Preview(showSystemUi = true)
     @Composable
     fun ButtonsSectionPrev() {
         MaterialTheme(
@@ -241,7 +245,7 @@ class CreationFragment : Fragment() {
                 {}
             )
         }
-    }
+    }*/
 
     @Preview
     @Composable

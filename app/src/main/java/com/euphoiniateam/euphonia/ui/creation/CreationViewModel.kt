@@ -1,6 +1,8 @@
 package com.euphoiniateam.euphonia.ui.creation
 
 import android.content.Context
+import android.media.MediaPlayer
+import android.net.Uri
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -14,14 +16,19 @@ import com.euphoiniateam.euphonia.data.datasources.stave.StaveApi
 import com.euphoiniateam.euphonia.data.datasources.stave.StaveCache
 import com.euphoiniateam.euphonia.data.repos.StaveRepositoryImpl
 import com.euphoiniateam.euphonia.domain.repos.StaveRepository
+import com.euphoiniateam.euphonia.ui.history.MusicData
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.io.File
 
 class CreationViewModel(
-    private val repository: StaveRepository
+    private val repository: StaveRepository,
+    private val context: Context
 ) : ViewModel() {
     val staveConfig = StaveConfig()
     var screenState by mutableStateOf(CreationScreenState())
+    var isPlaying by mutableStateOf(false)
+    private var mediaPlayer: MediaPlayer? = null
     init {
         loadStave()
     }
@@ -43,7 +50,27 @@ class CreationViewModel(
             screenState = screenState.copy(isLoading = false)
         }
     }
+    fun togglePlayPause() {
+        if (isPlaying) {
+            mediaPlayer?.pause()
+        } else {
+            playSong()
+        }
+        isPlaying = !isPlaying
+    }
 
+    private fun playSong() {
+        val songName = MusicData.songName
+        val midiFile = File(context.filesDir, songName)
+        val midiUri = Uri.fromFile(midiFile)
+        mediaPlayer = MediaPlayer.create(context, midiUri)
+        mediaPlayer?.start()
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        mediaPlayer?.release()
+    }
     companion object {
         fun provideFactory(context: Context): ViewModelProvider.Factory = viewModelFactory {
             initializer {
@@ -51,7 +78,8 @@ class CreationViewModel(
                     repository = StaveRepositoryImpl(
                         StaveCache(context.dataStore),
                         StaveApi()
-                    )
+                    ),
+                    context = context
                 )
             }
         }

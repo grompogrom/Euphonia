@@ -26,10 +26,6 @@
         <action
                 android:id="@+id/action_navigation_dashboard_to_creationFragment"
                 app:destination="@id/creationFragment">
-            <argument
-                    android:name="CompositionName"
-                    app:argType="string"
-                    />
         </action>
     </fragment>
 

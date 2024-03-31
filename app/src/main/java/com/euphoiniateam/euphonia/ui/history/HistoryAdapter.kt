@@ -26,8 +26,9 @@ class HistoryAdapter(private val context: Context, private val data: ArrayList<S
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = filteredDataList[position]
         holder.textView.text = item
+        MusicData.songName = item
         holder.itemView.setOnClickListener {
-            val action = HistoryFragmentDirections.actionNavigationDashboardToCreationFragment(item)
+            val action = HistoryFragmentDirections.actionNavigationDashboardToCreationFragment()
             navController.navigate(action)
         }
 
