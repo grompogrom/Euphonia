@@ -1,22 +1,18 @@
 package com.euphoiniateam.euphonia.data.datasources.stave
 
-import okhttp3.RequestBody
-import okhttp3.ResponseBody
-import retrofit2.Response
-import retrofit2.http.Body
-import retrofit2.http.GET
-import retrofit2.http.POST
-import retrofit2.http.Path
+import com.euphoiniateam.euphonia.data.datamodels.RemoteNote
+import com.euphoiniateam.euphonia.data.datamodels.RemoteStave
+import kotlin.random.Random
 
-interface StaveApi {
+class StaveApi() : StaveRemoteDataStore {
+    override suspend fun getData(): RemoteStave {
+        return RemoteStave(
+            tempo = Random.nextInt(),
+            tonal = Random.nextInt(),
+            initialNotes = genRandomNotes(5),
+            generatedNotes = genRandomNotes(Random.nextInt(3, 12))
+        )
+    }
 
-    @GET("get/{token}")
-    suspend fun getGenerated(
-        @Path("token") token: String
-    ): Response<ResponseBody>
-
-    @POST("generate")
-    suspend fun startGeneration(
-        @Body midi: RequestBody
-    ): Response<ResponseBody>
+    fun genRandomNotes(count: Int) = List(count) { RemoteNote(Random.nextInt(0, 9), Random.nextInt(0, 9), 0.5f, 0.5f) }
 }
