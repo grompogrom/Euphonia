@@ -22,17 +22,17 @@ import com.euphoiniateam.euphonia.domain.GenerationException
 import com.euphoiniateam.euphonia.domain.repos.NotesRepository
 import com.euphoiniateam.euphonia.domain.repos.StaveRepository
 import com.euphoiniateam.euphonia.ui.history.MusicData
+import java.io.File
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
-import java.io.File
 
 class CreationViewModel(
     private val staveRepository: StaveRepository,
     private val notesRepository: NotesRepository
 ) : ViewModel() {
-    val staveConfig = StaveConfig()
     var currentTrackState = MutableStateFlow(Uri.EMPTY)
+    var staveConfig = StaveConfig()
     var screenState by mutableStateOf(CreationScreenState())
     private var mediaPlayer: MediaPlayer? = null
     init {
@@ -57,7 +57,8 @@ class CreationViewModel(
         }
     }
 
-    fun generateNewPart(uri: Uri) {
+    fun generateNewPart(uri: Uri?) {
+        if (uri == null) return
         Log.d("AAA", "generateNewPart invoked")
         viewModelScope.launch(Dispatchers.IO) {
             screenState = screenState.copy(isLoading = true)
@@ -107,7 +108,13 @@ class CreationViewModel(
 
     private fun playSong(context: Context) {
         val songName = MusicData.songName
-        val midiFile = File(File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "Euphonia"), songName)
+        val midiFile = File(
+            File(
+                Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS),
+                "Euphonia"
+            ),
+            songName
+        )
         val midiUri = Uri.fromFile(midiFile)
         mediaPlayer = MediaPlayer.create(context, midiUri)
         mediaPlayer?.start()

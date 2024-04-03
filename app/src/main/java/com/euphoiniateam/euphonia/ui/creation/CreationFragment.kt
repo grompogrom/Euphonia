@@ -59,7 +59,7 @@ class CreationFragment : Fragment() {
 
     private lateinit var viewModel: CreationViewModel
     private lateinit var mediaPlayer: MediaPlayer
-    private lateinit var uri: Uri
+    private var uri: Uri? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -94,7 +94,9 @@ class CreationFragment : Fragment() {
         uriArg?.let {
             uri = Uri.parse(uriArg)
             mediaPlayer = MediaPlayer.create(requireContext(), uri)
-            viewModel.getNotes(uri)
+            uri?.let {
+                viewModel.getNotes(it)
+            }
         }
 
         subscribePlayerOnCurrentTrack()
@@ -116,7 +118,8 @@ class CreationFragment : Fragment() {
     }
     override fun onDestroy() {
         super.onDestroy()
-        mediaPlayer.release()
+        if (arguments?.getString("uri") != null)
+            mediaPlayer.release()
     }
 
     private fun navigateBack() {

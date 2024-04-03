@@ -8,7 +8,10 @@ import androidx.navigation.NavController
 import androidx.recyclerview.widget.RecyclerView
 import com.euphoiniateam.euphonia.R
 
-class HistoryAdapter(private val data: ArrayList<String>, private val navController: NavController) :
+class HistoryAdapter(
+    private val data: ArrayList<String>,
+    private val navController: NavController
+) :
     RecyclerView.Adapter<HistoryAdapter.ViewHolder>() {
 
     private var filteredDataList: ArrayList<String> = ArrayList(data)
@@ -27,7 +30,6 @@ class HistoryAdapter(private val data: ArrayList<String>, private val navControl
             val action = HistoryFragmentDirections.actionNavigationDashboardToCreationFragment()
             navController.navigate(action)
         }
-
     }
 
     override fun getItemCount(): Int {
@@ -51,6 +53,4 @@ class HistoryAdapter(private val data: ArrayList<String>, private val navControl
         }
         notifyDataSetChanged()
     }
-
 }
-

@@ -47,9 +47,9 @@ class HistoryFragment : Fragment() {
         /*val dir = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "Euphonia")
         dir.mkdirs()
         saveMidiToExternalStorage(requireContext(), R.raw.bumer, dir, "bumer.mid")*/
-        //val midiResourceId = R.raw.angra_carolina_iv
-        //val midiInputStream: InputStream = resources.openRawResource(midiResourceId)
-        //saveMidiToInternalStorage(requireContext(), midiInputStream, "angra_carolina_iv.mid")
+        // val midiResourceId = R.raw.angra_carolina_iv
+        // val midiInputStream: InputStream = resources.openRawResource(midiResourceId)
+        // saveMidiToInternalStorage(requireContext(), midiInputStream, "angra_carolina_iv.mid")
 
         searchView.setOnQueryTextListener(
             object : SearchView.OnQueryTextListener {
@@ -73,7 +73,10 @@ class HistoryFragment : Fragment() {
     }
 
     private fun getMidFileNamesFromExternalStorage(): ArrayList<String> {
-        val dir = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "Euphonia")
+        val dir = File(
+            Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS),
+            "Euphonia"
+        )
         dir.mkdirs()
         val midiFilesNames = ArrayList<String>()
         dir.listFiles()?.forEach { file ->
@@ -84,8 +87,13 @@ class HistoryFragment : Fragment() {
         return midiFilesNames
     }
 
-    //Функция для сохранения midi файлов в internal storage
-    private fun saveMidiToExternalStorage(context: Context, resourceId: Int, targetDirectory: File, fileName: String) {
+    // Функция для сохранения midi файлов в internal storage
+    private fun saveMidiToExternalStorage(
+        context: Context,
+        resourceId: Int,
+        targetDirectory: File,
+        fileName: String
+    ) {
         val inputStream: InputStream = context.resources.openRawResource(resourceId)
         val outputStream = FileOutputStream(File(targetDirectory, fileName))
         inputStream.use { input ->
