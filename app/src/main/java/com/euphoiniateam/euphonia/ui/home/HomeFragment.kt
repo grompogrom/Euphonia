@@ -42,22 +42,21 @@ class HomeFragment : Fragment() {
     }
 
     val requstPermission = registerForActivityResult(
-        ActivityResultContracts.RequestPermission(),
-        { isGranted ->
-            if (isGranted) {
-                getContent.launch("*/*")
-            } else {
-                Toast.makeText(context, "permisson not granted", Toast.LENGTH_SHORT).show()
-            }
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted ->
+        if (isGranted) {
+            getContent.launch("*/*")
+        } else {
+            Toast.makeText(context, "permisson not granted", Toast.LENGTH_SHORT).show()
         }
-    )
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val homeViewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
+        val homeViewModel = ViewModelProvider(this)[HomeViewModel::class.java]
 
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         val root: View = binding.root
@@ -95,7 +94,7 @@ class HomeFragment : Fragment() {
 
         return root
     }
-    fun getFileReadPermission() {
+    private fun getFileReadPermission() {
         requstPermission.launch(Manifest.permission.READ_MEDIA_AUDIO)
     }
 

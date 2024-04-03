@@ -3,6 +3,7 @@ package com.euphoiniateam.euphonia.ui.creation
 import android.content.Context
 import android.media.MediaPlayer
 import android.net.Uri
+import android.os.Environment
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -61,7 +62,7 @@ class CreationViewModel(
 
     private fun playSong() {
         val songName = MusicData.songName
-        val midiFile = File(context.filesDir, songName)
+        val midiFile = File(File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "Euphonia"), songName)
         val midiUri = Uri.fromFile(midiFile)
         mediaPlayer = MediaPlayer.create(context, midiUri)
         mediaPlayer?.start()

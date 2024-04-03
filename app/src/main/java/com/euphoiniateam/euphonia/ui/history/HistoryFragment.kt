@@ -2,6 +2,7 @@ package com.euphoiniateam.euphonia.ui.history
 
 import android.content.Context
 import android.os.Bundle
+import android.os.Environment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -38,36 +39,14 @@ class HistoryFragment : Fragment() {
 
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
         listAdapter = HistoryAdapter(
-            getMidFileNamesFromInternalStorage(requireContext()),
+            getMidFileNamesFromExternalStorage(),
             findNavController()
         )
         recyclerView.adapter = listAdapter
 
-        /*val sharedPreferences = requireContext().getSharedPreferences(
-            PREF_NAME,
-            Context.MODE_PRIVATE
-        )
-        val editor = sharedPreferences.edit()
-
-        if (sharedPreferences.contains(KEY_ARRAY)) {
-            val savedArray = getArrayFromSharedPreferences(requireContext())
-            for (i in savedArray.indices) {
-                dataList.add(savedArray[i])
-            }
-        } else {
-            val gson = Gson()
-            dataList.add("MyPlay")
-            dataList.add("CoolSound")
-            dataList.add("MyPlay1")
-            dataList.add("Krutoten'")
-            dataList.add("MyPlay2")
-            dataList.add("MyPlay3")
-            dataList.add("MyPlay4")
-            dataList.add("Лунная соната Людвиг ван Бетховен.")
-            val json = gson.toJson(dataList)
-            editor.putString(KEY_ARRAY, json)
-            editor.apply()
-        }*/
+        /*val dir = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "Euphonia")
+        dir.mkdirs()
+        saveMidiToExternalStorage(requireContext(), R.raw.bumer, dir, "bumer.mid")*/
         //val midiResourceId = R.raw.angra_carolina_iv
         //val midiInputStream: InputStream = resources.openRawResource(midiResourceId)
         //saveMidiToInternalStorage(requireContext(), midiInputStream, "angra_carolina_iv.mid")
@@ -93,43 +72,26 @@ class HistoryFragment : Fragment() {
         _binding = null
     }
 
-    /*private fun getArrayFromSharedPreferences(context: Context): Array<String> {
-        val sharedPreferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
-
-        return if (sharedPreferences.contains(KEY_ARRAY)) {
-            val gson = Gson()
-            val json = sharedPreferences.getString(KEY_ARRAY, null)
-            gson.fromJson(json, Array<String>::class.java) ?: emptyArray()
-        } else {
-            emptyArray()
-        }
-    }*/
-
-     private fun getMidFileNamesFromInternalStorage(context: Context): ArrayList<String> {
-        val internalStorageDir = context.filesDir
-        val midFileNames = ArrayList<String>()
-
-        internalStorageDir.listFiles()?.forEach { file ->
+    private fun getMidFileNamesFromExternalStorage(): ArrayList<String> {
+        val dir = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "Euphonia")
+        dir.mkdirs()
+        val midiFilesNames = ArrayList<String>()
+        dir.listFiles()?.forEach { file ->
             if (file.isFile && file.extension.equals("mid", ignoreCase = true)) {
-                midFileNames.add(file.name)
+                midiFilesNames.add(file.name)
             }
         }
-        return midFileNames
+        return midiFilesNames
     }
 
-    //Вспомогательная функция для сохранения midi файлов в internal storage
-    private fun saveMidiToInternalStorage(context: Context, inputStream: InputStream, filename: String) {
-        val file = File(context.filesDir, filename)
-        val outputStream = FileOutputStream(file)
+    //Функция для сохранения midi файлов в internal storage
+    private fun saveMidiToExternalStorage(context: Context, resourceId: Int, targetDirectory: File, fileName: String) {
+        val inputStream: InputStream = context.resources.openRawResource(resourceId)
+        val outputStream = FileOutputStream(File(targetDirectory, fileName))
         inputStream.use { input ->
             outputStream.use { output ->
                 input.copyTo(output)
             }
         }
     }
-
-    /*companion object {
-        private const val PREF_NAME = "Music"
-        private const val KEY_ARRAY = "MusicVault"
-    }*/
 }
