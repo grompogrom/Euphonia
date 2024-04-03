@@ -214,7 +214,7 @@ class CreationFragment : Fragment() {
                 onRegenerateClick = { viewModel.updateStave() },
                 onExitClick = onExitClick,
                 onPlayClick = { viewModel.togglePlayPause() },
-                isPlaying = viewModel.isPlaying,
+                isPlaying = viewModel.screenState.isPlaying,
                 modifier = Modifier
             )
         }

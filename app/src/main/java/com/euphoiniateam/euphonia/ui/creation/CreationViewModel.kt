@@ -28,7 +28,6 @@ class CreationViewModel(
 ) : ViewModel() {
     val staveConfig = StaveConfig()
     var screenState by mutableStateOf(CreationScreenState())
-    var isPlaying by mutableStateOf(false)
     private var mediaPlayer: MediaPlayer? = null
     init {
         loadStave()
@@ -52,12 +51,13 @@ class CreationViewModel(
         }
     }
     fun togglePlayPause() {
-        if (isPlaying) {
+        if (screenState.isPlaying) {
             mediaPlayer?.pause()
+            screenState = screenState.copy(isPlaying = false)
         } else {
             playSong()
+            screenState = screenState.copy(isPlaying = true)
         }
-        isPlaying = !isPlaying
     }
 
     private fun playSong() {
