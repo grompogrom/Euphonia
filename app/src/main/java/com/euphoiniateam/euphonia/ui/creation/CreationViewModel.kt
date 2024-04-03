@@ -1,7 +1,9 @@
 package com.euphoiniateam.euphonia.ui.creation
 
 import android.content.Context
+import android.media.MediaPlayer
 import android.net.Uri
+import android.os.Environment
 import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -19,9 +21,11 @@ import com.euphoiniateam.euphonia.data.repos.StaveRepositoryImpl
 import com.euphoiniateam.euphonia.domain.GenerationException
 import com.euphoiniateam.euphonia.domain.repos.NotesRepository
 import com.euphoiniateam.euphonia.domain.repos.StaveRepository
+import com.euphoiniateam.euphonia.ui.history.MusicData
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
+import java.io.File
 
 class CreationViewModel(
     private val staveRepository: StaveRepository,
@@ -30,6 +34,10 @@ class CreationViewModel(
     val staveConfig = StaveConfig()
     var currentTrackState = MutableStateFlow(Uri.EMPTY)
     var screenState by mutableStateOf(CreationScreenState())
+    private var mediaPlayer: MediaPlayer? = null
+    init {
+        loadStave()
+    }
 
     // TODO: move current uri from fragment to VM as field or state param
     // TODO: use UseCases instead repos
@@ -43,7 +51,7 @@ class CreationViewModel(
         }
     }
 
-    fun setCurrentUri(uri: Uri) {
+    private fun setCurrentUri(uri: Uri) {
         viewModelScope.launch {
             currentTrackState.emit(uri)
         }
@@ -68,12 +76,21 @@ class CreationViewModel(
         }
     }
 
-    fun loadStave() {
+    private fun loadStave() {
         viewModelScope.launch(Dispatchers.IO) {
             screenState = screenState.copy(isLoading = true)
             val newStave = staveRepository.getStave()
             staveConfig.updateNotes(newStave.initialNotes + newStave.generatedNotes)
             screenState = screenState.copy(isLoading = false)
+        }
+    }
+    fun togglePlayPause(context: Context) {
+        screenState = if (screenState.isPlaying) {
+            mediaPlayer?.pause()
+            screenState.copy(isPlaying = false)
+        } else {
+            playSong(context)
+            screenState.copy(isPlaying = true)
         }
     }
 
@@ -88,6 +105,18 @@ class CreationViewModel(
         }
     }
 
+    private fun playSong(context: Context) {
+        val songName = MusicData.songName
+        val midiFile = File(File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "Euphonia"), songName)
+        val midiUri = Uri.fromFile(midiFile)
+        mediaPlayer = MediaPlayer.create(context, midiUri)
+        mediaPlayer?.start()
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        mediaPlayer?.release()
+    }
     companion object {
         fun provideFactory(context: Context): ViewModelProvider.Factory = viewModelFactory {
             initializer {

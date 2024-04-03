@@ -22,8 +22,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material.icons.outlined.PlayArrow
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.FloatingActionButton
@@ -35,7 +36,7 @@ import androidx.compose.material3.darkColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -118,14 +119,6 @@ class CreationFragment : Fragment() {
         mediaPlayer.release()
     }
 
-    private fun togglePlayer() {
-        if (mediaPlayer.isPlaying) {
-            mediaPlayer.pause()
-        } else {
-            mediaPlayer.start()
-        }
-    }
-
     private fun navigateBack() {
         findNavController().navigateUp()
     }
@@ -136,7 +129,7 @@ class CreationFragment : Fragment() {
         modifier: Modifier = Modifier,
         isLoading: Boolean
     ) {
-        var alpha by remember { mutableStateOf(0.5f) }
+        var alpha by remember { mutableFloatStateOf(0.5f) }
 
         LaunchedEffect(isLoading) {
             if (isLoading) {
@@ -170,9 +163,10 @@ class CreationFragment : Fragment() {
     fun ButtonsSection(
         modifier: Modifier = Modifier,
         onRegenerateClick: () -> Unit,
-        onGenerateClick: () -> Unit,
         onExitClick: () -> Unit,
-        onPlayClick: () -> Unit
+        onPlayClick: () -> Unit,
+        isPlaying: Boolean,
+        onGenerateClick: () -> Unit
     ) {
         Row(
             modifier = modifier.padding(bottom = 20.dp)
@@ -215,15 +209,16 @@ class CreationFragment : Fragment() {
                         containerColor = MaterialTheme.colorScheme.tertiaryContainer,
                         onClick = { }
                     ) {
-                        Icon(Icons.Default.Check, null)
+                        Icon(Icons.Default.Done, null)
                     }
                     FloatingActionButton(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(start = 10.dp),
-                        onClick = onPlayClick
+                        onClick = { onPlayClick() }
                     ) {
-                        Icon(Icons.Outlined.PlayArrow, null)
+                        val icon = if (isPlaying) Icons.Outlined.Close else Icons.Outlined.PlayArrow
+                        Icon(icon, null)
                     }
                 }
                 ExtendedFloatingActionButton(
@@ -256,8 +251,9 @@ class CreationFragment : Fragment() {
             ButtonsSection(
                 onRegenerateClick = { viewModel.updateStave() },
                 onExitClick = onExitClick,
+                onPlayClick = { viewModel.togglePlayPause(requireContext()) },
+                isPlaying = viewModel.screenState.isPlaying,
                 onGenerateClick = { viewModel.generateNewPart(uri) },
-                onPlayClick = { togglePlayer() },
                 modifier = Modifier
             )
         }
@@ -286,6 +282,7 @@ class CreationFragment : Fragment() {
                 {},
                 {},
                 {},
+                false,
                 {}
             )
         }

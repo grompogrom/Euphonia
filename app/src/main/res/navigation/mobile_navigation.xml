@@ -25,10 +25,16 @@
     </fragment>
 
     <fragment
-        android:id="@+id/navigation_dashboard"
-        android:name="com.euphoiniateam.euphonia.ui.history.HistoryFragment"
-        android:label="@string/title_history"
-        tools:layout="@layout/fragment_history" />
+            android:id="@+id/navigation_dashboard"
+            android:name="com.euphoiniateam.euphonia.ui.history.HistoryFragment"
+            android:label="@string/title_history"
+            tools:layout="@layout/fragment_history" >
+        <action
+                android:id="@+id/action_navigation_dashboard_to_creationFragment"
+                app:destination="@id/creationFragment">
+        </action>
+    </fragment>
+
 
     <fragment
         android:id="@+id/navigation_notifications"
