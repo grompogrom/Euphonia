@@ -49,7 +49,6 @@ fun StaveView(
     val scripKeyVector = ImageVector.vectorResource(id = R.drawable.notekey)
     val scripKeyPainter = rememberVectorPainter(image = scripKeyVector)
 
-
     Canvas(modifier = modifier) {
         val lineHeight = 4.dp.value
         val lineWidth = size.width - lineHeight
@@ -141,38 +140,32 @@ fun StaveView(
                                 this.intrinsicSize
                             )
                         }
-                    }
-                    else if (note.note in intArrayOf(1, 3, 6, 8, 10)) {
+                    } else if (note.note in intArrayOf(1, 3, 6, 8, 10)) {
                         with(diezPainter) {
                             draw(
                                 this.intrinsicSize
                             )
-
                         }
                         with(note_1_4_painter) {
                             draw(
                                 this.intrinsicSize
                             )
                         }
-                    }
-                    else if (note.note == 0) {
+                    } else if (note.note == 0) {
                         with(note_1_4_c_painter) {
                             draw(
                                 this.intrinsicSize
                             )
-
                         }
                     }
-                }
-                else if (note.duration in 0.30..0.55) {
+                } else if (note.duration in 0.30..0.55) {
                     if (note.note in intArrayOf(2, 4, 5, 7, 9, 11)) {
                         with(note_1_8_painter) {
                             draw(
                                 this.intrinsicSize
                             )
                         }
-                    }
-                    else if (note.note in intArrayOf(2, 4, 5, 7, 9, 11)) {
+                    } else if (note.note in intArrayOf(2, 4, 5, 7, 9, 11)) {
                         with(diezPainter) {
                             draw(
                                 this.intrinsicSize
@@ -183,25 +176,21 @@ fun StaveView(
                                 this.intrinsicSize
                             )
                         }
-                    }
-                    else if (note.note == 0) {
+                    } else if (note.note == 0) {
                         with(note_1_8_c_painter) {
                             draw(
                                 this.intrinsicSize
                             )
-
                         }
                     }
-                }
-                else if (note.duration in 0.01..0.30) {
+                } else if (note.duration in 0.01..0.30) {
                     if (note.note in intArrayOf(2, 4, 5, 7, 9, 11)) {
                         with(note_1_16_painter) {
                             draw(
                                 this.intrinsicSize
                             )
                         }
-                    }
-                    else if (note.note in intArrayOf(2, 4, 5, 7, 9, 11)) {
+                    } else if (note.note in intArrayOf(2, 4, 5, 7, 9, 11)) {
                         with(diezPainter) {
                             draw(
                                 this.intrinsicSize
@@ -212,13 +201,11 @@ fun StaveView(
                                 this.intrinsicSize
                             )
                         }
-                    }
-                    else if (note.note == 0) {
+                    } else if (note.note == 0) {
                         with(note_1_16_c_painter) {
                             draw(
                                 this.intrinsicSize
                             )
-
                         }
                     }
                 }
@@ -232,7 +219,9 @@ fun StaveView(
 fun StaveViewPrev() {
     MaterialTheme {
         StaveView(
-            StaveConfig(listOf(Note(1, 2,0.25f, 0.0f), Note(6, 2, 0.6f, 0.0f), Note(6, 2, 0.0f, 0.0f))),
+            StaveConfig(
+                listOf(Note(1, 2, 0.25f, 0.0f), Note(6, 2, 0.6f, 0.0f), Note(6, 2, 0.0f, 0.0f))
+            ),
             modifier = Modifier.fillMaxSize()
         )
     }

@@ -8,7 +8,7 @@ import java.math.RoundingMode
 import jp.kshoji.javax.sound.midi.MidiSystem
 import jp.kshoji.javax.sound.midi.ShortMessage
 
-class NotesRepositoryImpl(private val context: Context) :NotesRepository {
+class NotesRepositoryImpl(private val context: Context) : NotesRepository {
 
     var notesMap = mapOf(
         0 to intArrayOf(0),
@@ -18,7 +18,7 @@ class NotesRepositoryImpl(private val context: Context) :NotesRepository {
         4 to intArrayOf(6, 7),
         5 to intArrayOf(8, 9),
         6 to intArrayOf(10, 11)
-    );
+    )
 
     override suspend fun getNotes(uri: Uri): List<Note>? {
         val stream = context.contentResolver?.openInputStream(uri)
@@ -39,13 +39,13 @@ class NotesRepositoryImpl(private val context: Context) :NotesRepository {
 
     private fun jp.kshoji.javax.sound.midi.Sequence.toNotes(): List<Note> {
         return tracks.flatMap { track ->
-            //Log.d("track", "$track")
+            // Log.d("track", "$track")
             val inflight = mutableMapOf<Int, Note>()
             (0 until track.size()).asSequence().map { idx ->
                 val event = track[idx]
                 when (val message = event.message) {
                     is ShortMessage -> {
-                        //Log.d("check", "${message.command} + ${message.data2}")
+                        // Log.d("check", "${message.command} + ${message.data2}")
                         var pitch = 0
                         val command = message.command
                         val midinote = message.data1
@@ -60,7 +60,7 @@ class NotesRepositoryImpl(private val context: Context) :NotesRepository {
                             .toFloat()
                         when (command) {
                             ShortMessage.NOTE_ON -> {
-                                val note = Note(pitch, noteNum,0.25f, beat)
+                                val note = Note(pitch, noteNum, 0.25f, beat)
                                 inflight[midinote] = note
                             }
                             ShortMessage.NOTE_OFF -> {
@@ -74,5 +74,4 @@ class NotesRepositoryImpl(private val context: Context) :NotesRepository {
             }.filterNotNull()
         }
     }
-
 }

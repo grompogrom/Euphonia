@@ -22,10 +22,10 @@ import com.euphoiniateam.euphonia.domain.GenerationException
 import com.euphoiniateam.euphonia.domain.repos.NotesRepository
 import com.euphoiniateam.euphonia.domain.repos.StaveRepository
 import com.euphoiniateam.euphonia.ui.history.MusicData
+import java.io.File
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
-import java.io.File
 
 class CreationViewModel(
     private val staveRepository: StaveRepository,
@@ -108,7 +108,13 @@ class CreationViewModel(
 
     private fun playSong(context: Context) {
         val songName = MusicData.songName
-        val midiFile = File(File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "Euphonia"), songName)
+        val midiFile = File(
+            File(
+                Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS),
+                "Euphonia"
+            ),
+            songName
+        )
         val midiUri = Uri.fromFile(midiFile)
         mediaPlayer = MediaPlayer.create(context, midiUri)
         mediaPlayer?.start()

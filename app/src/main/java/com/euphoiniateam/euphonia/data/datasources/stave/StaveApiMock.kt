@@ -22,6 +22,11 @@ class StaveApiMock() : StaveRemoteDataStore {
     }
 
     fun genRandomNotes(count: Int) = List(count) {
-        RemoteNote(Random.nextInt(0, 9),Random.nextInt(0, 9), 0.3f,0.3f,)
+        RemoteNote(
+            Random.nextInt(0, 9),
+            Random.nextInt(0, 9),
+            0.3f,
+            0.3f,
+        )
     }
 }
