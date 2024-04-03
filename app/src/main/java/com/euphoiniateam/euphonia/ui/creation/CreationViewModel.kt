@@ -51,12 +51,12 @@ class CreationViewModel(
         }
     }
     fun togglePlayPause() {
-        if (screenState.isPlaying) {
+        screenState = if (screenState.isPlaying) {
             mediaPlayer?.pause()
-            screenState = screenState.copy(isPlaying = false)
+            screenState.copy(isPlaying = false)
         } else {
             playSong()
-            screenState = screenState.copy(isPlaying = true)
+            screenState.copy(isPlaying = true)
         }
     }
 
