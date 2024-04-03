@@ -41,7 +41,8 @@ fun StaveView(
 
         state.setViewSize(size.width, size.height)
         repeat(state.linesCount) { line ->
-            val lineDelta = if (line != 0 && line != state.lineNotesCount - 1) (verticalOffset + noteLinesHeight) * line else 0f
+            val lineDelta = if (line != 0 && line != state.lineNotesCount - 1)
+                (verticalOffset + noteLinesHeight) * line else 0f
             repeat(5) {
                 drawLine(
                     color = Color.White,
@@ -65,7 +66,8 @@ fun StaveView(
                 ),
                 end = Offset(
                     lineWidth,
-                    topMargin + line * (verticalOffset + noteLinesHeight) + noteLinesHeight + lineHeight / 2
+                    topMargin + line * (verticalOffset + noteLinesHeight) +
+                        noteLinesHeight + lineHeight / 2
                 )
             )
             drawLine(
@@ -77,14 +79,15 @@ fun StaveView(
                 ),
                 end = Offset(
                     lineHeight,
-                    topMargin + line * (verticalOffset + noteLinesHeight) + noteLinesHeight + lineHeight / 2
+                    topMargin + line * (verticalOffset + noteLinesHeight) + noteLinesHeight +
+                        lineHeight / 2
                 )
             )
         }
 
         translate(
-            10f,
-            topMargin / 2
+            5f,
+            topMargin / 2 - 10
         ) {
 
             with(scripKeyPainter) {
@@ -103,7 +106,8 @@ fun StaveView(
             translate(
                 horizontalNoteDelta * (noteIndex + 1),
                 topNoteDelta + (verticalOffset + noteLinesHeight) * lineIndex -
-                    state.visibleNotes[lineIndex * state.lineNotesCount + noteIndex].pitch * staveLinesDelta / 2f
+                    state.visibleNotes[lineIndex * state.lineNotesCount + noteIndex].pitch
+                    * staveLinesDelta / 2f
             ) {
                 with(notePainter) {
                     draw(
