@@ -31,9 +31,7 @@ class CreationViewModel(
     private val staveRepository: StaveRepository,
     private val notesRepository: NotesRepository
 ) : ViewModel() {
-    val staveConfig = StaveConfig()
     var currentTrackState = MutableStateFlow(Uri.EMPTY)
-    //lateinit var staveConfig: StaveConfig
     var staveConfig = StaveConfig()
     var screenState by mutableStateOf(CreationScreenState())
     private var mediaPlayer: MediaPlayer? = null
@@ -59,7 +57,8 @@ class CreationViewModel(
         }
     }
 
-    fun generateNewPart(uri: Uri) {
+    fun generateNewPart(uri: Uri?) {
+        if (uri == null) return
         Log.d("AAA", "generateNewPart invoked")
         viewModelScope.launch(Dispatchers.IO) {
             screenState = screenState.copy(isLoading = true)
