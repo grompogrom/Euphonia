@@ -65,11 +65,11 @@ fun StaveView(
 //    val scripKeyPainter = rememberVectorPainter(image = scripKeyVector)
 
     Canvas(modifier = modifier) {
-        val lineHeight = 4.dp.value
+        val lineHeight = 2.dp.toPx()
         val lineWidth = size.width - lineHeight
-        val topMargin = 110.dp.value
-        val staveLinesDelta = 40.dp.value
-        val verticalOffset = 230.dp.value 
+        val topMargin = 50.dp.toPx()
+        val staveLinesDelta = 15.5.dp.toPx()
+        val verticalOffset = 80.dp.toPx()
 
         val noteLinesHeight = staveLinesDelta * 4
 
@@ -123,8 +123,8 @@ fun StaveView(
         // draw scriptKeys
         for (i in 0..state.lineNotesCount) {
             translate(
-                0f,
-                topMargin / 2 - (2 * lineHeight) + i * (noteLinesHeight + verticalOffset)
+                0.dp.toPx(),
+                topMargin / 2 + (lineHeight*1.dp.toPx()) + i * (noteLinesHeight + verticalOffset)
             ) {
 
                 with(scriptKey) {
@@ -159,8 +159,8 @@ fun StaveView(
                         }
                     } else if (note.note in blackNotes) {
                         translate(
-                            -45f,
-                            topMargin / 2 + lineHeight * 3
+                            -16.dp.toPx(),
+                            topMargin / 2 + lineHeight * 1.5f
                         ) {
                             with(diez) {
                                 draw(
@@ -191,8 +191,8 @@ fun StaveView(
                         }
                     } else if (note.note in blackNotes) {
                         translate(
-                            -45f,
-                            topMargin / 2 + lineHeight * 3
+                            -16.dp.toPx(),
+                            topMargin / 2 + lineHeight * 1.5f
                         ) {
                             with(diez) {
                                 draw(
@@ -222,8 +222,8 @@ fun StaveView(
                         }
                     } else if (note.note in blackNotes) {
                         translate(
-                            -45f,
-                            topMargin / 2 + lineHeight * 3
+                            -16.dp.toPx(),
+                            topMargin / 2 + lineHeight * 1.5f
                         ) {
                             with(diez) {
                                 draw(
@@ -256,7 +256,7 @@ fun StaveViewPrev() {
     MaterialTheme {
         StaveView(
             StaveConfig(
-                listOf(Note(5, 9, 0.25f, 0.0f), Note(5, 8, 0.6f, 0.0f), Note(6, 2, 0.0f, 0.0f))
+                listOf(Note(5, 9, 0.25f, 0.0f), Note(5, 8, 0.25f, 0.0f), Note(0, 0, 0.25f, 0.0f), Note(0, 0, 0.0f, 0.0f))
             ),
             modifier = Modifier.fillMaxSize()
         )
