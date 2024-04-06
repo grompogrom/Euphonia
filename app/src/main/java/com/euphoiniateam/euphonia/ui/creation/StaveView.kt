@@ -73,6 +73,7 @@ fun StaveView(
 
         val noteLinesHeight = staveLinesDelta * 4
 
+        // draw lines for stave
         state.setViewSize(size.width, size.height)
         repeat(state.linesCount) { line ->
             val lineDelta = if (line != 0 && line != state.lineNotesCount - 1)
@@ -119,6 +120,7 @@ fun StaveView(
             )
         }
 
+        // draw scriptKeys
         for (i in 0..state.lineNotesCount) {
             translate(
                 0f,
@@ -133,9 +135,11 @@ fun StaveView(
             }
         }
 
+        // set deltas for notes
         val horizontalNoteDelta = lineWidth / (state.lineNotesCount + 1)
         val topNoteDelta = topMargin + staveLinesDelta * 2.5f
 
+        // draw notes
         state.visibleNotes.forEachIndexed { index, note ->
             val lineIndex = index.div(state.lineNotesCount)
             val noteIndex = index.mod(state.lineNotesCount)
@@ -145,11 +149,7 @@ fun StaveView(
                     state.visibleNotes[lineIndex * state.lineNotesCount + noteIndex].pitch
                     * staveLinesDelta / 2f
             ) {
-//                with(note_1_4_painter) {
-//                    draw(
-//                        this.intrinsicSize
-//                    )
-//                }
+//              // check durations and types of notes
                 if (note.duration >= note_1_4_duration) {
                     if (note.note in whiteNotes) {
                         with(note_1_4) {
