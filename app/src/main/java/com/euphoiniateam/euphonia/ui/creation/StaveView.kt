@@ -11,9 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.translate
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.graphics.vector.rememberVectorPainter
-import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.euphoiniateam.euphonia.R
@@ -25,29 +23,46 @@ fun StaveView(
     state: StaveConfig,
     modifier: Modifier = Modifier
 ) {
-    val note_1_4_vector = ImageVector.vectorResource(id = R.drawable.note_1_4)
-    val note_1_4_painter = rememberVectorPainter(image = note_1_4_vector)
+    val whiteNotes = intArrayOf(2, 4, 5, 7, 9, 11)
+    val blackNotes = intArrayOf(1, 3, 6, 8, 10)
+    val note_1_4_duration = 0.55
+    val note_1_8_duration = 0.30
+    val note_1_16_duration = 0.10
 
-    val note_1_4_c_vector = ImageVector.vectorResource(id = R.drawable.note_1_4_c)
-    val note_1_4_c_painter = rememberVectorPainter(image = note_1_4_c_vector)
+//    val note_1_4_vector = ImageVector.vectorResource(id = R.drawable.note_1_4)
+//    val note_1_4_painter = rememberVectorPainter(image = note_1_4_vector)
+    val note_1_4 = painterResource(R.drawable.note_1_4)
+    val note_1_4_c = painterResource(R.drawable.note_1_4_c)
 
-    val note_1_8_vector = ImageVector.vectorResource(id = R.drawable.note_1_8)
-    val note_1_8_painter = rememberVectorPainter(image = note_1_8_vector)
+    val note_1_8 = painterResource(R.drawable.note_1_8)
+    val note_1_8_c = painterResource(R.drawable.note_1_8_c)
 
-    val note_1_8_c_vector = ImageVector.vectorResource(id = R.drawable.note_1_8_c)
-    val note_1_8_c_painter = rememberVectorPainter(image = note_1_8_c_vector)
+    val note_1_16 = painterResource(R.drawable.note_1_16)
+    val note_1_16_c = painterResource(R.drawable.note_1_16_c)
 
-    val note_1_16_vector = ImageVector.vectorResource(id = R.drawable.note_1_16)
-    val note_1_16_painter = rememberVectorPainter(image = note_1_16_vector)
-
-    val note_1_16_c_vector = ImageVector.vectorResource(id = R.drawable.note_1_16_c)
-    val note_1_16_c_painter = rememberVectorPainter(image = note_1_16_c_vector)
-
-    val diezVector = ImageVector.vectorResource(id = R.drawable.diez)
-    val diezPainter = rememberVectorPainter(image = diezVector)
-
-    val scripKeyVector = ImageVector.vectorResource(id = R.drawable.notekey)
-    val scripKeyPainter = rememberVectorPainter(image = scripKeyVector)
+    val diez = painterResource(R.drawable.diez)
+    val scriptKey = painterResource(R.drawable.notekey)
+//
+//    val note_1_4_c_vector = ImageVector.vectorResource(id = R.drawable.note_1_4_c)
+//    val note_1_4_c_painter = rememberVectorPainter(image = note_1_4_c_vector)
+//
+//    val note_1_8_vector = ImageVector.vectorResource(id = R.drawable.note_1_8)
+//    val note_1_8_painter = rememberVectorPainter(image = note_1_8_vector)
+//
+//    val note_1_8_c_vector = ImageVector.vectorResource(id = R.drawable.note_1_8_c)
+//    val note_1_8_c_painter = rememberVectorPainter(image = note_1_8_c_vector)
+//
+//    val note_1_16_vector = ImageVector.vectorResource(id = R.drawable.note_1_16)
+//    val note_1_16_painter = rememberVectorPainter(image = note_1_16_vector)
+//
+//    val note_1_16_c_vector = ImageVector.vectorResource(id = R.drawable.note_1_16_c)
+//    val note_1_16_c_painter = rememberVectorPainter(image = note_1_16_c_vector)
+//
+//    val diezVector = ImageVector.vectorResource(id = R.drawable.diez)
+//    val diezPainter = rememberVectorPainter(image = diezVector)
+//
+//    val scripKeyVector = ImageVector.vectorResource(id = R.drawable.notekey)
+//    val scripKeyPainter = rememberVectorPainter(image = scripKeyVector)
 
     Canvas(modifier = modifier) {
         val lineHeight = 4.dp.value
@@ -104,15 +119,17 @@ fun StaveView(
             )
         }
 
-        translate(
-            5f,
-            topMargin / 2 - 10
-        ) {
+        for (i in 0..state.lineNotesCount) {
+            translate(
+                0f,
+                topMargin / 2 - (2 * lineHeight) + i * (noteLinesHeight + verticalOffset)
+            ) {
 
-            with(scripKeyPainter) {
-                draw(
-                    this.intrinsicSize
-                )
+                with(scriptKey) {
+                    draw(
+                        this.intrinsicSize
+                    )
+                }
             }
         }
 
@@ -133,76 +150,95 @@ fun StaveView(
 //                        this.intrinsicSize
 //                    )
 //                }
-                if (note.duration in 0.55..5.0) {
-                    if (note.note in intArrayOf(2, 4, 5, 7, 9, 11)) {
-                        with(note_1_4_painter) {
+                if (note.duration >= note_1_4_duration) {
+                    if (note.note in whiteNotes) {
+                        with(note_1_4) {
                             draw(
                                 this.intrinsicSize
                             )
                         }
-                    } else if (note.note in intArrayOf(1, 3, 6, 8, 10)) {
-                        with(diezPainter) {
+                    } else if (note.note in blackNotes) {
+                        translate(
+                            -45f,
+                            topMargin / 2 + lineHeight * 3
+                        ) {
+                            with(diez) {
+                                draw(
+                                    this.intrinsicSize
+                                )
+                            }
+                        }
+
+                        with(note_1_4) {
                             draw(
                                 this.intrinsicSize
                             )
                         }
-                        with(note_1_4_painter) {
-                            draw(
-                                this.intrinsicSize
-                            )
-                        }
+
                     } else if (note.note == 0) {
-                        with(note_1_4_c_painter) {
+                        with(note_1_4_c) {
                             draw(
                                 this.intrinsicSize
                             )
                         }
                     }
-                } else if (note.duration in 0.30..0.55) {
-                    if (note.note in intArrayOf(2, 4, 5, 7, 9, 11)) {
-                        with(note_1_8_painter) {
+                } else if (note.duration >= note_1_8_duration) {
+                    if (note.note in whiteNotes) {
+                        with(note_1_8) {
                             draw(
                                 this.intrinsicSize
                             )
                         }
-                    } else if (note.note in intArrayOf(2, 4, 5, 7, 9, 11)) {
-                        with(diezPainter) {
-                            draw(
-                                this.intrinsicSize
-                            )
+                    } else if (note.note in blackNotes) {
+                        translate(
+                            -45f,
+                            topMargin / 2 + lineHeight * 3
+                        ) {
+                            with(diez) {
+                                draw(
+                                    this.intrinsicSize
+                                )
+                            }
                         }
-                        with(note_1_8_painter) {
+
+                        with(note_1_8) {
                             draw(
                                 this.intrinsicSize
                             )
                         }
                     } else if (note.note == 0) {
-                        with(note_1_8_c_painter) {
+                        with(note_1_8_c) {
                             draw(
                                 this.intrinsicSize
                             )
                         }
                     }
-                } else if (note.duration in 0.01..0.30) {
-                    if (note.note in intArrayOf(2, 4, 5, 7, 9, 11)) {
-                        with(note_1_16_painter) {
+                } else if (note.duration >= note_1_16_duration) {
+                    if (note.note in whiteNotes) {
+                        with(note_1_16) {
                             draw(
                                 this.intrinsicSize
                             )
                         }
-                    } else if (note.note in intArrayOf(2, 4, 5, 7, 9, 11)) {
-                        with(diezPainter) {
-                            draw(
-                                this.intrinsicSize
-                            )
+                    } else if (note.note in blackNotes) {
+                        translate(
+                            -45f,
+                            topMargin / 2 + lineHeight * 3
+                        ) {
+                            with(diez) {
+                                draw(
+                                    this.intrinsicSize
+                                )
+                            }
                         }
-                        with(note_1_16_painter) {
+
+                        with(note_1_16) {
                             draw(
                                 this.intrinsicSize
                             )
                         }
                     } else if (note.note == 0) {
-                        with(note_1_16_c_painter) {
+                        with(note_1_16_c) {
                             draw(
                                 this.intrinsicSize
                             )
@@ -220,7 +256,7 @@ fun StaveViewPrev() {
     MaterialTheme {
         StaveView(
             StaveConfig(
-                listOf(Note(1, 2, 0.25f, 0.0f), Note(6, 2, 0.6f, 0.0f), Note(6, 2, 0.0f, 0.0f))
+                listOf(Note(5, 9, 0.25f, 0.0f), Note(5, 8, 0.6f, 0.0f), Note(6, 2, 0.0f, 0.0f))
             ),
             modifier = Modifier.fillMaxSize()
         )
