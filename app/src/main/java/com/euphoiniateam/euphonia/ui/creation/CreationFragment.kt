@@ -1,6 +1,5 @@
 package com.euphoiniateam.euphonia.ui.creation
 
-import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -46,20 +45,15 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.euphoiniateam.euphonia.R
 import com.euphoiniateam.euphonia.databinding.FragmentCreation2Binding
-import kotlinx.coroutines.launch
 
 class CreationFragment : Fragment() {
 
     private lateinit var viewModel: CreationViewModel
-    private lateinit var mediaPlayer: MediaPlayer
-    private var uri: Uri? = null
+    private lateinit var uri: Uri
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -93,33 +87,11 @@ class CreationFragment : Fragment() {
 
         uriArg?.let {
             uri = Uri.parse(uriArg)
-            mediaPlayer = MediaPlayer.create(requireContext(), uri)
-            uri?.let {
-                viewModel.getNotes(it)
-            }
+            viewModel.setCurrentUri(requireContext(), uri)
+            viewModel.getNotes(uri)
         }
 
-        subscribePlayerOnCurrentTrack()
         super.onViewCreated(view, savedInstanceState)
-    }
-
-    private fun subscribePlayerOnCurrentTrack() {
-        viewLifecycleOwner.lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.currentTrackState.collect {
-                    if (it != Uri.EMPTY) {
-                        mediaPlayer.reset()
-                        mediaPlayer.setDataSource(requireContext(), it)
-                        mediaPlayer.prepare()
-                    }
-                }
-            }
-        }
-    }
-    override fun onDestroy() {
-        super.onDestroy()
-        if (arguments?.getString("uri") != null)
-            mediaPlayer.release()
     }
 
     private fun navigateBack() {
@@ -256,7 +228,7 @@ class CreationFragment : Fragment() {
                 onExitClick = onExitClick,
                 onPlayClick = { viewModel.togglePlayPause(requireContext()) },
                 isPlaying = viewModel.screenState.isPlaying,
-                onGenerateClick = { viewModel.generateNewPart(uri) },
+                onGenerateClick = { viewModel.generateNewPart(requireContext(), uri) },
                 modifier = Modifier
             )
         }
