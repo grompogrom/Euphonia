@@ -1,6 +1,5 @@
 package com.euphoiniateam.euphonia.ui.creation
 
-import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -46,14 +45,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.euphoiniateam.euphonia.R
 import com.euphoiniateam.euphonia.databinding.FragmentCreation2Binding
-import kotlinx.coroutines.launch
 
 class CreationFragment : Fragment() {
 
@@ -96,10 +91,8 @@ class CreationFragment : Fragment() {
             viewModel.getNotes(uri)
         }
 
-
         super.onViewCreated(view, savedInstanceState)
     }
-
 
     private fun navigateBack() {
         findNavController().navigateUp()

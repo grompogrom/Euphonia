@@ -4,15 +4,15 @@ import android.content.Context
 import android.media.MediaPlayer
 import android.net.Uri
 import android.util.Log
-import androidx.lifecycle.MutableLiveData
+import kotlinx.coroutines.flow.MutableStateFlow
 
 class MidiPlayer {
     private var mediaPlayer: MediaPlayer = MediaPlayer()
     private var currentUri: Uri? = null
-    val playerState = MutableLiveData(false)
+    val playerState = MutableStateFlow(false)
 
     init {
-        mediaPlayer.setOnCompletionListener { playerState.postValue(false) }
+        mediaPlayer.setOnCompletionListener { playerState.tryEmit(false) }
     }
 
     fun initWithTrack(context: Context, midiUri: Uri) {
@@ -25,13 +25,13 @@ class MidiPlayer {
 
     fun play(context: Context, midiUri: Uri) {
         initWithTrack(context, midiUri)
-        playerState.postValue(true)
+        playerState.tryEmit(true)
         mediaPlayer.start()
         Log.d("AAA", "Player started. Current uri: $midiUri")
     }
     fun stop() {
         mediaPlayer.stop()
-        playerState.postValue(false)
+        playerState.tryEmit(false)
         Log.d("AAA", "Player stopped")
     }
 
