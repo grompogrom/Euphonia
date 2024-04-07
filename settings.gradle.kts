@@ -13,7 +13,7 @@ dependencyResolutionManagement {
             url = uri("$rootDir/maven-libs/")
         }
         maven { url = uri("https://jitpack.io") }
-        maven{
+        maven {
             setUrl("https://jitpack.io")
         }
     }
