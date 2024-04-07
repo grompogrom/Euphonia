@@ -10,11 +10,18 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.LinearLayout
-import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.euphoiniateam.euphonia.R
+import com.leff.midi.MidiFile
+import com.leff.midi.MidiTrack
+import com.leff.midi.event.meta.Tempo
+import com.leff.midi.event.meta.TimeSignature
+import java.io.File
+import java.io.FileOutputStream
+import java.io.IOException
+import java.nio.ByteBuffer
 import kotlin.concurrent.thread
 
 
@@ -22,16 +29,15 @@ class PianoFragment : Fragment() {
 
 
     private lateinit var viewModel: PianoViewModel
-
     private val notes = arrayListOf("C", "D", "C#", "E", "D#", "F", "G", "F#", "A", "G#", "B", "A#")
+    //private val notes = arrayListOf<Pair<String, Int>>()
+    private val notePosMidi = arrayListOf(0, 2, 1, 4, 3, 5, 7, 6, 9, 8, 11, 10)
     private var noteMap : MutableMap<Int, Int> = mutableMapOf()
     private var sndPool : SoundPool = SoundPool.Builder().setMaxStreams(5).build()
-
     private var isRecording = false
     private lateinit var recordButton : Button
     private var recordData : MutableList<PianoPlayer> = mutableListOf()
     private var previousPressTime : Long = 0
-
 
 
     override fun onCreateView(
@@ -41,6 +47,7 @@ class PianoFragment : Fragment() {
         val rootView = inflater.inflate(R.layout.fragment_piano, container, false)
         val LLayout = rootView.findViewById<LinearLayout>(R.id.linear1)
 
+        //createMidiFile(notess, "output.mid")
 
         recordButton = rootView.findViewById(R.id.record_button)
         recordButton.setOnClickListener {
@@ -49,8 +56,13 @@ class PianoFragment : Fragment() {
                 recordButton.setBackgroundResource(android.R.drawable.presence_online)
             } else recordButton.setBackgroundResource(R.drawable.record_button)
             if(!isRecording && recordData.isNotEmpty()){
-                playRecord()
+//                playRecord()
+                createMidiWithApi()
+
+
+
             }
+
 //            Toast.makeText(requireContext(), isRecording.toString(), Toast.LENGTH_SHORT).show()
         }
         for(i in 0..2) {
@@ -157,5 +169,39 @@ class PianoFragment : Fragment() {
 
         }
 
+    }
+    private fun createMidiWithApi() {
+        val file = File(requireContext().applicationContext.externalCacheDir, "out.mid")
+        val tempoTrack = MidiTrack()
+        val noteTrack = MidiTrack()
+        val ts = TimeSignature()
+        ts.setTimeSignature(4, 4, TimeSignature.DEFAULT_METER, TimeSignature.DEFAULT_DIVISION)
+        val tempo = Tempo()
+        tempo.bpm = 228f
+
+        tempoTrack.insertEvent(ts)
+        tempoTrack.insertEvent(tempo)
+        val noteCount = recordData.size
+        for (i in 0 until noteCount) {
+            val channel = 0
+            val pitch = notesToMidiNotes(recordData[i].keyNum, recordData[i].pitch)
+            val velocity = 100
+            val tick = (i * 480).toLong()
+            val duration: Long = 120
+
+            noteTrack.insertNote(channel, pitch, velocity, tick, duration)
+        }
+        val tracks: MutableList<MidiTrack> = ArrayList()
+        tracks.add(tempoTrack)
+        tracks.add(noteTrack)
+
+        val midi = MidiFile(MidiFile.DEFAULT_RESOLUTION, tracks)
+        midi.writeToFile(file)
+    }
+
+    private fun notesToMidiNotes(noteNum : Int, pitch : Int) : Int{
+        return if(pitch == 0) notePosMidi[noteNum] + 60
+        else if (pitch == 1) notePosMidi[noteNum] + 72
+        else notePosMidi[noteNum] + 48
     }
 }
