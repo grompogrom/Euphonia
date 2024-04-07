@@ -58,8 +58,7 @@ import kotlinx.coroutines.launch
 class CreationFragment : Fragment() {
 
     private lateinit var viewModel: CreationViewModel
-    private lateinit var mediaPlayer: MediaPlayer
-    private var uri: Uri? = null
+    private lateinit var uri: Uri
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -93,34 +92,14 @@ class CreationFragment : Fragment() {
 
         uriArg?.let {
             uri = Uri.parse(uriArg)
-            mediaPlayer = MediaPlayer.create(requireContext(), uri)
-            uri?.let {
-                viewModel.getNotes(it)
-            }
+            viewModel.setCurrentUri(requireContext(), uri)
+            viewModel.getNotes(uri)
         }
 
-        subscribePlayerOnCurrentTrack()
+
         super.onViewCreated(view, savedInstanceState)
     }
 
-    private fun subscribePlayerOnCurrentTrack() {
-        viewLifecycleOwner.lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.currentTrackState.collect {
-                    if (it != Uri.EMPTY) {
-                        mediaPlayer.reset()
-                        mediaPlayer.setDataSource(requireContext(), it)
-                        mediaPlayer.prepare()
-                    }
-                }
-            }
-        }
-    }
-    override fun onDestroy() {
-        super.onDestroy()
-        if (arguments?.getString("uri") != null)
-            mediaPlayer.release()
-    }
 
     private fun navigateBack() {
         findNavController().navigateUp()
@@ -256,7 +235,7 @@ class CreationFragment : Fragment() {
                 onExitClick = onExitClick,
                 onPlayClick = { viewModel.togglePlayPause(requireContext()) },
                 isPlaying = viewModel.screenState.isPlaying,
-                onGenerateClick = { viewModel.generateNewPart(uri) },
+                onGenerateClick = { viewModel.generateNewPart(requireContext(), uri) },
                 modifier = Modifier
             )
         }
