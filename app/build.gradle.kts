@@ -5,9 +5,13 @@ plugins {
 
 }
 
+
+
 android {
     namespace = "com.euphoiniateam.euphonia"
     compileSdk = 34
+
+
 
     defaultConfig {
         applicationId = "com.euphoiniateam.euphonia"
@@ -60,6 +64,9 @@ dependencies {
     implementation("androidx.compose.ui:ui-tooling-preview-android:1.5.4")
     implementation("androidx.compose.material3:material3:1.1.2")
     implementation("androidx.datastore:datastore-core:1.0.0")
+    implementation("com.github.LeffelMania:android-midi-lib:7cdd855c2b")
+//    implementation("com.github.atsushieno:ktmidi:1.5.0")
+    implementation("dev.atsushieno:ktmidi-android:0.7.0")
     debugImplementation("androidx.compose.ui:ui-tooling:1.5.4")
 
     implementation("androidx.datastore:datastore-preferences:1.0.0")

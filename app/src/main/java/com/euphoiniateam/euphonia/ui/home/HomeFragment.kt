@@ -13,7 +13,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import com.euphoiniateam.euphonia.databinding.FragmentHomeBinding
-
 class HomeFragment : Fragment() {
 
     private var _binding: FragmentHomeBinding? = null
