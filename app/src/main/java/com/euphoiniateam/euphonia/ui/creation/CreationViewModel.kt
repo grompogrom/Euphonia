@@ -1,16 +1,13 @@
 package com.euphoiniateam.euphonia.ui.creation
 
 import android.content.Context
-import android.media.MediaPlayer
 import android.net.Uri
-import android.os.Environment
 import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.asFlow
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
@@ -23,11 +20,8 @@ import com.euphoiniateam.euphonia.domain.GenerationException
 import com.euphoiniateam.euphonia.domain.repos.NotesRepository
 import com.euphoiniateam.euphonia.domain.repos.StaveRepository
 import com.euphoiniateam.euphonia.ui.MidiPlayer
-import com.euphoiniateam.euphonia.ui.history.MusicData
-import java.io.File
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 class CreationViewModel(
@@ -41,7 +35,7 @@ class CreationViewModel(
 
     init {
         viewModelScope.launch {
-            midiPlayer.playerState.asFlow().collect {
+            midiPlayer.playerState.collect {
                 Log.d("AAA", "Player state: $it")
 
                 screenState = screenState.copy(isPlaying = it)
