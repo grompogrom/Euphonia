@@ -28,7 +28,7 @@ class NotesRepositoryImpl(private val context: Context) : NotesRepository {
                 setSequence(stream)
             }
         }
-        val initial_notes = sequencer.sequence?.toNotes()?.subList(0, 10)
+        val initial_notes = sequencer.sequence?.toNotes()
         if (initial_notes != null) {
             for (note in initial_notes) {
                 Log.d("note", note.toString())
@@ -40,13 +40,13 @@ class NotesRepositoryImpl(private val context: Context) : NotesRepository {
 
     private fun jp.kshoji.javax.sound.midi.Sequence.toNotes(): List<Note> {
         return tracks.flatMap { track ->
-            // Log.d("track", "$track")
+            Log.d("track", "$track")
             val inflight = mutableMapOf<Int, Note>()
             (0 until track.size()).asSequence().map { idx ->
                 val event = track[idx]
                 when (val message = event.message) {
                     is ShortMessage -> {
-                        // Log.d("check", "${message.command} + ${message.data2}")
+                        Log.d("check", "${message.command} + ${message.data2}")
                         var pitch = 0
                         val command = message.command
                         val midinote = message.data1

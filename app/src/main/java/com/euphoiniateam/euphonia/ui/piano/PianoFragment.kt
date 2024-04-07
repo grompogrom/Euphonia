@@ -21,9 +21,12 @@ import androidx.lifecycle.ViewModelProvider
 import com.euphoiniateam.euphonia.R
 import com.leff.midi.MidiFile
 import com.leff.midi.MidiTrack
+import com.leff.midi.event.NoteOff
+import com.leff.midi.event.NoteOn
 import com.leff.midi.event.meta.Tempo
 import com.leff.midi.event.meta.TimeSignature
 import java.io.File
+
 
 
 class PianoFragment : Fragment() {
@@ -230,10 +233,15 @@ class PianoFragment : Fragment() {
             val tick = (i * 480).toLong()
             val duration: Long = recordData[i].elapseTime - recordData[i].pressTime
 
-            noteTrack.insertNote(channel, pitch, velocity, tick, duration)
+            val noteOn = NoteOn(tick, channel, pitch, velocity)
+            val noteOff = NoteOff((tick + 120), channel, pitch, 0)
+
+            noteTrack.insertEvent(noteOn);
+            noteTrack.insertEvent(noteOff);
+//            noteTrack.insertNote(channel, pitch, velocity, tick, duration)
         }
         val tracks: MutableList<MidiTrack> = ArrayList()
-        tracks.add(tempoTrack)
+        //tracks.add(tempoTrack)
         tracks.add(noteTrack)
 
         val midi = MidiFile(MidiFile.DEFAULT_RESOLUTION, tracks)
