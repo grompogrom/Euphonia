@@ -45,7 +45,7 @@ android {
     }
 
     defaultConfig {
-        buildConfigField("String", "ServerIP", "\"192.168.31.214:8080/\"")
+        buildConfigField("String", "ServerIP", "\"http://192.168.31.33:8083/\"")
     }
 }
 

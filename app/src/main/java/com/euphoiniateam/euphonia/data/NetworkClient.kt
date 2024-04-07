@@ -1,5 +1,6 @@
 package com.euphoiniateam.euphonia.data
 
+import com.euphoiniateam.euphonia.BuildConfig
 import com.euphoiniateam.euphonia.data.datasources.stave.StaveApi
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
@@ -12,7 +13,7 @@ object NetworkClient {
 }
 
 object NetworkService {
-    private val BASE_URL = "http://192.168.31.214:8080/"
+    private val BASE_URL = BuildConfig.ServerIP
     private val retrofit = Retrofit.Builder()
         .client(NetworkClient.client)
         .baseUrl(BASE_URL)
