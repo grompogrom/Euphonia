@@ -10,6 +10,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.asFlow
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
@@ -21,22 +22,31 @@ import com.euphoiniateam.euphonia.data.repos.StaveRepositoryImpl
 import com.euphoiniateam.euphonia.domain.GenerationException
 import com.euphoiniateam.euphonia.domain.repos.NotesRepository
 import com.euphoiniateam.euphonia.domain.repos.StaveRepository
+import com.euphoiniateam.euphonia.ui.MidiPlayer
 import com.euphoiniateam.euphonia.ui.history.MusicData
 import java.io.File
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 class CreationViewModel(
     private val staveRepository: StaveRepository,
     private val notesRepository: NotesRepository
 ) : ViewModel() {
+    val staveConfig = StaveConfig()
     var currentTrackState = MutableStateFlow(Uri.EMPTY)
-    var staveConfig = StaveConfig()
     var screenState by mutableStateOf(CreationScreenState())
-    private var mediaPlayer: MediaPlayer? = null
+    private val midiPlayer: MidiPlayer = MidiPlayer()
+
     init {
-        loadStave()
+        viewModelScope.launch {
+            midiPlayer.playerState.asFlow().collect {
+                Log.d("AAA", "Player state: $it")
+
+                screenState = screenState.copy(isPlaying = it)
+            }
+        }
     }
 
     // TODO: move current uri from fragment to VM as field or state param
@@ -51,14 +61,14 @@ class CreationViewModel(
         }
     }
 
-    private fun setCurrentUri(uri: Uri) {
+    fun setCurrentUri(context: Context, uri: Uri) {
         viewModelScope.launch {
+            midiPlayer.initWithTrack(context, uri)
             currentTrackState.emit(uri)
         }
     }
 
-    fun generateNewPart(uri: Uri?) {
-        if (uri == null) return
+    fun generateNewPart(context: Context, uri: Uri) {
         Log.d("AAA", "generateNewPart invoked")
         viewModelScope.launch(Dispatchers.IO) {
             screenState = screenState.copy(isLoading = true)
@@ -67,7 +77,7 @@ class CreationViewModel(
 
                 val notes = notesRepository.getNotes(newMidi)
                 notes?.let { staveConfig.updateNotes(it) }
-                setCurrentUri(newMidi)
+                setCurrentUri(context, newMidi)
                 currentTrackState.emit(newMidi)
                 screenState.copy(isLoading = false)
             } catch (e: GenerationException) {
@@ -85,13 +95,12 @@ class CreationViewModel(
             screenState = screenState.copy(isLoading = false)
         }
     }
+
     fun togglePlayPause(context: Context) {
-        screenState = if (screenState.isPlaying) {
-            mediaPlayer?.pause()
-            screenState.copy(isPlaying = false)
+        if (screenState.isPlaying) {
+            midiPlayer.stop()
         } else {
-            playSong(context)
-            screenState.copy(isPlaying = true)
+            midiPlayer.play(context, currentTrackState.value)
         }
     }
 
@@ -106,24 +115,11 @@ class CreationViewModel(
         }
     }
 
-    private fun playSong(context: Context) {
-        val songName = MusicData.songName
-        val midiFile = File(
-            File(
-                Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS),
-                "Euphonia"
-            ),
-            songName
-        )
-        val midiUri = Uri.fromFile(midiFile)
-        mediaPlayer = MediaPlayer.create(context, midiUri)
-        mediaPlayer?.start()
-    }
-
     override fun onCleared() {
         super.onCleared()
-        mediaPlayer?.release()
+        midiPlayer.release()
     }
+
     companion object {
         fun provideFactory(context: Context): ViewModelProvider.Factory = viewModelFactory {
             initializer {
