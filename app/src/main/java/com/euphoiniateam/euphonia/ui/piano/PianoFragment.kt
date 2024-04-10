@@ -1,11 +1,16 @@
 package com.euphoiniateam.euphonia.ui.piano
 
 
+import android.annotation.SuppressLint
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
+import android.graphics.drawable.Drawable
 import android.media.SoundPool
 import android.os.Bundle
 import android.os.SystemClock
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
@@ -40,6 +45,7 @@ class PianoFragment : Fragment() {
     private var previousPressTime : Long = 0
 
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -72,7 +78,45 @@ class PianoFragment : Fragment() {
                 noteMap[pianoKey(notes[x],i)] = sndPool.load(
                     requireContext(),
                     pianoKey(notes[x],i), 1)
-                (octave.getChildAt(x) as Button).setOnClickListener {
+                (octave.getChildAt(x) as Button).setOnTouchListener { v, event ->
+                    Log.d("dd", "dd")
+                    when(event.action) {
+                        MotionEvent.ACTION_DOWN -> {
+
+                            if(x == 2 || x == 4 || x == 7 || x == 9 || x == 11) {
+                                v.background =
+                                    ColorDrawable(resources.getColor(R.color.md_theme_dark_background))
+                            }
+                            else {
+                                v.background = ColorDrawable((resources.getColor(androidx.appcompat.R.color.material_grey_50)))
+                            }
+                            noteMap[pianoKey(notes[x], i)]?.let { it1 -> sndPool.play(it1, 1F,
+                                1F, 1 ,0, 1.0f) }
+                            if(isRecording) recordData.add(PianoPlayer(-1L, System.currentTimeMillis(), x, i))
+                            true
+                        }
+                        MotionEvent.ACTION_UP -> {
+                            if(x == 2 || x == 4 || x == 7 || x == 9 || x == 11) {
+                                v.background =
+                                    ColorDrawable(resources.getColor(androidx.cardview.R.color.cardview_dark_background))
+                            }else {
+                                v.background = (resources.getDrawable(R.drawable.piano_borders))
+                            }
+                            if(isRecording){
+                                for(l in 0 until recordData.size){
+                                    if(recordData[l].elapseTime == -1L && recordData[l].keyNum == x && recordData[l].pitch == i){
+                                        recordData[l].elapseTime = System.currentTimeMillis()
+                                    }
+                                }
+                            }
+                            true
+                        }
+
+                        else -> {true}
+
+                    }
+                }
+               /* (octave.getChildAt(x) as Button).setOnClickListener {
                     if(isRecording) {
                         val currentTimeMillis = SystemClock.elapsedRealtime()
                         val elapsedTimeMillis = if (previousPressTime != 0L) {
@@ -84,7 +128,7 @@ class PianoFragment : Fragment() {
                     }
                     noteMap[pianoKey(notes[x], i)]?.let { it1 -> sndPool.play(it1, 1F,
                         1F, 1 ,0, 1.0f) }
-                }
+                }*/
             }
             LLayout.addView(pianoView, i)
         }
@@ -156,7 +200,7 @@ class PianoFragment : Fragment() {
         return resource
     }
 
-    private fun playRecord(){
+    /*private fun playRecord(){
         thread(true){
             for(i in 0 until recordData.size){
                 Log.d("sleep", recordData[i].second.toString())
@@ -169,8 +213,9 @@ class PianoFragment : Fragment() {
 
         }
 
-    }
+    }*/
     private fun createMidiWithApi() {
+        for(i in 0 until recordData.size)Log.d("wtf", recordData[i].keyNum.toString() + " " + (recordData[i].elapseTime - recordData[i].pressTime).toString())
         val file = File(requireContext().applicationContext.externalCacheDir, "out.mid")
         val tempoTrack = MidiTrack()
         val noteTrack = MidiTrack()
@@ -187,7 +232,7 @@ class PianoFragment : Fragment() {
             val pitch = notesToMidiNotes(recordData[i].keyNum, recordData[i].pitch)
             val velocity = 100
             val tick = (i * 480).toLong()
-            val duration: Long = 120
+            val duration: Long = recordData[i].elapseTime - recordData[i].pressTime
 
             noteTrack.insertNote(channel, pitch, velocity, tick, duration)
         }
