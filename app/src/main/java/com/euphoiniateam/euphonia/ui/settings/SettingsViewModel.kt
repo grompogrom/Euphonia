@@ -1,7 +1,6 @@
 package com.euphoiniateam.euphonia.ui.settings
 
 import android.content.Context
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -29,23 +28,30 @@ class SettingsViewModel(private val repository: SettingsRepository) : ViewModel(
     }
 
     fun loadSettings() {
-        viewModelScope.launch(Dispatchers.IO){
+        viewModelScope.launch(Dispatchers.IO) {
             val settingsConfig = getSettingsUseCase.execute()
             settingsLiveData.postValue(settingsConfig)
         }
     }
 
     fun saveSettings(
-          history: Boolean,
-          recording_audio: Boolean,
-          recording_stave:Boolean,
-          piano_size: Float,
-          stave_size: Float,
-          showing_stave: Boolean
+        history: Boolean,
+        recording_audio: Boolean,
+        recording_stave: Boolean,
+        piano_size: Float,
+        stave_size: Float,
+        showing_stave: Boolean
     ) {
         viewModelScope.launch(Dispatchers.IO) {
 
-            val params = Settings(history, recording_audio, recording_stave, piano_size, stave_size, showing_stave)
+            val params = Settings(
+                history,
+                recording_audio,
+                recording_stave,
+                piano_size,
+                stave_size,
+                showing_stave
+            )
             val result: Boolean = saveSettingsUseCase.execute(params)
             loadSettings()
         }

@@ -2,31 +2,28 @@ package com.euphoiniateam.euphonia.ui.history
 
 import android.content.Context
 import android.os.Bundle
+import android.os.Environment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
-import android.widget.ListView
 import android.widget.SearchView
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
-import com.euphoiniateam.euphonia.R
+import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.euphoiniateam.euphonia.databinding.FragmentHistoryBinding
-import com.google.gson.Gson
-
+import java.io.File
+import java.io.FileOutputStream
+import java.io.InputStream
 
 class HistoryFragment : Fragment() {
 
     private var _binding: FragmentHistoryBinding? = null
-
-    lateinit var searchList: ListView
-    lateinit var listAdapter: ArrayAdapter<String>
-    var dataList = arrayListOf<String>()
-    lateinit var searchView: SearchView
-
-    // This property is only valid between onCreateView and
-    // onDestroyView.
     private val binding get() = _binding!!
+
+    private lateinit var recyclerView: RecyclerView
+    private lateinit var searchView: SearchView
+    lateinit var listAdapter: HistoryAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -34,52 +31,39 @@ class HistoryFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
 
-        val rootView = inflater.inflate(R.layout.fragment_history, container, false)
-        searchList = rootView.findViewById(R.id.searchResults)
-        searchView = rootView.findViewById(R.id.idSV)
+        _binding = FragmentHistoryBinding.inflate(inflater, container, false)
+        val rootView = binding.root
 
-        val sharedPreferences = requireContext().getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
-        val editor = sharedPreferences.edit()
+        recyclerView = binding.searchResults
+        searchView = binding.idSV
 
-        if (sharedPreferences.contains(KEY_ARRAY)) {
-            val savedArray = getArrayFromSharedPreferences(requireContext())
-            for(i in savedArray.indices){
-                dataList.add(savedArray[i])
-            }
-        } else {
-            val gson = Gson()
-            dataList.add("MyPlay")
-            dataList.add("CoolSound")
-            dataList.add("MyPlay1")
-            dataList.add("Krutoten'")
-            dataList.add("MyPlay2")
-            dataList.add("MyPlay3")
-            dataList.add("MyPlay4")
-            dataList.add("Лунная соната Людвиг ван Бетховен.")
-            val json = gson.toJson(dataList)
-            editor.putString(KEY_ARRAY, json)
-            editor.apply()
-        }
-
-        listAdapter = ArrayAdapter<String>(
-            requireContext(),
-            android.R.layout.simple_list_item_1,
-            dataList
+        recyclerView.layoutManager = LinearLayoutManager(requireContext())
+        listAdapter = HistoryAdapter(
+            getMidFileNamesFromExternalStorage(),
+            findNavController()
         )
-        searchList.adapter = listAdapter
-        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String?): Boolean {
-                if (dataList.contains(query)) {
-                    listAdapter.filter.filter(query)
-                }
-                return false
-            }
-            override fun onQueryTextChange(newText: String?): Boolean {
-                listAdapter.filter.filter(newText)
-                return false
-            }
-        })
+        recyclerView.adapter = listAdapter
 
+        /*val dir = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "Euphonia")
+        dir.mkdirs()
+        saveMidiToExternalStorage(requireContext(), R.raw.bumer, dir, "bumer.mid")*/
+        // val midiResourceId = R.raw.angra_carolina_iv
+        // val midiInputStream: InputStream = resources.openRawResource(midiResourceId)
+        // saveMidiToInternalStorage(requireContext(), midiInputStream, "angra_carolina_iv.mid")
+
+        searchView.setOnQueryTextListener(
+            object : SearchView.OnQueryTextListener {
+                override fun onQueryTextSubmit(query: String?): Boolean {
+                    listAdapter.filter(query)
+                    return false
+                }
+
+                override fun onQueryTextChange(newText: String?): Boolean {
+                    listAdapter.filter(newText)
+                    return false
+                }
+            }
+        )
         return rootView
     }
 
@@ -88,20 +72,34 @@ class HistoryFragment : Fragment() {
         _binding = null
     }
 
-    private fun getArrayFromSharedPreferences(context: Context): Array<String> {
-        val sharedPreferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
+    private fun getMidFileNamesFromExternalStorage(): ArrayList<String> {
+        val dir = File(
+            Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS),
+            "Euphonia"
+        )
+        dir.mkdirs()
+        val midiFilesNames = ArrayList<String>()
+        dir.listFiles()?.forEach { file ->
+            if (file.isFile && file.extension.equals("mid", ignoreCase = true)) {
+                midiFilesNames.add(file.name)
+            }
+        }
+        return midiFilesNames
+    }
 
-        return if (sharedPreferences.contains(KEY_ARRAY)) {
-            val gson = Gson()
-            val json = sharedPreferences.getString(KEY_ARRAY, null)
-            gson.fromJson(json, Array<String>::class.java) ?: emptyArray()
-        } else {
-            emptyArray()
+    // Функция для сохранения midi файлов в internal storage
+    private fun saveMidiToExternalStorage(
+        context: Context,
+        resourceId: Int,
+        targetDirectory: File,
+        fileName: String
+    ) {
+        val inputStream: InputStream = context.resources.openRawResource(resourceId)
+        val outputStream = FileOutputStream(File(targetDirectory, fileName))
+        inputStream.use { input ->
+            outputStream.use { output ->
+                input.copyTo(output)
+            }
         }
     }
-    companion object{
-        private const val PREF_NAME = "Music"
-        private const val KEY_ARRAY = "MusicVault"
-    }
 }
-

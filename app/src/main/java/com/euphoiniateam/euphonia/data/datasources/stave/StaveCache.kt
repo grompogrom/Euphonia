@@ -10,7 +10,7 @@ import com.google.gson.Gson
 
 class StaveCache(
     private val dataStore: DataStore<Preferences>
-): StaveLocalDataStore {
+) : StaveLocalDataStore {
 
     companion object {
         val LOCALSTAVE_KEY = stringPreferencesKey("localstave")
@@ -27,5 +27,4 @@ class StaveCache(
             preferences[LOCALSTAVE_KEY] = jsonString
         }
     }
-
 }

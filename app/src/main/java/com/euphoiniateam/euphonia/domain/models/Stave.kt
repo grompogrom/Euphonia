@@ -6,4 +6,3 @@ data class Stave(
     val initialNotes: List<Note>,
     val generatedNotes: List<Note>
 )
-

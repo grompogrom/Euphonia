@@ -24,10 +24,6 @@ import com.leff.midi.MidiTrack
 import com.leff.midi.event.meta.Tempo
 import com.leff.midi.event.meta.TimeSignature
 import java.io.File
-import java.io.FileOutputStream
-import java.io.IOException
-import java.nio.ByteBuffer
-import kotlin.concurrent.thread
 
 
 class PianoFragment : Fragment() {

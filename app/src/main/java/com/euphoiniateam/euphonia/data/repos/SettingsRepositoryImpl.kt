@@ -3,8 +3,6 @@ package com.euphoiniateam.euphonia.data.repos
 import android.content.Context
 import com.euphoiniateam.euphonia.domain.models.Settings
 import com.euphoiniateam.euphonia.domain.repos.SettingsRepository
-import com.google.android.material.slider.Slider
-import com.google.android.material.switchmaterial.SwitchMaterial
 
 private const val SHARED_PREFS_SETTINGS = "shared_prefs_settings"
 private const val KEY_HISTORY = "history"
@@ -15,7 +13,10 @@ private const val KEY_STAVE_SIZE = "stave_size"
 private const val KEY_SHOWING_STAVE = "showing_stave"
 class SettingsRepositoryImpl(private val context: Context) : SettingsRepository {
 
-    val sharedPreferences = context.getSharedPreferences(SHARED_PREFS_SETTINGS, Context.MODE_PRIVATE)
+    val sharedPreferences = context.getSharedPreferences(
+        SHARED_PREFS_SETTINGS,
+        Context.MODE_PRIVATE
+    )
 
     override suspend fun saveSettings(saveParam: Settings): Boolean {
 
@@ -40,5 +41,4 @@ class SettingsRepositoryImpl(private val context: Context) : SettingsRepository 
 
         return Settings(history, recordingAudio, recordingStave, pianoSize, staveSize, showingStave)
     }
-
 }

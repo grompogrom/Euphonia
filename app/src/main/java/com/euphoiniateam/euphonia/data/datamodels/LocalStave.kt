@@ -11,8 +11,10 @@ data class LocalStave(
 )
 
 data class LocalNote(
-    val pitch:Int,
-    val duration: Float
+    val pitch: Int,
+    val note: Int,
+    val duration: Float,
+    val beat: Float
 )
 
 fun LocalStave.toStave(): Stave {
@@ -36,13 +38,17 @@ fun Stave.toLocalStave(): LocalStave {
 fun LocalNote.toNote(): Note {
     return Note(
         pitch = this.pitch,
-        duration = this.duration
+        note = this.note,
+        duration = this.duration,
+        beat = this.beat
     )
 }
 
 fun Note.toLocalNote(): LocalNote {
     return LocalNote(
         pitch = this.pitch,
-        duration = this.duration
+        note = this.note,
+        duration = this.duration,
+        beat = this.beat
     )
 }

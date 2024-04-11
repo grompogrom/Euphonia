@@ -52,15 +52,15 @@
             android:transitionName="v2"/>
 
         <ImageButton
-            android:id="@+id/btn_to_end_micro"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/shape_rounded_purple"
-            android:elevation="3dp"
-            android:padding="30dp"
-            android:src="@drawable/ic_micro"
-            android:layout_centerInParent="true"
-            android:transitionName="micro">
+                android:id="@+id/btn_to_end_micro"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/shape_rounded_purple"
+                android:elevation="3dp"
+                android:padding="30dp"
+                android:src="@drawable/ic_micro"
+                android:transitionName="micro"
+                android:layout_centerInParent="true">
 
         </ImageButton>
 
