@@ -4,13 +4,9 @@ plugins {
     id("androidx.navigation.safeargs")
 }
 
-
-
 android {
     namespace = "com.euphoiniateam.euphonia"
     compileSdk = 34
-
-
 
     defaultConfig {
         applicationId = "com.euphoiniateam.euphonia"

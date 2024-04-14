@@ -74,15 +74,16 @@ fun StaveView(
 //
 //    val scripKeyVector = ImageVector.vectorResource(id = R.drawable.notekey)
 //    val scripKeyPainter = rememberVectorPainter(image = scripKeyVector)
-    Canvas(modifier = modifier
-        .offset { IntOffset(0, offsetY.roundToInt()) }
-        .scrollable(
-            orientation = Orientation.Vertical,
-            state = rememberScrollableState { delta ->
-                offsetY += delta
-                delta
-            }
-        )
+    Canvas(
+        modifier = modifier
+            .offset { IntOffset(0, offsetY.roundToInt()) }
+            .scrollable(
+                orientation = Orientation.Vertical,
+                state = rememberScrollableState { delta ->
+                    offsetY += delta
+                    delta
+                }
+            )
     ) {
         Log.d("offset", offsetY.toString())
         val lineHeight = 2.dp.toPx()
@@ -141,10 +142,10 @@ fun StaveView(
         }
 
         // draw scriptKeys
-        for (i in 0..<state.linesCount) {
+        for (i in 0..state.linesCount) {
             translate(
                 0.dp.toPx(),
-                topMargin / 2 + (lineHeight*1.dp.toPx()) + i * (noteLinesHeight + verticalOffset)
+                topMargin / 2 + (lineHeight * 1.dp.toPx()) + i * (noteLinesHeight + verticalOffset)
             ) {
 
                 with(scriptKey) {
@@ -194,7 +195,6 @@ fun StaveView(
                                 this.intrinsicSize
                             )
                         }
-
                     } else if (note.note == 0) {
                         with(note_1_4_c) {
                             draw(
@@ -276,7 +276,8 @@ fun StaveViewPrev() {
     MaterialTheme {
         StaveView(
             StaveConfig(
-                listOf(Note(5, 9, 0.25f, 0.0f),
+                listOf(
+                    Note(5, 9, 0.25f, 0.0f),
                     Note(5, 8, 0.25f, 0.0f),
                     Note(0, 0, 0.25f, 0.0f),
                     Note(0, 0, 0.0f, 0.0f),
@@ -285,7 +286,8 @@ fun StaveViewPrev() {
                     Note(5, 8, 0.25f, 0.0f),
                     Note(5, 8, 0.25f, 0.0f),
                     Note(5, 8, 0.25f, 0.0f),
-                    Note(5, 8, 0.25f, 0.0f))
+                    Note(5, 8, 0.25f, 0.0f)
+                )
             ),
             modifier = Modifier.fillMaxSize()
         )
