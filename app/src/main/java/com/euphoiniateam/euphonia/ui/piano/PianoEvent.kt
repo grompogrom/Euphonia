@@ -1,6 +1,6 @@
 package com.euphoiniateam.euphonia.ui.piano
 
-data class PianoPlayer(
+data class PianoEvent(
     var elapseTime: Long,
     val pressTime: Long,
     val keyNum: Int,
