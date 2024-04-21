@@ -101,9 +101,9 @@ class CreationViewModel(
     fun getNotes(uri: Uri) {
         viewModelScope.launch(Dispatchers.IO) {
             screenState = screenState.copy(isLoading = true)
-            val initial_notes = notesRepository.getNotes(uri)
-            if (initial_notes != null) {
-                staveConfig.updateNotes(initial_notes)
+            val initialNotes = notesRepository.getNotes(uri)
+            if (initialNotes != null) {
+                staveConfig.updateNotes(initialNotes)
             }
             screenState = screenState.copy(isLoading = false)
         }

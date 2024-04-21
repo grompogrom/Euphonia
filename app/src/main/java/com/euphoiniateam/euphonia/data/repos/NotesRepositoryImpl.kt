@@ -5,9 +5,9 @@ import android.net.Uri
 import android.util.Log
 import com.euphoiniateam.euphonia.domain.models.Note
 import com.euphoiniateam.euphonia.domain.repos.NotesRepository
-import java.math.RoundingMode
 import jp.kshoji.javax.sound.midi.MidiSystem
 import jp.kshoji.javax.sound.midi.ShortMessage
+import java.math.RoundingMode
 
 class NotesRepositoryImpl(private val context: Context) : NotesRepository {
 
@@ -28,12 +28,12 @@ class NotesRepositoryImpl(private val context: Context) : NotesRepository {
                 setSequence(stream)
             }
         }
-        val initialNotes = sequencer.sequence?.toNotes()
-        if (initialNotes != null) {
-            for (note in initialNotes) {
-                Log.d("note", note.toString())
-            }
-        }
+//        val initialNotes = sequencer.sequence?.toNotes()
+//        if (initialNotes != null) {
+//            for (note in initialNotes) {
+//                Log.d("note", note.toString())
+//            }
+//        }
 
         return sequencer.sequence?.toNotes()
     }

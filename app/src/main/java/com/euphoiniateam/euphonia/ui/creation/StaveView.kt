@@ -1,5 +1,6 @@
 package com.euphoiniateam.euphonia.ui.creation
 
+import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
@@ -31,6 +32,7 @@ const val note4Duration = 0.55
 const val note8Duration = 0.30
 const val note16Duration = 0.10
 @Composable
+@SuppressLint("MagicNumber")
 fun StaveView(
     state: StaveConfig,
     modifier: Modifier = Modifier
@@ -153,7 +155,7 @@ fun StaveView(
                         state.visibleNotes[lineIndex * state.lineNotesCount + noteIndex].pitch
                         * staveLinesDelta / 2f
                 ) {
-//              // check durations and types of notes
+                    // check durations and types of notes
                     if (note.duration >= note4Duration) {
                         if (note.note in whiteNotes) {
                             with(note4) {
@@ -293,7 +295,7 @@ class StaveConfig(
         if (notes.isNotEmpty()) {
             notes.subList(
                 0,
-                min(lineNotesCount * linesCount, notes.size - 1)
+                min(lineNotesCount * linesCount, notes.size)
             )
         } else {
             emptyList()
