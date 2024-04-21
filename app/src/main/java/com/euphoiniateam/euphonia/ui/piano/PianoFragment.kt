@@ -1,8 +1,8 @@
 package com.euphoiniateam.euphonia.ui.piano
 
 import android.annotation.SuppressLint
-import android.graphics.drawable.ColorDrawable
 import android.content.pm.ActivityInfo
+import android.graphics.drawable.ColorDrawable
 import android.media.SoundPool
 import android.os.Bundle
 import android.util.Log
@@ -13,21 +13,20 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.LinearLayout
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.findNavController
 import com.euphoiniateam.euphonia.R
-import com.euphoiniateam.euphonia.databinding.FragmentHomeBinding
 import com.euphoiniateam.euphonia.databinding.FragmentPianoBinding
-import com.euphoiniateam.euphonia.databinding.PianoBinding
 import com.euphoiniateam.euphonia.ui.creation.StaveConfig
 import com.euphoiniateam.euphonia.ui.creation.StaveView
 import com.leff.midi.MidiFile
@@ -90,10 +89,10 @@ class PianoFragment : Fragment() {
                             } else {
                                 v.background = ColorDrawable(
                                     (
-                                            resources.getColor(
-                                                androidx.appcompat.R.color.material_grey_50
-                                            )
-                                            )
+                                        resources.getColor(
+                                            androidx.appcompat.R.color.material_grey_50
+                                        )
+                                        )
                                 )
                             }
                             noteMap[pianoKey(notes[x], i)]?.let { it1 ->
@@ -106,9 +105,10 @@ class PianoFragment : Fragment() {
                                     1.0f
                                 )
                             }
-                            if (viewModel.screenState.recordingState == PianoState.RECORDING) recordData.add(
-                                PianoPlayer(-1L, System.currentTimeMillis(), x, i)
-                            )
+                            if (viewModel.screenState.recordingState == PianoState.RECORDING)
+                                recordData.add(
+                                    PianoPlayer(-1L, System.currentTimeMillis(), x, i)
+                                )
                             true
                         }
 
@@ -158,7 +158,6 @@ class PianoFragment : Fragment() {
         return binding!!.root
     }
 
-
     private fun initOverlay() {
         binding?.overviewComposeView?.apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
@@ -171,7 +170,8 @@ class PianoFragment : Fragment() {
                         onExitClick = { viewModel.exit() },
                         onRecordClick = {
                             showRecordResult()
-                            viewModel.startRecord() },
+                            viewModel.startRecord()
+                        },
                         onStopRecordClick = { viewModel.stopRecord() },
                         modifier = Modifier
                     )
@@ -190,7 +190,8 @@ class PianoFragment : Fragment() {
                     ButtonSection(
                         onPlayClick = { /*TODO*/ },
                         onApplyClick = { /*TODO*/ },
-                        onRemakeClick = { showPiano()})
+                        onRemakeClick = { showPiano() }
+                    )
                 }
             }
         }
@@ -203,27 +204,35 @@ class PianoFragment : Fragment() {
                 MaterialTheme(
                     colorScheme = darkColorScheme()
                 ) {
-                    StaveView(state = StaveConfig())
+                    Surface(
+                        color = MaterialTheme.colorScheme.surfaceVariant,
+                        modifier = Modifier
+                            .padding(top = 8.dp)
+                            .clip(RoundedCornerShape(10.dp))
+                    ) {
+                        StaveView(
+                            state = StaveConfig(),
+                        )
+                    }
                 }
             }
         }
         // TODO: init stave compose view
     }
 
-    private fun showRecordResult(){
+    private fun showRecordResult() {
         binding?.overviewComposeView?.visibility = View.GONE
         binding?.scrollView?.visibility = View.GONE
         binding?.buttonsComposeView?.visibility = View.VISIBLE
         binding?.staveComposeView?.visibility = View.VISIBLE
     }
 
-    private fun showPiano(){
+    private fun showPiano() {
         binding?.overviewComposeView?.visibility = View.VISIBLE
         binding?.scrollView?.visibility = View.VISIBLE
         binding?.buttonsComposeView?.visibility = View.GONE
         binding?.staveComposeView?.visibility = View.GONE
     }
-
 
     override fun onPause() {
         super.onPause()
@@ -343,4 +352,3 @@ class PianoFragment : Fragment() {
         else notePosMidi[noteNum] + 48
     }
 }
-

@@ -12,28 +12,24 @@ class PianoViewModel : ViewModel() {
         )
     )
 
-    fun startRecord(){
+    fun startRecord() {
         screenState = screenState.copy()
     }
 
-    fun stopRecord(){
-
+    fun stopRecord() {
     }
 
-    fun exit(){
-
+    fun exit() {
     }
 
-    fun remake(){
-
+    fun remake() {
     }
 
-    fun applyRecord(){
-
+    fun applyRecord() {
     }
 }
 
-enum class PianoState{
+enum class PianoState {
     NO_RECORD(),
     RECORDING(),
     AFTER_RECORD()

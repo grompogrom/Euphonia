@@ -121,7 +121,6 @@ fun PianoOverview(
             onStopRecordClick = onStopRecordClick
         )
     }
-
 }
 
 @Composable
@@ -159,7 +158,6 @@ fun ButtonSection(
             text = { Text(text = "Apply") },
         )
     }
-
 }
 
 @Preview(device = "spec:parent=pixel_5,orientation=landscape")
@@ -215,10 +213,11 @@ private fun PianoOverviewPrev() {
 private fun ButtonSectionPrev() {
     MaterialTheme(
         colorScheme = darkColorScheme()
-    ){
+    ) {
         ButtonSection(
             onPlayClick = { /*TODO*/ },
             onApplyClick = { /*TODO*/ },
-            onRemakeClick = { /*TODO*/ })
+            onRemakeClick = { /*TODO*/ }
+        )
     }
 }

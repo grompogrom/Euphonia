@@ -2,9 +2,7 @@ package com.euphoiniateam.euphonia.ui.creation
 
 import android.annotation.SuppressLint
 import android.util.Log
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.rememberScrollableState
 import androidx.compose.foundation.gestures.scrollable
@@ -57,7 +55,6 @@ fun StaveView(
     Canvas(
         modifier = modifier
             .fillMaxSize()
-            .border(BorderStroke(2.dp, Color.Red))
             .scrollable(
                 orientation = Orientation.Vertical,
                 state = rememberScrollableState { delta ->
