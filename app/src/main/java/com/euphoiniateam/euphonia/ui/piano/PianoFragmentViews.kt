@@ -1,5 +1,11 @@
 package com.euphoiniateam.euphonia.ui.piano
 
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -25,6 +31,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -79,12 +86,11 @@ fun OverviewButtonSection(
                 modifier = modifier
             ) {
 
-                Box(
+                BlinkingCircle(
                     modifier = Modifier
                         .size(30.dp)
                         .clip(CircleShape)
-                        .background(Color.Red)
-                ) {}
+                )
 
                 OverviewButton(
                     text = "Stop",
@@ -158,6 +164,27 @@ fun ButtonSection(
             text = { Text(text = "Apply") },
         )
     }
+}
+
+@Composable
+fun BlinkingCircle(
+    modifier: Modifier = Modifier
+) {
+    val infiniteTransition = rememberInfiniteTransition()
+    val alpha: Float by infiniteTransition.animateFloat(
+        initialValue = 1f,
+        targetValue = 0f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(durationMillis = 600, easing = LinearEasing),
+            repeatMode = RepeatMode.Reverse
+        ),
+        label = ""
+    )
+
+    Box(
+        modifier = modifier
+            .background(Color.Red.copy(alpha = alpha))
+    )
 }
 
 @Preview(device = "spec:parent=pixel_5,orientation=landscape")
