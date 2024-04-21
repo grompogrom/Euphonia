@@ -51,6 +51,7 @@ class HistoryAdapter(private val context: Context, private val data: ArrayList<S
             val action = HistoryFragmentDirections.actionNavigationDashboardToCreationFragment()
             navController.navigate(action)
         }
+
     }
 
     override fun getItemCount(): Int {

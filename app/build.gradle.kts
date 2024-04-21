@@ -45,7 +45,7 @@ android {
     }
 
     defaultConfig {
-        buildConfigField("String", "ServerIP", "\"192.168.31.214:8080/\"")
+        buildConfigField("String", "ServerIP", "\"http://192.168.31.33:8083/\"")
     }
 }
 
@@ -64,6 +64,13 @@ dependencies {
     implementation("androidx.compose.ui:ui-tooling-preview-android:1.6.3")
     implementation("androidx.compose.material3:material3:1.2.1")
     implementation("androidx.datastore:datastore-core:1.0.0")
+    implementation("androidx.media3:media3-exoplayer:1.3.0")
+    implementation("androidx.media3:media3-exoplayer-dash:1.3.0")
+    implementation("androidx.media3:media3-ui:1.3.0")
+    implementation("com.github.LeffelMania:android-midi-lib:7cdd855c2b")
+//    implementation("com.github.atsushieno:ktmidi:1.5.0")
+    implementation("dev.atsushieno:ktmidi-android:0.7.0")
+    debugImplementation("androidx.compose.ui:ui-tooling:1.5.4")
     implementation("com.google.android.exoplayer:exoplayer-core:2.19.1")
     implementation("androidx.media3:media3-session:1.3.0")
     debugImplementation("androidx.compose.ui:ui-tooling:1.6.3")
@@ -76,6 +83,11 @@ dependencies {
     implementation("com.squareup.okhttp3:okhttp:4.10.0")
     implementation("com.squareup.retrofit2:retrofit:2.7.2")
     implementation("com.squareup.retrofit2:converter-gson:2.3.0")
+    implementation("androidx.media3:media3-exoplayer-midi:1.2.1")
+    implementation("dev.atsushieno:ktmidi-android:0.7.0")
+    implementation("jp.kshoji:javax-sound-midi:0.0.4")
+
+    implementation("com.google.code.gson:gson:2.8.6")
 
     // test
     val androidXTestVersion = "1.5.0"

@@ -21,5 +21,12 @@ class StaveApiMock() : StaveRemoteDataStore {
         return RemoteTrackResponse(Uri.EMPTY)
     }
 
-    fun genRandomNotes(count: Int) = List(count) { RemoteNote(Random.nextInt(0, 9), 0.3f) }
+    fun genRandomNotes(count: Int) = List(count) {
+        RemoteNote(
+            Random.nextInt(0, 9),
+            Random.nextInt(0, 9),
+            0.3f,
+            0.3f,
+        )
+    }
 }
