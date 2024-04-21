@@ -1,20 +1,34 @@
 package com.euphoiniateam.euphonia.ui.piano
 
 import android.annotation.SuppressLint
+import android.content.pm.ActivityInfo
 import android.graphics.drawable.ColorDrawable
 import android.media.SoundPool
 import android.os.Bundle
 import android.util.Log
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.LinearLayout
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.darkColorScheme
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.ViewCompositionStrategy
+import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import com.euphoiniateam.euphonia.R
+import com.euphoiniateam.euphonia.databinding.FragmentPianoBinding
+import com.euphoiniateam.euphonia.ui.creation.StaveConfig
+import com.euphoiniateam.euphonia.ui.creation.StaveView
 import com.leff.midi.MidiFile
 import com.leff.midi.MidiTrack
 import com.leff.midi.event.NoteOff
@@ -25,7 +39,8 @@ import java.io.File
 
 class PianoFragment : Fragment() {
 
-    private lateinit var viewModel: PianoViewModel
+    private val viewModel: PianoViewModel by viewModels()
+    private var binding: FragmentPianoBinding? = null
     private val notes = arrayListOf("C", "D", "C#", "E", "D#", "F", "G", "F#", "A", "G#", "B", "A#")
     private val notePosMidi = arrayListOf(0, 2, 1, 4, 3, 5, 7, 6, 9, 8, 11, 10)
     private var noteMap: MutableMap<Int, Int> = mutableMapOf()
@@ -40,13 +55,13 @@ class PianoFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val rootView = inflater.inflate(R.layout.fragment_piano, container, false)
-        val LLayout = rootView.findViewById<LinearLayout>(R.id.linear1)
+        requireActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE)
+        binding = FragmentPianoBinding.inflate(inflater, container, false)
 
-        recordButton = rootView.findViewById(R.id.record_button)
+        recordButton = binding!!.recordButton
         recordButton.setOnClickListener {
             isRecording = !isRecording
-            if (isRecording) {
+            if (viewModel.screenState.recordingState == PianoState.RECORDING) {
                 recordButton.setBackgroundResource(android.R.drawable.presence_online)
             } else recordButton.setBackgroundResource(R.drawable.record_button)
             if (!isRecording && recordData.isNotEmpty()) {
@@ -63,7 +78,6 @@ class PianoFragment : Fragment() {
                     1
                 )
                 (octave.getChildAt(x) as Button).setOnTouchListener { v, event ->
-                    // Log.d("dd", "dd")
                     when (event.action) {
                         MotionEvent.ACTION_DOWN -> {
 
@@ -91,11 +105,13 @@ class PianoFragment : Fragment() {
                                     1.0f
                                 )
                             }
-                            if (isRecording) recordData.add(
-                                PianoPlayer(-1L, System.currentTimeMillis(), x, i)
-                            )
+                            if (viewModel.screenState.recordingState == PianoState.RECORDING)
+                                recordData.add(
+                                    PianoPlayer(-1L, System.currentTimeMillis(), x, i)
+                                )
                             true
                         }
+
                         MotionEvent.ACTION_UP -> {
                             if (x == 2 || x == 4 || x == 7 || x == 9 || x == 11) {
                                 v.background =
@@ -107,7 +123,7 @@ class PianoFragment : Fragment() {
                             } else {
                                 v.background = (resources.getDrawable(R.drawable.piano_borders))
                             }
-                            if (isRecording) {
+                            if (viewModel.screenState.recordingState == PianoState.RECORDING) {
                                 for (l in 0 until recordData.size) {
                                     if (recordData[l].elapseTime == -1L &&
                                         recordData[l].keyNum == x &&
@@ -120,18 +136,107 @@ class PianoFragment : Fragment() {
                             true
                         }
 
-                        else -> { true }
+                        else -> {
+                            true
+                        }
                     }
                 }
             }
-            LLayout.addView(pianoView, i)
+            binding!!.linear1.addView(
+                pianoView,
+                i,
+                LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.MATCH_PARENT
+                )
+                    .apply { gravity = Gravity.TOP }
+            )
         }
-        return rootView
+        initOverlay()
+        initButtons()
+        initStave()
+        return binding!!.root
     }
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProvider(this).get(PianoViewModel::class.java)
-        // TODO: Use the ViewModel
+
+    private fun initOverlay() {
+        binding?.overviewComposeView?.apply {
+            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+            setContent {
+                MaterialTheme(
+                    colorScheme = darkColorScheme()
+                ) {
+                    PianoOverview(
+                        recordState = viewModel.screenState.recordingState,
+                        onExitClick = { viewModel.exit() },
+                        onRecordClick = {
+                            showRecordResult()
+                            viewModel.startRecord()
+                        },
+                        onStopRecordClick = { viewModel.stopRecord() },
+                        modifier = Modifier
+                    )
+                }
+            }
+        }
+    }
+
+    private fun initButtons() {
+        binding?.buttonsComposeView?.apply {
+            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+            setContent {
+                MaterialTheme(
+                    colorScheme = darkColorScheme()
+                ) {
+                    ButtonSection(
+                        onPlayClick = { /*TODO*/ },
+                        onApplyClick = { /*TODO*/ },
+                        onRemakeClick = { showPiano() }
+                    )
+                }
+            }
+        }
+    }
+
+    private fun initStave() {
+        binding?.staveComposeView?.apply {
+            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+            setContent {
+                MaterialTheme(
+                    colorScheme = darkColorScheme()
+                ) {
+                    Surface(
+                        color = MaterialTheme.colorScheme.surfaceVariant,
+                        modifier = Modifier
+                            .padding(top = 8.dp)
+                            .clip(RoundedCornerShape(10.dp))
+                    ) {
+                        StaveView(
+                            state = StaveConfig(),
+                        )
+                    }
+                }
+            }
+        }
+        // TODO: init stave compose view
+    }
+
+    private fun showRecordResult() {
+        binding?.overviewComposeView?.visibility = View.GONE
+        binding?.scrollView?.visibility = View.GONE
+        binding?.buttonsComposeView?.visibility = View.VISIBLE
+        binding?.staveComposeView?.visibility = View.VISIBLE
+    }
+
+    private fun showPiano() {
+        binding?.overviewComposeView?.visibility = View.VISIBLE
+        binding?.scrollView?.visibility = View.VISIBLE
+        binding?.buttonsComposeView?.visibility = View.GONE
+        binding?.staveComposeView?.visibility = View.GONE
+    }
+
+    override fun onPause() {
+        super.onPause()
+        requireActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED)
     }
 
     private fun pianoKey(key: String, pitch: Int): Int {
@@ -197,7 +302,12 @@ class PianoFragment : Fragment() {
         val tempoTrack = MidiTrack()
         val noteTrack = MidiTrack()
         val ts = TimeSignature()
-        ts.setTimeSignature(4, 4, TimeSignature.DEFAULT_METER, TimeSignature.DEFAULT_DIVISION)
+        ts.setTimeSignature(
+            4,
+            4,
+            TimeSignature.DEFAULT_METER,
+            TimeSignature.DEFAULT_DIVISION
+        )
         val tempo = Tempo()
         tempo.bpm = 228f
 
