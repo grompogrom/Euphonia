@@ -2,9 +2,11 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        xmlns:tools="http://schemas.android.com/tools"
         android:background="#36343B"
         android:backgroundTint="#36343B"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        tools:context=".ui.piano.PianoFragment">
 
     <LinearLayout
             android:id="@+id/frameLayout"
@@ -30,14 +32,27 @@
             android:layout_height="wrap_content" />
 
     <androidx.compose.ui.platform.ComposeView
-            android:id="@+id/buttons_compose_view"
+            android:id="@+id/stave_compose_view"
+            android:layout_weight="0.7"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
+            android:visibility="gone" />
+    <View
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0.1"/>
+
+    <androidx.compose.ui.platform.ComposeView
+            android:id="@+id/buttons_compose_view"
+            android:layout_weight="0.3"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
             android:visibility="gone"
             />
 
 
     <HorizontalScrollView
+            android:id="@+id/scrollView"
             android:layout_width="wrap_content"
             android:layout_height="match_parent">
 

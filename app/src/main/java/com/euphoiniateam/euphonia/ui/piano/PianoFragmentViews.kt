@@ -6,41 +6,32 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Done
-import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.outlined.PlayArrow
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ExtendedFloatingActionButton
-import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.modifier.modifierLocalConsumer
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.euphoiniateam.euphonia.R
 
 @Composable
 fun OverviewButton(
@@ -68,20 +59,20 @@ fun OverviewButton(
 
 @Composable
 fun OverviewButtonSection(
-    recordState: PianoScreenState,
+    recordState: PianoState,
     onRecordClick: () -> Unit,
     onStopRecordClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     when (recordState) {
-        PianoScreenState.NO_RECORD -> {
+        PianoState.NO_RECORD -> {
             OverviewButton(
                 text = "Record",
                 onClick = onRecordClick
             )
         }
 
-        PianoScreenState.RECORDING -> {
+        PianoState.RECORDING -> {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(16.dp),
@@ -102,13 +93,13 @@ fun OverviewButtonSection(
             }
         }
 
-        PianoScreenState.AFTER_RECORD -> {}
+        PianoState.AFTER_RECORD -> {}
     }
 }
 
 @Composable
 fun PianoOverview(
-    recordState: PianoScreenState,
+    recordState: PianoState,
     onExitClick: () -> Unit,
     onRecordClick: () -> Unit,
     onStopRecordClick: () -> Unit,
@@ -193,7 +184,7 @@ private fun OverviewButtonSectionPrev() {
     ) {
         Column(modifier = Modifier.fillMaxSize()) {
             OverviewButtonSection(
-                recordState = PianoScreenState.RECORDING,
+                recordState = PianoState.RECORDING,
                 {},
                 {}
             )
@@ -209,7 +200,7 @@ private fun PianoOverviewPrev() {
     ) {
         Column(modifier = Modifier.fillMaxSize()) {
             PianoOverview(
-                recordState = PianoScreenState.RECORDING,
+                recordState = PianoState.RECORDING,
                 {},
                 {},
                 {},
