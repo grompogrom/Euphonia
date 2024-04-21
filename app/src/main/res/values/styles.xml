@@ -6,4 +6,17 @@
         <item name="itemIconTint">?attr/colorPrimary</item>
     </style>
 
+    <style name="white_piano_key_style">
+        <item name="android:layout_width">75dp</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:background">@drawable/piano_borders</item>
+        <item name="android:stateListAnimator">@android:anim/fade_in</item>
+    </style>
+
+    <style name="black_piano_key_style">
+        <item name="android:layout_width">30dp</item>
+        <item name="android:layout_height">180dp</item>
+        <item name="android:background">@color/cardview_dark_background</item>
+    </style>
+
 </resources>

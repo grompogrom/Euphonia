@@ -132,8 +132,9 @@ class PianoFragment : Fragment() {
                 i,
                 LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.MATCH_PARENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT
-                ).apply { gravity = Gravity.BOTTOM }
+                    LinearLayout.LayoutParams.MATCH_PARENT
+                )
+                    .apply { gravity = Gravity.TOP }
             )
         }
         return rootView
