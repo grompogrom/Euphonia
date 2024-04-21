@@ -36,44 +36,22 @@ fun StaveView(
     var offsetY by remember { mutableFloatStateOf(0f) }
     val whiteNotes = intArrayOf(2, 4, 5, 7, 9, 11)
     val blackNotes = intArrayOf(1, 3, 6, 8, 10)
-    val note_1_4_duration = 0.55
-    val note_1_8_duration = 0.30
-    val note_1_16_duration = 0.10
+    val note4Duration = 0.55
+    val note8Duration = 0.30
+    val note16Duration = 0.10
 
-//    val note_1_4_vector = ImageVector.vectorResource(id = R.drawable.note_1_4)
-//    val note_1_4_painter = rememberVectorPainter(image = note_1_4_vector)
-    val note_1_4 = painterResource(R.drawable.note_1_4)
-    val note_1_4_c = painterResource(R.drawable.note_1_4_c)
+    val note4 = painterResource(R.drawable.note_1_4)
+    val note4C = painterResource(R.drawable.note_1_4_c)
 
-    val note_1_8 = painterResource(R.drawable.note_1_8)
-    val note_1_8_c = painterResource(R.drawable.note_1_8_c)
+    val note8 = painterResource(R.drawable.note_1_8)
+    val note8C = painterResource(R.drawable.note_1_8_c)
 
-    val note_1_16 = painterResource(R.drawable.note_1_16)
-    val note_1_16_c = painterResource(R.drawable.note_1_16_c)
+    val note16 = painterResource(R.drawable.note_1_16)
+    val note16C = painterResource(R.drawable.note_1_16_c)
 
-    val diez = painterResource(R.drawable.diez)
+    val sharp = painterResource(R.drawable.sharp)
     val scriptKey = painterResource(R.drawable.notekey)
-//
-//    val note_1_4_c_vector = ImageVector.vectorResource(id = R.drawable.note_1_4_c)
-//    val note_1_4_c_painter = rememberVectorPainter(image = note_1_4_c_vector)
-//
-//    val note_1_8_vector = ImageVector.vectorResource(id = R.drawable.note_1_8)
-//    val note_1_8_painter = rememberVectorPainter(image = note_1_8_vector)
-//
-//    val note_1_8_c_vector = ImageVector.vectorResource(id = R.drawable.note_1_8_c)
-//    val note_1_8_c_painter = rememberVectorPainter(image = note_1_8_c_vector)
-//
-//    val note_1_16_vector = ImageVector.vectorResource(id = R.drawable.note_1_16)
-//    val note_1_16_painter = rememberVectorPainter(image = note_1_16_vector)
-//
-//    val note_1_16_c_vector = ImageVector.vectorResource(id = R.drawable.note_1_16_c)
-//    val note_1_16_c_painter = rememberVectorPainter(image = note_1_16_c_vector)
-//
-//    val diezVector = ImageVector.vectorResource(id = R.drawable.diez)
-//    val diezPainter = rememberVectorPainter(image = diezVector)
-//
-//    val scripKeyVector = ImageVector.vectorResource(id = R.drawable.notekey)
-//    val scripKeyPainter = rememberVectorPainter(image = scripKeyVector)
+
     Canvas(
         modifier = modifier
             .offset { IntOffset(0, offsetY.roundToInt()) }
@@ -171,9 +149,9 @@ fun StaveView(
                     * staveLinesDelta / 2f
             ) {
 //              // check durations and types of notes
-                if (note.duration >= note_1_4_duration) {
+                if (note.duration >= note4Duration) {
                     if (note.note in whiteNotes) {
-                        with(note_1_4) {
+                        with(note4) {
                             draw(
                                 this.intrinsicSize
                             )
@@ -183,28 +161,28 @@ fun StaveView(
                             -16.dp.toPx(),
                             topMargin / 2 + lineHeight * 1.5f
                         ) {
-                            with(diez) {
+                            with(sharp) {
                                 draw(
                                     this.intrinsicSize
                                 )
                             }
                         }
 
-                        with(note_1_4) {
+                        with(note4) {
                             draw(
                                 this.intrinsicSize
                             )
                         }
                     } else if (note.note == 0) {
-                        with(note_1_4_c) {
+                        with(note4C) {
                             draw(
                                 this.intrinsicSize
                             )
                         }
                     }
-                } else if (note.duration >= note_1_8_duration) {
+                } else if (note.duration >= note8Duration) {
                     if (note.note in whiteNotes) {
-                        with(note_1_8) {
+                        with(note8) {
                             draw(
                                 this.intrinsicSize
                             )
@@ -214,28 +192,28 @@ fun StaveView(
                             -16.dp.toPx(),
                             topMargin / 2 + lineHeight * 1.5f
                         ) {
-                            with(diez) {
+                            with(sharp) {
                                 draw(
                                     this.intrinsicSize
                                 )
                             }
                         }
 
-                        with(note_1_8) {
+                        with(note8) {
                             draw(
                                 this.intrinsicSize
                             )
                         }
                     } else if (note.note == 0) {
-                        with(note_1_8_c) {
+                        with(note8C) {
                             draw(
                                 this.intrinsicSize
                             )
                         }
                     }
-                } else if (note.duration >= note_1_16_duration) {
+                } else if (note.duration >= note16Duration) {
                     if (note.note in whiteNotes) {
-                        with(note_1_16) {
+                        with(note16) {
                             draw(
                                 this.intrinsicSize
                             )
@@ -245,20 +223,20 @@ fun StaveView(
                             -16.dp.toPx(),
                             topMargin / 2 + lineHeight * 1.5f
                         ) {
-                            with(diez) {
+                            with(sharp) {
                                 draw(
                                     this.intrinsicSize
                                 )
                             }
                         }
 
-                        with(note_1_16) {
+                        with(note16) {
                             draw(
                                 this.intrinsicSize
                             )
                         }
                     } else if (note.note == 0) {
-                        with(note_1_16_c) {
+                        with(note16C) {
                             draw(
                                 this.intrinsicSize
                             )
@@ -295,7 +273,7 @@ fun StaveViewPrev() {
 }
 
 class StaveConfig(
-    initial_notes: List<Note> = emptyList(),
+    initialNotes: List<Note> = emptyList(),
     val linesCount: Int = 5,
     var lineNotesCount: Int = 7,
 ) {
@@ -316,7 +294,7 @@ class StaveConfig(
         }
     }
     init {
-        updateNotes(initial_notes)
+        updateNotes(initialNotes)
     }
 
     fun setViewSize(width: Float, height: Float) {
