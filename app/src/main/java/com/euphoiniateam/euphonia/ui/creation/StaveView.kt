@@ -104,7 +104,7 @@ fun StaveView(
                     end = Offset(
                         lineWidth,
                         topMargin + line * (verticalOffset + noteLinesHeight) +
-                                noteLinesHeight + lineHeight / 2
+                            noteLinesHeight + lineHeight / 2
                     )
                 )
                 drawLine(
@@ -117,16 +117,18 @@ fun StaveView(
                     end = Offset(
                         lineHeight,
                         topMargin + line * (verticalOffset + noteLinesHeight) + noteLinesHeight +
-                                lineHeight / 2
+                            lineHeight / 2
                     )
                 )
             }
 
             // draw scriptKeys
-            for (i in 0..<state.linesCount) {
+            for (i in 0 until state.linesCount) {
                 translate(
                     0.dp.toPx(),
-                    topMargin / 2 + (lineHeight * 1.dp.toPx()) + i * (noteLinesHeight + verticalOffset)
+                    topMargin / 2 +
+                        (lineHeight * 1.dp.toPx()) +
+                        i * (noteLinesHeight + verticalOffset)
                 ) {
 
                     with(scriptKey) {
@@ -148,8 +150,8 @@ fun StaveView(
                 translate(
                     horizontalNoteDelta * (noteIndex + 1.2f),
                     topNoteDelta + (verticalOffset + noteLinesHeight) * lineIndex -
-                            state.visibleNotes[lineIndex * state.lineNotesCount + noteIndex].pitch
-                            * staveLinesDelta / 2f
+                        state.visibleNotes[lineIndex * state.lineNotesCount + noteIndex].pitch
+                        * staveLinesDelta / 2f
                 ) {
 //              // check durations and types of notes
                     if (note.duration >= note4Duration) {

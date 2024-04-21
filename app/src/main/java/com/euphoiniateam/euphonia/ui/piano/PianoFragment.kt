@@ -43,7 +43,6 @@ class PianoFragment : Fragment() {
         val rootView = inflater.inflate(R.layout.fragment_piano, container, false)
         val LLayout = rootView.findViewById<LinearLayout>(R.id.linear1)
 
-
         recordButton = rootView.findViewById(R.id.record_button)
         recordButton.setOnClickListener {
             isRecording = !isRecording
@@ -53,7 +52,6 @@ class PianoFragment : Fragment() {
             if (!isRecording && recordData.isNotEmpty()) {
                 createMidiWithApi()
             }
-
         }
         for (i in 0..2) {
             val pianoView: View = inflater.inflate(R.layout.piano, container, false)
