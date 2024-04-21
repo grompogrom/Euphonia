@@ -1,71 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="#36343B"
-    android:backgroundTint="#36343B"
-    android:orientation="vertical">
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/frameLayout"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="0.4"
-        android:background="#141218"
-        android:backgroundTint="#141218">
+        android:layout_height="match_parent"
+        android:background="#36343B"
+        android:backgroundTint="#36343B"
+        android:orientation="vertical">
+
+    <LinearLayout
+            android:id="@+id/frameLayout"
+            android:layout_width="match_parent"
+            android:visibility="gone"
+            android:layout_height="53dp"
+            android:orientation="horizontal"
+            android:background="#141218"
+            android:layout_gravity="end"
+            android:backgroundTint="#141218">
 
         <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/record_button"
-            style="@style/Widget.AppCompat.Button.Colored"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:background="@drawable/record_button"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.967"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.478" />
+                android:id="@+id/record_button"
+                style="@style/Widget.AppCompat.Button.Colored"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:background="@drawable/record_button" />
+    </LinearLayout>
 
-        <Button
-            android:id="@+id/button2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Button"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/bigger_keys"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <Button
-            android:id="@+id/bigger_keys"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
-            android:text="+"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/button9"
-            app:layout_constraintTop_toTopOf="parent" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
     <androidx.compose.ui.platform.ComposeView
-        android:id="@+id/stave_compose_view"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1.3"/>
+            android:id="@+id/overview_compose_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    <androidx.compose.ui.platform.ComposeView
+            android:id="@+id/buttons_compose_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            />
 
 
     <HorizontalScrollView
-        android:id="@+id/scroll1"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="1">
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent">
 
         <LinearLayout
-            android:id="@+id/linear1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal" />
+                android:id="@+id/linear1"
+                android:layout_width="1150dp"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+        </LinearLayout>
     </HorizontalScrollView>
-
 </LinearLayout>

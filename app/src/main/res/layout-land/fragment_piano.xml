@@ -9,6 +9,7 @@
     <LinearLayout
             android:id="@+id/frameLayout"
             android:layout_width="match_parent"
+            android:visibility="gone"
             android:layout_height="53dp"
             android:orientation="horizontal"
             android:background="#141218"
@@ -23,27 +24,17 @@
                 android:background="@drawable/record_button" />
     </LinearLayout>
 
-    <LinearLayout
+    <androidx.compose.ui.platform.ComposeView
+            android:id="@+id/overview_compose_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    <androidx.compose.ui.platform.ComposeView
+            android:id="@+id/buttons_compose_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:visibility="gone">
-
-        <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="remake" />
-
-        <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="play" />
-
-        <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="apply" />
-    </LinearLayout>
+            android:visibility="gone"
+            />
 
 
     <HorizontalScrollView
