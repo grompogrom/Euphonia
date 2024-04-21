@@ -27,14 +27,12 @@ class PianoFragment : Fragment() {
 
     private lateinit var viewModel: PianoViewModel
     private val notes = arrayListOf("C", "D", "C#", "E", "D#", "F", "G", "F#", "A", "G#", "B", "A#")
-    // private val notes = arrayListOf<Pair<String, Int>>()
     private val notePosMidi = arrayListOf(0, 2, 1, 4, 3, 5, 7, 6, 9, 8, 11, 10)
     private var noteMap: MutableMap<Int, Int> = mutableMapOf()
     private var sndPool: SoundPool = SoundPool.Builder().setMaxStreams(5).build()
     private var isRecording = false
     private lateinit var recordButton: Button
     private var recordData: MutableList<PianoPlayer> = mutableListOf()
-    private var previousPressTime: Long = 0
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onCreateView(
@@ -45,7 +43,6 @@ class PianoFragment : Fragment() {
         val rootView = inflater.inflate(R.layout.fragment_piano, container, false)
         val LLayout = rootView.findViewById<LinearLayout>(R.id.linear1)
 
-        // createMidiFile(notess, "output.mid")
 
         recordButton = rootView.findViewById(R.id.record_button)
         recordButton.setOnClickListener {
@@ -54,11 +51,9 @@ class PianoFragment : Fragment() {
                 recordButton.setBackgroundResource(android.R.drawable.presence_online)
             } else recordButton.setBackgroundResource(R.drawable.record_button)
             if (!isRecording && recordData.isNotEmpty()) {
-//                playRecord()
                 createMidiWithApi()
             }
 
-//            Toast.makeText(requireContext(), isRecording.toString(), Toast.LENGTH_SHORT).show()
         }
         for (i in 0..2) {
             val pianoView: View = inflater.inflate(R.layout.piano, container, false)
@@ -130,19 +125,6 @@ class PianoFragment : Fragment() {
                         else -> { true }
                     }
                 }
-               /* (octave.getChildAt(x) as Button).setOnClickListener {
-                    if(isRecording) {
-                        val currentTimeMillis = SystemClock.elapsedRealtime()
-                        val elapsedTimeMillis = if (previousPressTime != 0L) {
-                            currentTimeMillis - previousPressTime
-                        } else 0
-                        previousPressTime = currentTimeMillis
-
-                        recordData.add(PianoPlayer(elapsedTimeMillis, x, i))
-                    }
-                    noteMap[pianoKey(notes[x], i)]?.let { it1 -> sndPool.play(it1, 1F,
-                        1F, 1 ,0, 1.0f) }
-                }*/
             }
             LLayout.addView(pianoView, i)
         }
@@ -155,7 +137,6 @@ class PianoFragment : Fragment() {
     }
 
     private fun pianoKey(key: String, pitch: Int): Int {
-//        Log.d("key", key)
         var resource: Int = R.raw.c
 
         if (pitch == 1) { // C5
@@ -210,30 +191,10 @@ class PianoFragment : Fragment() {
                     else -> R.raw.c6
                 }
         }
-        // Log.d("PianoKey", key)
         return resource
     }
 
-    /*private fun playRecord(){
-        thread(true){
-            for(i in 0 until recordData.size){
-                Log.d("sleep", recordData[i].second.toString())
-                Thread.sleep(recordData[i].second)
-                noteMap[pianoKey(notes[recordData[i].keyNum], recordData[i].pitch)]?.let { it1 -> sndPool.play(it1, 1F,
-                    1F, 1 ,0, 1.0f) }
-            }
-            recordData.clear()
-            previousPressTime = 0
-
-        }
-
-    }*/
     private fun createMidiWithApi() {
-        for (i in 0 until recordData.size)Log.d(
-            "wtf",
-            recordData[i].keyNum.toString() + " " +
-                (recordData[i].elapseTime - recordData[i].pressTime).toString()
-        )
         val file = File(requireContext().applicationContext.externalCacheDir, "out.mid")
         val tempoTrack = MidiTrack()
         val noteTrack = MidiTrack()
