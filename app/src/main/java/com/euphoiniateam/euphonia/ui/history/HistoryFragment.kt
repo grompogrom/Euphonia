@@ -33,6 +33,7 @@ class HistoryFragment : Fragment() {
         searchView = binding.idSV
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
         listAdapter = HistoryAdapter(
+            requireContext(),
             getMidFileNamesFromPiano(),
             findNavController()
         )
