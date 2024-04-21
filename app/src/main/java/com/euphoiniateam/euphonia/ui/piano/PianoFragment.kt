@@ -2,9 +2,11 @@ package com.euphoiniateam.euphonia.ui.piano
 
 import android.annotation.SuppressLint
 import android.graphics.drawable.ColorDrawable
+import android.content.pm.ActivityInfo
 import android.media.SoundPool
 import android.os.Bundle
 import android.util.Log
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -42,6 +44,7 @@ class PianoFragment : Fragment() {
     ): View? {
         val rootView = inflater.inflate(R.layout.fragment_piano, container, false)
         val LLayout = rootView.findViewById<LinearLayout>(R.id.linear1)
+        requireActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE)
 
         recordButton = rootView.findViewById(R.id.record_button)
         recordButton.setOnClickListener {
@@ -124,7 +127,14 @@ class PianoFragment : Fragment() {
                     }
                 }
             }
-            LLayout.addView(pianoView, i)
+            LLayout.addView(
+                pianoView,
+                i,
+                LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+                ).apply { gravity = Gravity.BOTTOM }
+            )
         }
         return rootView
     }
@@ -132,6 +142,11 @@ class PianoFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProvider(this).get(PianoViewModel::class.java)
         // TODO: Use the ViewModel
+    }
+
+    override fun onPause() {
+        super.onPause()
+        requireActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED)
     }
 
     private fun pianoKey(key: String, pitch: Int): Int {
