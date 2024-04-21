@@ -1,10 +1,12 @@
 package com.euphoiniateam.euphonia.ui.piano
 
+import android.annotation.SuppressLint
+import android.graphics.drawable.ColorDrawable
 import android.media.SoundPool
 import android.os.Bundle
-import android.os.SystemClock
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
@@ -15,24 +17,24 @@ import androidx.lifecycle.ViewModelProvider
 import com.euphoiniateam.euphonia.R
 import com.leff.midi.MidiFile
 import com.leff.midi.MidiTrack
+import com.leff.midi.event.NoteOff
+import com.leff.midi.event.NoteOn
 import com.leff.midi.event.meta.Tempo
 import com.leff.midi.event.meta.TimeSignature
 import java.io.File
-import kotlin.concurrent.thread
 
 class PianoFragment : Fragment() {
 
     private lateinit var viewModel: PianoViewModel
     private val notes = arrayListOf("C", "D", "C#", "E", "D#", "F", "G", "F#", "A", "G#", "B", "A#")
-    // private val notes = arrayListOf<Pair<String, Int>>()
     private val notePosMidi = arrayListOf(0, 2, 1, 4, 3, 5, 7, 6, 9, 8, 11, 10)
     private var noteMap: MutableMap<Int, Int> = mutableMapOf()
     private var sndPool: SoundPool = SoundPool.Builder().setMaxStreams(5).build()
     private var isRecording = false
     private lateinit var recordButton: Button
     private var recordData: MutableList<PianoPlayer> = mutableListOf()
-    private var previousPressTime: Long = 0
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -41,8 +43,6 @@ class PianoFragment : Fragment() {
         val rootView = inflater.inflate(R.layout.fragment_piano, container, false)
         val LLayout = rootView.findViewById<LinearLayout>(R.id.linear1)
 
-        // createMidiFile(notess, "output.mid")
-
         recordButton = rootView.findViewById(R.id.record_button)
         recordButton.setOnClickListener {
             isRecording = !isRecording
@@ -50,11 +50,8 @@ class PianoFragment : Fragment() {
                 recordButton.setBackgroundResource(android.R.drawable.presence_online)
             } else recordButton.setBackgroundResource(R.drawable.record_button)
             if (!isRecording && recordData.isNotEmpty()) {
-//                playRecord()
                 createMidiWithApi()
             }
-
-//            Toast.makeText(requireContext(), isRecording.toString(), Toast.LENGTH_SHORT).show()
         }
         for (i in 0..2) {
             val pianoView: View = inflater.inflate(R.layout.piano, container, false)
@@ -65,25 +62,65 @@ class PianoFragment : Fragment() {
                     pianoKey(notes[x], i),
                     1
                 )
-                (octave.getChildAt(x) as Button).setOnClickListener {
-                    if (isRecording) {
-                        val currentTimeMillis = SystemClock.elapsedRealtime()
-                        val elapsedTimeMillis = if (previousPressTime != 0L) {
-                            currentTimeMillis - previousPressTime
-                        } else 0
-                        previousPressTime = currentTimeMillis
+                (octave.getChildAt(x) as Button).setOnTouchListener { v, event ->
+                    // Log.d("dd", "dd")
+                    when (event.action) {
+                        MotionEvent.ACTION_DOWN -> {
 
-                        recordData.add(PianoPlayer(elapsedTimeMillis, x, i))
-                    }
-                    noteMap[pianoKey(notes[x], i)]?.let { it1 ->
-                        sndPool.play(
-                            it1,
-                            1F,
-                            1F,
-                            1,
-                            0,
-                            1.0f
-                        )
+                            if (x == 2 || x == 4 || x == 7 || x == 9 || x == 11) {
+                                v.background =
+                                    ColorDrawable(
+                                        resources.getColor(R.color.md_theme_dark_background)
+                                    )
+                            } else {
+                                v.background = ColorDrawable(
+                                    (
+                                        resources.getColor(
+                                            androidx.appcompat.R.color.material_grey_50
+                                        )
+                                        )
+                                )
+                            }
+                            noteMap[pianoKey(notes[x], i)]?.let { it1 ->
+                                sndPool.play(
+                                    it1,
+                                    1F,
+                                    1F,
+                                    1,
+                                    0,
+                                    1.0f
+                                )
+                            }
+                            if (isRecording) recordData.add(
+                                PianoPlayer(-1L, System.currentTimeMillis(), x, i)
+                            )
+                            true
+                        }
+                        MotionEvent.ACTION_UP -> {
+                            if (x == 2 || x == 4 || x == 7 || x == 9 || x == 11) {
+                                v.background =
+                                    ColorDrawable(
+                                        resources.getColor(
+                                            androidx.cardview.R.color.cardview_dark_background
+                                        )
+                                    )
+                            } else {
+                                v.background = (resources.getDrawable(R.drawable.piano_borders))
+                            }
+                            if (isRecording) {
+                                for (l in 0 until recordData.size) {
+                                    if (recordData[l].elapseTime == -1L &&
+                                        recordData[l].keyNum == x &&
+                                        recordData[l].pitch == i
+                                    ) {
+                                        recordData[l].elapseTime = System.currentTimeMillis()
+                                    }
+                                }
+                            }
+                            true
+                        }
+
+                        else -> { true }
                     }
                 }
             }
@@ -98,7 +135,6 @@ class PianoFragment : Fragment() {
     }
 
     private fun pianoKey(key: String, pitch: Int): Int {
-//        Log.d("key", key)
         var resource: Int = R.raw.c
 
         if (pitch == 1) { // C5
@@ -153,30 +189,9 @@ class PianoFragment : Fragment() {
                     else -> R.raw.c6
                 }
         }
-        // Log.d("PianoKey", key)
         return resource
     }
 
-    private fun playRecord() {
-        thread(true) {
-            for (i in 0 until recordData.size) {
-                Log.d("sleep", recordData[i].second.toString())
-                Thread.sleep(recordData[i].second)
-                noteMap[pianoKey(notes[recordData[i].keyNum], recordData[i].pitch)]?.let { it1 ->
-                    sndPool.play(
-                        it1,
-                        1F,
-                        1F,
-                        1,
-                        0,
-                        1.0f
-                    )
-                }
-            }
-            recordData.clear()
-            previousPressTime = 0
-        }
-    }
     private fun createMidiWithApi() {
         val file = File(requireContext().applicationContext.externalCacheDir, "out.mid")
         val tempoTrack = MidiTrack()
@@ -194,12 +209,27 @@ class PianoFragment : Fragment() {
             val pitch = notesToMidiNotes(recordData[i].keyNum, recordData[i].pitch)
             val velocity = 100
             val tick = (i * 480).toLong()
-            val duration: Long = 120
+            val duration: Long = recordData[i].elapseTime - recordData[i].pressTime
+            Log.d("aaa", duration.toString())
+            var durTick: Int
+            if (duration <= 100)
+                durTick = 120
+            else if (duration <= 300)
+                durTick = 240
+            else if (duration <= 600)
+                durTick = 360
+            else
+                durTick = 480
 
-            noteTrack.insertNote(channel, pitch, velocity, tick, duration)
+            val noteOn = NoteOn(tick, channel, pitch, velocity)
+            val noteOff = NoteOff((tick + durTick), channel, pitch, 0)
+
+            noteTrack.insertEvent(noteOn)
+            noteTrack.insertEvent(noteOff)
+//            noteTrack.insertNote(channel, pitch, velocity, tick, duration)
         }
         val tracks: MutableList<MidiTrack> = ArrayList()
-        tracks.add(tempoTrack)
+        // tracks.add(tempoTrack)
         tracks.add(noteTrack)
 
         val midi = MidiFile(MidiFile.DEFAULT_RESOLUTION, tracks)

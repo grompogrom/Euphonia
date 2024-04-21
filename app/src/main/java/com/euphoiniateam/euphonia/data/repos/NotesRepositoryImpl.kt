@@ -2,15 +2,16 @@ package com.euphoiniateam.euphonia.data.repos
 
 import android.content.Context
 import android.net.Uri
+import android.util.Log
 import com.euphoiniateam.euphonia.domain.models.Note
 import com.euphoiniateam.euphonia.domain.repos.NotesRepository
-import java.math.RoundingMode
 import jp.kshoji.javax.sound.midi.MidiSystem
 import jp.kshoji.javax.sound.midi.ShortMessage
+import java.math.RoundingMode
 
 class NotesRepositoryImpl(private val context: Context) : NotesRepository {
 
-    var notesMap = mapOf(
+    private val notesMap = mapOf(
         0 to intArrayOf(0),
         1 to intArrayOf(1, 2),
         2 to intArrayOf(3, 4),
@@ -27,9 +28,9 @@ class NotesRepositoryImpl(private val context: Context) : NotesRepository {
                 setSequence(stream)
             }
         }
-//        val initial_notes = sequencer.sequence?.toNotes()
-//        if (initial_notes != null) {
-//            for (note in initial_notes) {
+//        val initialNotes = sequencer.sequence?.toNotes()
+//        if (initialNotes != null) {
+//            for (note in initialNotes) {
 //                Log.d("note", note.toString())
 //            }
 //        }
@@ -39,18 +40,18 @@ class NotesRepositoryImpl(private val context: Context) : NotesRepository {
 
     private fun jp.kshoji.javax.sound.midi.Sequence.toNotes(): List<Note> {
         return tracks.flatMap { track ->
-            // Log.d("track", "$track")
+            Log.d("track", "$track")
             val inflight = mutableMapOf<Int, Note>()
             (0 until track.size()).asSequence().map { idx ->
                 val event = track[idx]
                 when (val message = event.message) {
                     is ShortMessage -> {
-                        // Log.d("check", "${message.command} + ${message.data2}")
+                        Log.d("check", "${message.command} + ${message.data2}")
                         var pitch = 0
                         val command = message.command
-                        val midinote = message.data1
+                        val midiNote = message.data1
                         val amp = message.data2
-                        val noteNum = (midinote - 24) % 12
+                        val noteNum = (midiNote - 24) % 12
                         for (key in notesMap.keys) {
                             if (notesMap[key]?.contains(noteNum) == true)
                                 pitch = key
@@ -61,10 +62,10 @@ class NotesRepositoryImpl(private val context: Context) : NotesRepository {
                         when (command) {
                             ShortMessage.NOTE_ON -> {
                                 val note = Note(pitch, noteNum, 0.25f, beat)
-                                inflight[midinote] = note
+                                inflight[midiNote] = note
                             }
                             ShortMessage.NOTE_OFF -> {
-                                val note = inflight.remove(midinote)
+                                val note = inflight.remove(midiNote)
                                 return@map note?.let { it.copy(duration = beat - it.beat) }
                             }
                         }

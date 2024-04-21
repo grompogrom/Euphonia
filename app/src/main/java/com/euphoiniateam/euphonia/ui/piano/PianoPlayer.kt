@@ -1,7 +1,8 @@
 package com.euphoiniateam.euphonia.ui.piano
 
 data class PianoPlayer(
-    val second: Long,
+    var elapseTime: Long,
+    val pressTime: Long,
     val keyNum: Int,
     val pitch: Int
 )
