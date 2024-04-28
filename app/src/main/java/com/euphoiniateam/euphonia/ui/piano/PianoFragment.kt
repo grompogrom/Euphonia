@@ -44,7 +44,11 @@ private val blackKeys = arrayOf(2, 4, 7, 9, 11)
 
 class PianoFragment : Fragment() {
 
-    private val viewModel: PianoViewModel by viewModels{PianoViewModel.provideFactory(requireContext())}
+    private val viewModel: PianoViewModel by viewModels {
+        PianoViewModel.provideFactory(
+            requireContext()
+        )
+    }
     private var binding: FragmentPianoBinding? = null
     private var sndPool: SoundPool = SoundPool.Builder().setMaxStreams(5).build()
     private var noteMap: MutableMap<Int, Int> = mutableMapOf()
@@ -148,7 +152,7 @@ class PianoFragment : Fragment() {
                     val recordingState by viewModel.screenState.collectAsState()
                     PianoOverview(
                         recordState = recordingState.recordingState,
-                        onExitClick = { viewModel.exit {findNavController().navigateUp()} },
+                        onExitClick = { viewModel.exit { findNavController().navigateUp() } },
                         onRecordClick = {
                             viewModel.startRecord()
                         },
@@ -176,7 +180,8 @@ class PianoFragment : Fragment() {
                     colorScheme = darkColorScheme()
                 ) {
                     ButtonSection(
-                        onPlayClick = { /*TODO*/ },
+                        isPlaying = viewModel.screenState.value.isPlayingResult,
+                        onPlayClick = { viewModel.onPlayPush(requireContext()) },
                         onApplyClick = { viewModel.applyRecord(::navigateToCreationScreen) },
                         onRemakeClick = { viewModel.remake() }
                     )

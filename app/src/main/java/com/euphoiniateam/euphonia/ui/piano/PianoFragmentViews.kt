@@ -134,7 +134,8 @@ fun ButtonSection(
     onPlayClick: () -> Unit,
     onApplyClick: () -> Unit,
     onRemakeClick: () -> Unit,
-    modifier: Modifier = Modifier
+    isPlaying: Boolean,
+    modifier: Modifier = Modifier,
 ) {
     Row(
         modifier = modifier.fillMaxWidth(),
@@ -244,7 +245,8 @@ private fun ButtonSectionPrev() {
         ButtonSection(
             onPlayClick = { /*TODO*/ },
             onApplyClick = { /*TODO*/ },
-            onRemakeClick = { /*TODO*/ }
+            onRemakeClick = { /*TODO*/ },
+            isPlaying = false
         )
     }
 }
