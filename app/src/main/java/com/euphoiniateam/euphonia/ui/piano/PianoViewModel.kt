@@ -6,6 +6,14 @@ import android.util.Log
 import android.widget.Toast
 import androidx.core.net.toUri
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.initializer
+import androidx.lifecycle.viewmodel.viewModelFactory
+import com.euphoiniateam.euphonia.data.repos.NotesRepositoryImpl
+import com.euphoiniateam.euphonia.domain.repos.NotesRepository
+import com.euphoiniateam.euphonia.ui.MidiPlayer
+import com.euphoiniateam.euphonia.ui.creation.StaveConfig
 import com.leff.midi.MidiFile
 import com.leff.midi.MidiTrack
 import com.leff.midi.event.NoteOff
@@ -14,40 +22,67 @@ import com.leff.midi.event.meta.Tempo
 import com.leff.midi.event.meta.TimeSignature
 import java.io.File
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.launch
 
-class PianoViewModel : ViewModel() {
+class PianoViewModel(
+    private val notesRepository: NotesRepository
+) : ViewModel() {
     private val notePosMidi = arrayListOf(0, 2, 1, 4, 3, 5, 7, 6, 9, 8, 11, 10)
-    var recordData: MutableList<PianoEvent> = mutableListOf()
-    var resultUri: Uri? = null
+    private var recordData: MutableList<PianoEvent> = mutableListOf()
+    private var resultUri: Uri? = null
+    private val midiPlayer = MidiPlayer()
+    val staveConfig = StaveConfig()
     var screenState = MutableStateFlow(
         PianoScreenState(
-            PianoState.NO_RECORD
+            PianoState.NO_RECORD,
+            false
         )
     )
+
+    init {
+        viewModelScope.launch {
+            midiPlayer.playerState.collect {
+                if (screenState.value.isPlayingResult != it) {
+                    screenState.emit(screenState.value.copy(isPlayingResult = it))
+                }
+            }
+        }
+    }
 
     fun startRecord() {
         screenState.tryEmit(screenState.value.copy(recordingState = PianoState.RECORDING))
     }
 
     fun stopRecord(context: Context) {
-        if (recordData.isNotEmpty()) {
-            createMidiWithApi(context)
-            screenState.tryEmit(screenState.value.copy(recordingState = PianoState.AFTER_RECORD))
-        } else {
-            screenState.tryEmit(screenState.value.copy(recordingState = PianoState.NO_RECORD))
-            Toast.makeText(context, "You played nothing)", Toast.LENGTH_LONG).show()
+        viewModelScope.launch {
+            if (recordData.isNotEmpty()) {
+                createMidiWithApi(context)
+                onRecordFinished()
+                screenState.tryEmit(
+                    screenState.value.copy(recordingState = PianoState.AFTER_RECORD)
+                )
+            } else {
+                screenState.tryEmit(screenState.value.copy(recordingState = PianoState.NO_RECORD))
+                Toast.makeText(context, "You played nothing)", Toast.LENGTH_LONG).show()
+            }
+        }
+    }
+
+    private suspend fun onRecordFinished() {
+        val recognizedNotes = notesRepository.getNotes(resultUri ?: Uri.EMPTY)
+        if (recognizedNotes != null) {
+            staveConfig.updateNotes(recognizedNotes)
         }
     }
 
     fun exit(navigateUp: () -> Unit) {
+        clearRecorded()
         navigateUp()
     }
 
     fun remake() {
         screenState.tryEmit(screenState.value.copy(recordingState = PianoState.NO_RECORD))
-        recordData.clear()
-        resultUri = null
-        // TODO: Clear piano stave
+        clearRecorded()
     }
 
     fun applyRecord(navigate: (Uri) -> Unit) {
@@ -58,6 +93,21 @@ class PianoViewModel : ViewModel() {
         if (screenState.value.recordingState == PianoState.RECORDING) {
             recordData.add(event)
         }
+    }
+
+    fun onPlayPush(context: Context) {
+        resultUri?.let { midiPlayer.play(context, it) }
+    }
+
+    fun onStopPush() {
+        midiPlayer.stop()
+    }
+
+    private fun clearRecorded() {
+        midiPlayer.release()
+        recordData.clear()
+        resultUri = null
+        staveConfig.updateNotes(emptyList())
     }
 
     fun onRealiseKey(pitch: Int, key: Int) {
@@ -129,6 +179,18 @@ class PianoViewModel : ViewModel() {
         return if (pitch == 0) notePosMidi[noteNum] + 60
         else if (pitch == 1) notePosMidi[noteNum] + 72
         else notePosMidi[noteNum] + 48
+    }
+
+    companion object {
+        fun provideFactory(context: Context): ViewModelProvider.Factory = viewModelFactory {
+            initializer {
+                PianoViewModel(
+                    notesRepository = NotesRepositoryImpl(
+                        context
+                    )
+                )
+            }
+        }
     }
 }
 

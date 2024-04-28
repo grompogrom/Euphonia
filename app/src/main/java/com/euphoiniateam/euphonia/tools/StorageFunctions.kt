@@ -11,7 +11,10 @@ import java.io.IOException
 import java.io.InputStream
 
 fun getMidFileNamesFromResults(): ArrayList<String> {
-    val dir = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC), "results")
+    val dir = File(
+        Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC),
+        "results"
+    )
     dir.mkdirs()
     val midiFilesNames = ArrayList<String>()
     dir.listFiles()?.forEach { file ->
@@ -23,7 +26,10 @@ fun getMidFileNamesFromResults(): ArrayList<String> {
 }
 
 fun getMidFileNamesFromPiano(): ArrayList<String> {
-    val dir = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC), "piano")
+    val dir = File(
+        Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC),
+        "piano"
+    )
     dir.mkdirs()
     val midiFilesNames = ArrayList<String>()
     dir.listFiles()?.forEach { file ->
@@ -35,19 +41,28 @@ fun getMidFileNamesFromPiano(): ArrayList<String> {
 }
 
 fun getUriForFileNameFromPiano(fileName: String): Uri? {
-    val dir = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC), "piano")
+    val dir = File(
+        Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC),
+        "piano"
+    )
     val file = File(dir, fileName)
     return if (file.exists()) Uri.fromFile(file) else null
 }
 
 fun getUriForFileNameFromResults(fileName: String): Uri? {
-    val dir = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC), "results")
+    val dir = File(
+        Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC),
+        "results"
+    )
     val file = File(dir, fileName)
     return if (file.exists()) Uri.fromFile(file) else null
 }
 
 fun saveMidiFileToPianoDir(contentResolver: ContentResolver, uri: Uri, fileName: String) {
-    val dir = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC), "piano")
+    val dir = File(
+        Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC),
+        "piano"
+    )
     dir.mkdirs()
     val inputStream: InputStream? = contentResolver.openInputStream(uri)
     val outputStream = FileOutputStream(File(dir, fileName))
@@ -59,7 +74,10 @@ fun saveMidiFileToPianoDir(contentResolver: ContentResolver, uri: Uri, fileName:
 }
 
 fun saveMidiFileToResultsDir(contentResolver: ContentResolver, uri: Uri, fileName: String) {
-    val dir = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC), "results")
+    val dir = File(
+        Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC),
+        "results"
+    )
     dir.mkdirs()
     val inputStream: InputStream? = contentResolver.openInputStream(uri)
     val outputStream = FileOutputStream(File(dir, fileName))
@@ -85,7 +103,10 @@ fun saveMidiFileToCache(context: Context, inputStream: InputStream, fileName: St
 fun playMusic(context: Context, songName: String) {
     val mediaPlayer = MediaPlayer()
     try {
-        val file = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC), "piano/$songName")
+        val file = File(
+            Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC),
+            "piano/$songName"
+        )
         mediaPlayer.setDataSource(context, Uri.fromFile(file))
         mediaPlayer.prepare()
         mediaPlayer.start()

@@ -32,10 +32,10 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import com.euphoiniateam.euphonia.R
 import com.euphoiniateam.euphonia.databinding.FragmentPianoBinding
-import com.euphoiniateam.euphonia.ui.creation.StaveConfig
 import com.euphoiniateam.euphonia.ui.creation.StaveView
 import kotlinx.coroutines.launch
 
@@ -44,7 +44,11 @@ private val blackKeys = arrayOf(2, 4, 7, 9, 11)
 
 class PianoFragment : Fragment() {
 
-    private val viewModel: PianoViewModel by viewModels()
+    private val viewModel: PianoViewModel by viewModels {
+        PianoViewModel.provideFactory(
+            requireContext()
+        )
+    }
     private var binding: FragmentPianoBinding? = null
     private var sndPool: SoundPool = SoundPool.Builder().setMaxStreams(5).build()
     private var noteMap: MutableMap<Int, Int> = mutableMapOf()
@@ -148,7 +152,7 @@ class PianoFragment : Fragment() {
                     val recordingState by viewModel.screenState.collectAsState()
                     PianoOverview(
                         recordState = recordingState.recordingState,
-                        onExitClick = { viewModel.exit {} },
+                        onExitClick = { viewModel.exit { findNavController().navigateUp() } },
                         onRecordClick = {
                             viewModel.startRecord()
                         },
@@ -176,7 +180,8 @@ class PianoFragment : Fragment() {
                     colorScheme = darkColorScheme()
                 ) {
                     ButtonSection(
-                        onPlayClick = { /*TODO*/ },
+                        isPlaying = viewModel.screenState.value.isPlayingResult,
+                        onPlayClick = { viewModel.onPlayPush(requireContext()) },
                         onApplyClick = { viewModel.applyRecord(::navigateToCreationScreen) },
                         onRemakeClick = { viewModel.remake() }
                     )
@@ -199,7 +204,7 @@ class PianoFragment : Fragment() {
                             .clip(RoundedCornerShape(10.dp))
                     ) {
                         StaveView(
-                            state = StaveConfig(), // use from vm
+                            state = viewModel.staveConfig,
                         )
                     }
                 }
