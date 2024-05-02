@@ -176,6 +176,7 @@ class PianoFragment : Fragment() {
                     ) {
                         StaveView(
                             state = viewModel.staveConfig,
+                            handler = viewModel.staveHandler
                         )
                     }
                 }

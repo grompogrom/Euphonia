@@ -49,6 +49,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.euphoiniateam.euphonia.R
 import com.euphoiniateam.euphonia.databinding.FragmentCreation2Binding
+import com.euphoiniateam.euphonia.ui.MidiFile
 
 class CreationFragment : Fragment() {
 
@@ -83,10 +84,10 @@ class CreationFragment : Fragment() {
         viewModel = ViewModelProvider(this, CreationViewModel.provideFactory(requireContext()))
             .get(CreationViewModel::class.java)
 
-        val uriArg = arguments?.getString("uri")
+        val userMidiFile = arguments?.getSerializable("midiFile", MidiFile::class.java)
 
-        uriArg?.let {
-            uri = Uri.parse(uriArg)
+        userMidiFile?.let {
+            uri = userMidiFile.uri
             viewModel.setCurrentUri(requireContext(), uri)
             viewModel.getNotes(uri)
         }
@@ -101,6 +102,7 @@ class CreationFragment : Fragment() {
     @Composable
     fun Stave(
         staveConfig: StaveConfig,
+        staveHandler: StaveHandler,
         modifier: Modifier = Modifier,
         isLoading: Boolean
     ) {
@@ -130,7 +132,8 @@ class CreationFragment : Fragment() {
                 .padding(16.dp)
                 .graphicsLayer(alpha = alpha)
         ) {
-            StaveView(state = staveConfig)
+            StaveView(state = staveConfig,
+                handler = staveHandler)
         }
     }
 
@@ -218,6 +221,7 @@ class CreationFragment : Fragment() {
         ) {
             Stave(
                 staveConfig = viewModel.staveConfig,
+                staveHandler = viewModel.staveHandler,
                 isLoading = viewModel.screenState.isLoading,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -277,7 +281,7 @@ class CreationFragment : Fragment() {
                 color = MaterialTheme.colorScheme.background
             ) {
 
-                Stave(StaveConfig(), isLoading = true)
+                Stave(StaveConfig(), StaveHandler(StaveConfig()), isLoading = true)
             }
         }
     }
