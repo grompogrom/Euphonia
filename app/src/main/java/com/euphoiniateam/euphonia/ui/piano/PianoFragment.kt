@@ -1,58 +1,78 @@
 package com.euphoiniateam.euphonia.ui.piano
 
 import android.annotation.SuppressLint
+import android.content.pm.ActivityInfo
 import android.graphics.drawable.ColorDrawable
 import android.media.SoundPool
+import android.net.Uri
 import android.os.Bundle
-import android.util.Log
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.LinearLayout
+import androidx.appcompat.content.res.AppCompatResources.getDrawable
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.darkColorScheme
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.ViewCompositionStrategy
+import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat.getColor
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import com.euphoiniateam.euphonia.R
-import com.leff.midi.MidiFile
-import com.leff.midi.MidiTrack
-import com.leff.midi.event.NoteOff
-import com.leff.midi.event.NoteOn
-import com.leff.midi.event.meta.Tempo
-import com.leff.midi.event.meta.TimeSignature
-import java.io.File
+import com.euphoiniateam.euphonia.databinding.FragmentPianoBinding
+import com.euphoiniateam.euphonia.ui.creation.StaveView
+import kotlinx.coroutines.launch
+
+private val notes = arrayOf("C", "D", "C#", "E", "D#", "F", "G", "F#", "A", "G#", "B", "A#")
+private val blackKeys = arrayOf(2, 4, 7, 9, 11)
 
 class PianoFragment : Fragment() {
 
-    private lateinit var viewModel: PianoViewModel
-    private val notes = arrayListOf("C", "D", "C#", "E", "D#", "F", "G", "F#", "A", "G#", "B", "A#")
-    private val notePosMidi = arrayListOf(0, 2, 1, 4, 3, 5, 7, 6, 9, 8, 11, 10)
-    private var noteMap: MutableMap<Int, Int> = mutableMapOf()
+    private val viewModel: PianoViewModel by viewModels {
+        PianoViewModel.provideFactory(
+            requireContext()
+        )
+    }
+    private var binding: FragmentPianoBinding? = null
     private var sndPool: SoundPool = SoundPool.Builder().setMaxStreams(5).build()
-    private var isRecording = false
-    private lateinit var recordButton: Button
-    private var recordData: MutableList<PianoPlayer> = mutableListOf()
+    private var noteMap: MutableMap<Int, Int> = mutableMapOf()
 
-    @SuppressLint("ClickableViewAccessibility")
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val rootView = inflater.inflate(R.layout.fragment_piano, container, false)
-        val LLayout = rootView.findViewById<LinearLayout>(R.id.linear1)
+        requireActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE)
+        binding = FragmentPianoBinding.inflate(inflater, container, false)
+        initKeyboard(inflater, container)
+        initOverlay()
+        initButtons()
+        initStave()
+        observeScreenState()
+        return binding!!.root
+    }
 
-        recordButton = rootView.findViewById(R.id.record_button)
-        recordButton.setOnClickListener {
-            isRecording = !isRecording
-            if (isRecording) {
-                recordButton.setBackgroundResource(android.R.drawable.presence_online)
-            } else recordButton.setBackgroundResource(R.drawable.record_button)
-            if (!isRecording && recordData.isNotEmpty()) {
-                createMidiWithApi()
-            }
-        }
+    @SuppressLint("ClickableViewAccessibility") // FIXME
+    private fun initKeyboard(
+        inflater: LayoutInflater,
+        container: ViewGroup?
+    ) {
         for (i in 0..2) {
             val pianoView: View = inflater.inflate(R.layout.piano, container, false)
             val octave: ConstraintLayout = pianoView.findViewById(R.id.octave)
@@ -63,22 +83,16 @@ class PianoFragment : Fragment() {
                     1
                 )
                 (octave.getChildAt(x) as Button).setOnTouchListener { v, event ->
-                    // Log.d("dd", "dd")
                     when (event.action) {
                         MotionEvent.ACTION_DOWN -> {
-
-                            if (x == 2 || x == 4 || x == 7 || x == 9 || x == 11) {
+                            if (x in blackKeys) {
                                 v.background =
                                     ColorDrawable(
                                         resources.getColor(R.color.md_theme_dark_background)
                                     )
                             } else {
                                 v.background = ColorDrawable(
-                                    (
-                                        resources.getColor(
-                                            androidx.appcompat.R.color.material_grey_50
-                                        )
-                                        )
+                                    (resources.getColor(androidx.appcompat.R.color.material_grey_50))
                                 )
                             }
                             noteMap[pianoKey(notes[x], i)]?.let { it1 ->
@@ -91,154 +105,209 @@ class PianoFragment : Fragment() {
                                     1.0f
                                 )
                             }
-                            if (isRecording) recordData.add(
-                                PianoPlayer(-1L, System.currentTimeMillis(), x, i)
-                            )
-                            true
+                            viewModel.onPushKey(PianoEvent(-1L, System.currentTimeMillis(), x, i))
                         }
+
                         MotionEvent.ACTION_UP -> {
-                            if (x == 2 || x == 4 || x == 7 || x == 9 || x == 11) {
+                            if (x in blackKeys) {
                                 v.background =
                                     ColorDrawable(
-                                        resources.getColor(
+                                        getColor(
+                                            requireContext(),
                                             androidx.cardview.R.color.cardview_dark_background
                                         )
                                     )
                             } else {
-                                v.background = (resources.getDrawable(R.drawable.piano_borders))
+                                v.background =
+                                    getDrawable(requireContext(), R.drawable.piano_borders)
                             }
-                            if (isRecording) {
-                                for (l in 0 until recordData.size) {
-                                    if (recordData[l].elapseTime == -1L &&
-                                        recordData[l].keyNum == x &&
-                                        recordData[l].pitch == i
-                                    ) {
-                                        recordData[l].elapseTime = System.currentTimeMillis()
-                                    }
-                                }
-                            }
-                            true
+
+                            viewModel.onRealiseKey(x, i)
                         }
 
-                        else -> { true }
+                        else -> {}
+                    }
+                    true
+                }
+            }
+            binding!!.linear1.addView(
+                pianoView,
+                i,
+                LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.MATCH_PARENT
+                )
+                    .apply { gravity = Gravity.TOP }
+            )
+        }
+    }
+
+    private fun initOverlay() {
+        binding?.overviewComposeView?.apply {
+            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+            setContent {
+                MaterialTheme(
+                    colorScheme = darkColorScheme()
+                ) {
+                    val recordingState by viewModel.screenState.collectAsState()
+                    PianoOverview(
+                        recordState = recordingState.recordingState,
+                        onExitClick = { viewModel.exit { findNavController().navigateUp() } },
+                        onRecordClick = {
+                            viewModel.startRecord()
+                        },
+                        onStopRecordClick = {
+                            viewModel.stopRecord(requireContext())
+                        },
+                        modifier = Modifier
+                    )
+                }
+            }
+        }
+    }
+
+    private fun navigateToCreationScreen(uri: Uri) {
+        val bundle = Bundle()
+        bundle.putString("uri", uri.toString())
+        findNavController().navigate(R.id.action_pianoFragment_to_creationFragment, bundle)
+    }
+
+    private fun initButtons() {
+        binding?.buttonsComposeView?.apply {
+            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+            setContent {
+                MaterialTheme(
+                    colorScheme = darkColorScheme()
+                ) {
+                    ButtonSection(
+                        isPlaying = viewModel.screenState.value.isPlayingResult,
+                        onPlayClick = { viewModel.onPlayPush(requireContext()) },
+                        onApplyClick = { viewModel.applyRecord(::navigateToCreationScreen) },
+                        onRemakeClick = { viewModel.remake() }
+                    )
+                }
+            }
+        }
+    }
+
+    private fun initStave() {
+        binding?.staveComposeView?.apply {
+            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+            setContent {
+                MaterialTheme(
+                    colorScheme = darkColorScheme()
+                ) {
+                    Surface(
+                        color = MaterialTheme.colorScheme.surfaceVariant,
+                        modifier = Modifier
+                            .padding(top = 8.dp)
+                            .clip(RoundedCornerShape(10.dp))
+                    ) {
+                        StaveView(
+                            state = viewModel.staveConfig,
+                        )
                     }
                 }
             }
-            LLayout.addView(pianoView, i)
         }
-        return rootView
-    }
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProvider(this).get(PianoViewModel::class.java)
-        // TODO: Use the ViewModel
+        // TODO: init stave compose view
     }
 
-    private fun pianoKey(key: String, pitch: Int): Int {
-        var resource: Int = R.raw.c
+    fun observeScreenState() {
+        lifecycleScope.launchWhenStarted {
+            viewLifecycleOwner.lifecycleScope.launch {
+                viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                    viewModel.screenState.collect { state ->
+                        when (state.recordingState) {
+                            PianoState.RECORDING -> {}
+                            PianoState.NO_RECORD -> {
+                                showPiano()
+                            }
 
-        if (pitch == 1) { // C5
-            resource =
-                when (key) {
-                    "C" -> R.raw.c
-                    "D" -> R.raw.d
-                    "C#" -> R.raw.cb
-                    "E" -> R.raw.e
-                    "D#" -> R.raw.db
-                    "F" -> R.raw.f
-                    "G" -> R.raw.g
-                    "F#" -> R.raw.fb
-                    "A" -> R.raw.a
-                    "G#" -> R.raw.gb
-                    "B" -> R.raw.b
-                    "A#" -> R.raw.ab
-                    else -> R.raw.c
+                            PianoState.AFTER_RECORD -> {
+                                showRecordResult()
+                            }
+                        }
+                    }
                 }
-        } else if (pitch == 0) { // C4
-            resource =
-                when (key) {
-                    "C" -> R.raw.c4
-                    "D" -> R.raw.d4
-                    "C#" -> R.raw.cb4
-                    "E" -> R.raw.e4
-                    "D#" -> R.raw.db4
-                    "F" -> R.raw.f4
-                    "G" -> R.raw.g4
-                    "F#" -> R.raw.fb4
-                    "A" -> R.raw.a4
-                    "G#" -> R.raw.gb4
-                    "B" -> R.raw.b4
-                    "A#" -> R.raw.ab4
-                    else -> R.raw.c4
-                }
-        } else { // C6
-            resource =
-                when (key) {
-                    "C" -> R.raw.c6
-                    "D" -> R.raw.d6
-                    "C#" -> R.raw.cb6
-                    "E" -> R.raw.e6
-                    "D#" -> R.raw.db6
-                    "F" -> R.raw.f6
-                    "G" -> R.raw.g6
-                    "F#" -> R.raw.fb6
-                    "A" -> R.raw.a6
-                    "G#" -> R.raw.gb6
-                    "B" -> R.raw.b6
-                    "A#" -> R.raw.ab6
-                    else -> R.raw.c6
-                }
+            }
         }
-        return resource
     }
 
-    private fun createMidiWithApi() {
-        val file = File(requireContext().applicationContext.externalCacheDir, "out.mid")
-        val tempoTrack = MidiTrack()
-        val noteTrack = MidiTrack()
-        val ts = TimeSignature()
-        ts.setTimeSignature(4, 4, TimeSignature.DEFAULT_METER, TimeSignature.DEFAULT_DIVISION)
-        val tempo = Tempo()
-        tempo.bpm = 228f
-
-        tempoTrack.insertEvent(ts)
-        tempoTrack.insertEvent(tempo)
-        val noteCount = recordData.size
-        for (i in 0 until noteCount) {
-            val channel = 0
-            val pitch = notesToMidiNotes(recordData[i].keyNum, recordData[i].pitch)
-            val velocity = 100
-            val tick = (i * 480).toLong()
-            val duration: Long = recordData[i].elapseTime - recordData[i].pressTime
-            Log.d("aaa", duration.toString())
-            var durTick: Int
-            if (duration <= 100)
-                durTick = 120
-            else if (duration <= 300)
-                durTick = 240
-            else if (duration <= 600)
-                durTick = 360
-            else
-                durTick = 480
-
-            val noteOn = NoteOn(tick, channel, pitch, velocity)
-            val noteOff = NoteOff((tick + durTick), channel, pitch, 0)
-
-            noteTrack.insertEvent(noteOn)
-            noteTrack.insertEvent(noteOff)
-//            noteTrack.insertNote(channel, pitch, velocity, tick, duration)
-        }
-        val tracks: MutableList<MidiTrack> = ArrayList()
-        // tracks.add(tempoTrack)
-        tracks.add(noteTrack)
-
-        val midi = MidiFile(MidiFile.DEFAULT_RESOLUTION, tracks)
-        midi.writeToFile(file)
+    private fun showRecordResult() {
+        binding?.overviewComposeView?.visibility = View.GONE
+        binding?.scrollView?.visibility = View.GONE
+        binding?.buttonsComposeView?.visibility = View.VISIBLE
+        binding?.staveComposeView?.visibility = View.VISIBLE
     }
 
-    private fun notesToMidiNotes(noteNum: Int, pitch: Int): Int {
-        return if (pitch == 0) notePosMidi[noteNum] + 60
-        else if (pitch == 1) notePosMidi[noteNum] + 72
-        else notePosMidi[noteNum] + 48
+    private fun showPiano() {
+        binding?.overviewComposeView?.visibility = View.VISIBLE
+        binding?.scrollView?.visibility = View.VISIBLE
+        binding?.buttonsComposeView?.visibility = View.GONE
+        binding?.staveComposeView?.visibility = View.GONE
     }
+
+    override fun onPause() {
+        super.onPause()
+        requireActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED)
+    }
+}
+
+private fun pianoKey(key: String, pitch: Int): Int {
+    var resource: Int
+
+    if (pitch == 1) { // C5
+        resource =
+            when (key) {
+                "C" -> R.raw.c
+                "D" -> R.raw.d
+                "C#" -> R.raw.cb
+                "E" -> R.raw.e
+                "D#" -> R.raw.db
+                "F" -> R.raw.f
+                "G" -> R.raw.g
+                "F#" -> R.raw.fb
+                "A" -> R.raw.a
+                "G#" -> R.raw.gb
+                "B" -> R.raw.b
+                "A#" -> R.raw.ab
+                else -> R.raw.c
+            }
+    } else if (pitch == 0) { // C4
+        resource =
+            when (key) {
+                "C" -> R.raw.c4
+                "D" -> R.raw.d4
+                "C#" -> R.raw.cb4
+                "E" -> R.raw.e4
+                "D#" -> R.raw.db4
+                "F" -> R.raw.f4
+                "G" -> R.raw.g4
+                "F#" -> R.raw.fb4
+                "A" -> R.raw.a4
+                "G#" -> R.raw.gb4
+                "B" -> R.raw.b4
+                "A#" -> R.raw.ab4
+                else -> R.raw.c4
+            }
+    } else { // C6
+        resource =
+            when (key) {
+                "C" -> R.raw.c6
+                "D" -> R.raw.d6
+                "C#" -> R.raw.cb6
+                "E" -> R.raw.e6
+                "D#" -> R.raw.db6
+                "F" -> R.raw.f6
+                "G" -> R.raw.g6
+                "F#" -> R.raw.fb6
+                "A" -> R.raw.a6
+                "G#" -> R.raw.gb6
+                "B" -> R.raw.b6
+                "A#" -> R.raw.ab6
+                else -> R.raw.c6
+            }
+    }
+    return resource
 }

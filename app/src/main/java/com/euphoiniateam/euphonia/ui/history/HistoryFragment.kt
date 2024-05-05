@@ -39,6 +39,7 @@ class HistoryFragment : Fragment() {
         listAdapter = HistoryAdapter(
             requireContext(),
             getMidFileNamesFromPiano(),
+//            arrayListOf("First", "Second", "Third", "Песенка"),
             findNavController()
         )
         recyclerView.adapter = listAdapter
