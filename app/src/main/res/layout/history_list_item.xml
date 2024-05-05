@@ -1,51 +1,42 @@
-<!-- history_list_item.xml -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
-    <LinearLayout
-            android:layout_width="match_parent"
+        android:orientation="horizontal"
+        android:padding="8dp"
+        android:background="@color/history_fill">
+
+    <ImageView
+            android:id="@+id/accountPhoto"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:layout_gravity="center"
+            android:scaleType="centerCrop"
+            android:src="@drawable/account_outline"
+            android:layout_marginStart="8dp"/>
+
+    <TextView
+            android:id="@+id/compositionName"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:padding="16dp">
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="16dp"
+            android:layout_weight="1"
+            android:textColor="#E6E0E9"
+            android:textSize="18sp" />
 
-        <ImageView
-                android:id="@+id/accountPhoto"
-                android:layout_width="28dp"
-                android:layout_height="28dp"
-                android:layout_gravity="center"
-                android:scaleType="centerCrop"
-                android:src="@drawable/account_outline" />
-
-        <TextView
-                android:id="@+id/compositionName"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_marginStart="16dp"
-                android:textColor="#FFFFFF"
-                android:textSize="18sp" />
-    </LinearLayout>
-    <LinearLayout
-            android:id="@+id/optionsView"
-            android:layout_width="match_parent"
+    <ImageButton
+            android:id="@+id/button2"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center"
-            android:visibility="gone"
-            >
+            android:src="@drawable/outline_edit_24"
+            android:background="@drawable/round_button_background"
+            android:layout_marginEnd="5dp"/>
+    <ImageButton
+            android:id="@+id/button1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/outline_play_arrow_24"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/round_button_background_no_stroke"/>
 
-        <ImageButton
-                android:id="@+id/button1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/play_arrow"
-                android:layout_marginEnd="16dp" />
-
-        <ImageButton
-                android:id="@+id/button2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_piano" />
-    </LinearLayout>
 </LinearLayout>

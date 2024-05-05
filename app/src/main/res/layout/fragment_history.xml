@@ -19,7 +19,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintVertical_bias="1.0"
+        />
     <LinearLayout
             android:id="@+id/buttonLayout"
             android:layout_width="match_parent"
@@ -38,7 +39,7 @@
                 android:layout_weight="1"
                 android:background="@android:color/transparent"
                 android:text="@string/btn_choose_played"
-                android:textColor="#FFFFFF"/>
+                android:textColor="#E6E0E9"/>
 
         <Button
                 android:id="@+id/button2"
@@ -47,7 +48,7 @@
                 android:layout_weight="1"
                 android:background="@android:color/transparent"
                 android:text="@string/btn_choose_generated"
-                android:textColor="#FFFFFF"/>
+                android:textColor="#E6E0E9"/>
     </LinearLayout>
     <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/searchResults"
