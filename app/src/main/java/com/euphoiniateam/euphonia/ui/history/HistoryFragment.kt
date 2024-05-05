@@ -57,13 +57,13 @@ class HistoryFragment : Fragment() {
             }
         )
         binding.button1.setBackgroundResource(R.drawable.button_bottom_border)
-        binding.button2.setBackgroundResource(0)
+        binding.button2.background = null
         binding.button1.setOnClickListener {
             if (!pianoData) {
                 pianoData = true
                 listAdapter.setData(getMidFileNamesFromPiano())
                 binding.button1.setBackgroundResource(R.drawable.button_bottom_border)
-                binding.button2.setBackgroundResource(0)
+                binding.button2.background = null
             }
         }
 
@@ -72,7 +72,7 @@ class HistoryFragment : Fragment() {
                 pianoData = false
                 listAdapter.setData(getMidFileNamesFromResults())
                 binding.button2.setBackgroundResource(R.drawable.button_bottom_border)
-                binding.button1.setBackgroundResource(0)
+                binding.button1.background = null
             }
         }
         return rootView
