@@ -9,8 +9,10 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.euphoiniateam.euphonia.R
 import com.euphoiniateam.euphonia.databinding.FragmentHistoryBinding
 import com.euphoiniateam.euphonia.tools.getMidFileNamesFromPiano
+import com.euphoiniateam.euphonia.tools.getMidFileNamesFromResults
 
 class HistoryFragment : Fragment() {
 
@@ -20,6 +22,8 @@ class HistoryFragment : Fragment() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var searchView: SearchView
     lateinit var listAdapter: HistoryAdapter
+
+    private var  pianoData = true
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -51,6 +55,25 @@ class HistoryFragment : Fragment() {
                 }
             }
         )
+        binding.button1.setBackgroundResource(R.drawable.button_bottom_border)
+        binding.button2.setBackgroundResource(0)
+        binding.button1.setOnClickListener {
+            if (!pianoData) {
+                pianoData = true
+                listAdapter.setData(getMidFileNamesFromPiano())
+                binding.button1.setBackgroundResource(R.drawable.button_bottom_border)
+                binding.button2.setBackgroundResource(0)
+            }
+        }
+
+        binding.button2.setOnClickListener {
+            if (pianoData) {
+                pianoData = false
+                listAdapter.setData(getMidFileNamesFromResults())
+                binding.button2.setBackgroundResource(R.drawable.button_bottom_border)
+                binding.button1.setBackgroundResource(0)
+            }
+        }
         return rootView
     }
 

@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.euphoiniateam.euphonia.R
 import com.euphoiniateam.euphonia.tools.playMusic
 
-class HistoryAdapter(private val context: Context, private val data: ArrayList<String>, private val navController: NavController) :
+class HistoryAdapter(private val context: Context, private var data: ArrayList<String>, private val navController: NavController) :
     RecyclerView.Adapter<HistoryAdapter.ViewHolder>() {
 
     private var filteredDataList: ArrayList<String> = ArrayList(data)
@@ -76,6 +76,12 @@ class HistoryAdapter(private val context: Context, private val data: ArrayList<S
                 }
             }
         }
+        notifyDataSetChanged()
+    }
+
+    fun setData(newData: ArrayList<String>) {
+        data = ArrayList(newData)
+        filteredDataList = ArrayList(newData)
         notifyDataSetChanged()
     }
 
