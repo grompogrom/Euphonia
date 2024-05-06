@@ -1,4 +1,4 @@
-package com.euphoiniateam.euphonia.ui.creation
+package com.euphoiniateam.euphonia.ui.creation.stave
 
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -7,6 +7,7 @@ import com.euphoiniateam.euphonia.domain.models.Note
 import kotlin.math.min
 
 class StaveHandler(staveConfig: StaveConfig) {
+    private var linesCount: Int = 3
     private val notes = mutableStateListOf<Note>()
     init {
         updateNotes(staveConfig.initialNotes)
@@ -15,12 +16,12 @@ class StaveHandler(staveConfig: StaveConfig) {
     val visibleNotes by derivedStateOf {
         if (notes.isNotEmpty()) {
 
-            staveConfig.linesCount = (notes.size / staveConfig.lineNotesCount) +
-                    (notes.size % staveConfig.lineNotesCount != 0).toInt()
+            linesCount = (notes.size / staveConfig.lineNotesCount) +
+                (notes.size % staveConfig.lineNotesCount != 0).toInt()
 
             notes.subList(
                 0,
-                min(staveConfig.lineNotesCount * staveConfig.linesCount, notes.size)
+                min(staveConfig.lineNotesCount * linesCount, notes.size)
             )
         } else {
             emptyList()
@@ -32,4 +33,7 @@ class StaveHandler(staveConfig: StaveConfig) {
         notes.addAll(newNotes)
     }
 
+    public fun getLinesCount(): Int {
+        return linesCount
+    }
 }

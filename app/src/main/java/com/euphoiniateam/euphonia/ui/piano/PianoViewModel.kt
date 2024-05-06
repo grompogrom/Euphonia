@@ -13,17 +13,17 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import com.euphoiniateam.euphonia.data.repos.NotesRepositoryImpl
 import com.euphoiniateam.euphonia.domain.repos.NotesRepository
 import com.euphoiniateam.euphonia.ui.MidiPlayer
-import com.euphoiniateam.euphonia.ui.creation.StaveConfig
-import com.euphoiniateam.euphonia.ui.creation.StaveHandler
+import com.euphoiniateam.euphonia.ui.creation.stave.StaveConfig
+import com.euphoiniateam.euphonia.ui.creation.stave.StaveHandler
 import com.leff.midi.MidiFile
 import com.leff.midi.MidiTrack
 import com.leff.midi.event.NoteOff
 import com.leff.midi.event.NoteOn
 import com.leff.midi.event.meta.Tempo
 import com.leff.midi.event.meta.TimeSignature
+import java.io.File
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
-import java.io.File
 
 class PianoViewModel(
     private val notesRepository: NotesRepository

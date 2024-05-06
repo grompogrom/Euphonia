@@ -1,4 +1,4 @@
-package com.euphoiniateam.euphonia.ui.creation
+package com.euphoiniateam.euphonia.ui.creation.stave
 
 import android.content.Context
 import android.net.Uri
@@ -24,14 +24,14 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 
-class CreationViewModel(
+class StaveViewModel(
     private val staveRepository: StaveRepository,
     private val notesRepository: NotesRepository
 ) : ViewModel() {
     val staveConfig = StaveConfig()
     val staveHandler = StaveHandler(staveConfig)
     var currentTrackState = MutableStateFlow(Uri.EMPTY)
-    var screenState by mutableStateOf(CreationScreenState())
+    var screenState by mutableStateOf(StaveScreenState())
     private val midiPlayer: MidiPlayer = MidiPlayer()
 
     init {
@@ -118,7 +118,7 @@ class CreationViewModel(
     companion object {
         fun provideFactory(context: Context): ViewModelProvider.Factory = viewModelFactory {
             initializer {
-                CreationViewModel(
+                StaveViewModel(
                     staveRepository = StaveRepositoryImpl(
                         StaveCache(context.dataStore),
                         StaveRemoteDataSourceImp(context)

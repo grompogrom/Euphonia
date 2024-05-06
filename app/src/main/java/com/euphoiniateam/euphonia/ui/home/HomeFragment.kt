@@ -23,7 +23,6 @@ import com.euphoiniateam.euphonia.databinding.FragmentHomeBinding
 import com.euphoiniateam.euphonia.ui.MidiFile
 import java.io.File
 
-
 class HomeFragment : Fragment() {
 
     private var _binding: FragmentHomeBinding? = null
@@ -60,7 +59,9 @@ class HomeFragment : Fragment() {
             val mime = MimeTypeMap.getSingleton()
             mime.getExtensionFromMimeType(context?.contentResolver!!.getType(uri))
         } else {
-            MimeTypeMap.getFileExtensionFromUrl(Uri.fromFile(uri?.path?.let { File(it) }).toString())
+            MimeTypeMap.getFileExtensionFromUrl(
+                Uri.fromFile(uri?.path?.let { File(it) }).toString()
+            )
         }
         return extension
     }

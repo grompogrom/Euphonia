@@ -1,4 +1,4 @@
-package com.euphoiniateam.euphonia.ui.creation
+package com.euphoiniateam.euphonia.ui.creation.stave
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.Canvas
@@ -55,7 +55,7 @@ fun StaveView(
             .scrollable(
                 orientation = Orientation.Vertical,
                 state = rememberScrollableState { delta ->
-                    if (deltaDraw + delta in -425.0 * (state.linesCount - 2)..0.0) // change
+                    if (deltaDraw + delta in -425.0 * (handler.getLinesCount() - 2)..0.0) // change
                         deltaDraw += delta
                     delta
                 }
@@ -71,7 +71,7 @@ fun StaveView(
 
         translate(0f, deltaDraw) {
             // draw lines for stave
-            repeat(state.linesCount) { line ->
+            repeat(handler.getLinesCount()) { line ->
                 val lineDelta = if (line != 0)
                     (verticalOffset + noteLinesHeight) * line else 0f
                 repeat(5) {
@@ -117,7 +117,7 @@ fun StaveView(
             }
 
             // draw scriptKeys
-            for (i in 0 until state.linesCount) {
+            for (i in 0 until handler.getLinesCount()) {
                 translate(
                     0.dp.toPx(),
                     topMargin / 2 +
@@ -274,7 +274,6 @@ fun StaveViewPrev() {
 }
 
 class StaveConfig(
-    var initialNotes: List<Note> = emptyList(),
-    var linesCount: Int = 3,
+    val initialNotes: List<Note> = emptyList(),
     val lineNotesCount: Int = 7,
 )

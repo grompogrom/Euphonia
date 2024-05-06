@@ -1,4 +1,4 @@
-package com.euphoiniateam.euphonia.ui.creation
+package com.euphoiniateam.euphonia.ui.creation.stave
 
 import android.net.Uri
 import android.os.Bundle
@@ -51,9 +51,9 @@ import com.euphoiniateam.euphonia.R
 import com.euphoiniateam.euphonia.databinding.FragmentCreation2Binding
 import com.euphoiniateam.euphonia.ui.MidiFile
 
-class CreationFragment : Fragment() {
+class StaveFragment : Fragment() {
 
-    private lateinit var viewModel: CreationViewModel
+    private lateinit var viewModel: StaveViewModel
     private lateinit var uri: Uri
 
     override fun onCreateView(
@@ -81,8 +81,8 @@ class CreationFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        viewModel = ViewModelProvider(this, CreationViewModel.provideFactory(requireContext()))
-            .get(CreationViewModel::class.java)
+        viewModel = ViewModelProvider(this, StaveViewModel.provideFactory(requireContext()))
+            .get(StaveViewModel::class.java)
 
         val userMidiFile = arguments?.getSerializable("midiFile", MidiFile::class.java)
 
@@ -132,8 +132,10 @@ class CreationFragment : Fragment() {
                 .padding(16.dp)
                 .graphicsLayer(alpha = alpha)
         ) {
-            StaveView(state = staveConfig,
-                handler = staveHandler)
+            StaveView(
+                state = staveConfig,
+                handler = remember { staveHandler }
+            )
         }
     }
 
@@ -211,7 +213,7 @@ class CreationFragment : Fragment() {
 
     @Composable
     fun Screen(
-        viewModel: CreationViewModel,
+        viewModel: StaveViewModel,
         onExitClick: () -> Unit,
         modifier: Modifier = Modifier
     ) {
