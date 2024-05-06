@@ -4,7 +4,6 @@ import android.content.pm.ActivityInfo
 import android.media.SoundPool
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -24,11 +23,10 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import com.euphoiniateam.euphonia.R
 import com.euphoiniateam.euphonia.databinding.FragmentPianoBinding
-import com.euphoiniateam.euphonia.ui.creation.StaveView
+import com.euphoiniateam.euphonia.ui.creation.stave.StaveView
 import kotlinx.coroutines.launch
 
 private val notes = arrayOf("C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B")
@@ -176,6 +174,7 @@ class PianoFragment : Fragment() {
                     ) {
                         StaveView(
                             state = viewModel.staveConfig,
+                            handler = viewModel.staveHandler
                         )
                     }
                 }

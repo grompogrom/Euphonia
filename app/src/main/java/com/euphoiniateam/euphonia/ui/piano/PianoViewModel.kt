@@ -13,7 +13,8 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import com.euphoiniateam.euphonia.data.repos.NotesRepositoryImpl
 import com.euphoiniateam.euphonia.domain.repos.NotesRepository
 import com.euphoiniateam.euphonia.ui.MidiPlayer
-import com.euphoiniateam.euphonia.ui.creation.StaveConfig
+import com.euphoiniateam.euphonia.ui.creation.stave.StaveConfig
+import com.euphoiniateam.euphonia.ui.creation.stave.StaveHandler
 import com.leff.midi.MidiFile
 import com.leff.midi.MidiTrack
 import com.leff.midi.event.NoteOff
@@ -31,6 +32,7 @@ class PianoViewModel(
     private var resultUri: Uri? = null
     private val midiPlayer = MidiPlayer()
     val staveConfig = StaveConfig()
+    val staveHandler = StaveHandler(staveConfig)
     var screenState = MutableStateFlow(
         PianoScreenState(
             PianoState.NO_RECORD,
@@ -70,7 +72,7 @@ class PianoViewModel(
     private suspend fun onRecordFinished() {
         val recognizedNotes = notesRepository.getNotes(resultUri ?: Uri.EMPTY)
         if (recognizedNotes != null) {
-            staveConfig.updateNotes(recognizedNotes)
+            staveHandler.updateNotes(recognizedNotes)
         }
     }
 
@@ -106,7 +108,7 @@ class PianoViewModel(
         midiPlayer.release()
         recordData.clear()
         resultUri = null
-        staveConfig.updateNotes(emptyList())
+        staveHandler.updateNotes(emptyList())
     }
 
     fun onRealiseKey(pitch: Int, key: Int) {

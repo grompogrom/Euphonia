@@ -1,4 +1,4 @@
-package com.euphoiniateam.euphonia.ui.creation
+package com.euphoiniateam.euphonia.ui.creation.stave
 
 import android.net.Uri
 import android.os.Bundle
@@ -49,10 +49,11 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.euphoiniateam.euphonia.R
 import com.euphoiniateam.euphonia.databinding.FragmentCreation2Binding
+import com.euphoiniateam.euphonia.ui.MidiFile
 
-class CreationFragment : Fragment() {
+class StaveFragment : Fragment() {
 
-    private lateinit var viewModel: CreationViewModel
+    private lateinit var viewModel: StaveViewModel
     private lateinit var uri: Uri
 
     override fun onCreateView(
@@ -80,13 +81,13 @@ class CreationFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        viewModel = ViewModelProvider(this, CreationViewModel.provideFactory(requireContext()))
-            .get(CreationViewModel::class.java)
+        viewModel = ViewModelProvider(this, StaveViewModel.provideFactory(requireContext()))
+            .get(StaveViewModel::class.java)
 
-        val uriArg = arguments?.getString("uri")
+        val userMidiFile = arguments?.getSerializable("midiFile", MidiFile::class.java)
 
-        uriArg?.let {
-            uri = Uri.parse(uriArg)
+        userMidiFile?.let {
+            uri = userMidiFile.uri
             viewModel.setCurrentUri(requireContext(), uri)
             viewModel.getNotes(uri)
         }
@@ -101,6 +102,7 @@ class CreationFragment : Fragment() {
     @Composable
     fun Stave(
         staveConfig: StaveConfig,
+        staveHandler: StaveHandler,
         modifier: Modifier = Modifier,
         isLoading: Boolean
     ) {
@@ -130,7 +132,10 @@ class CreationFragment : Fragment() {
                 .padding(16.dp)
                 .graphicsLayer(alpha = alpha)
         ) {
-            StaveView(state = staveConfig)
+            StaveView(
+                state = staveConfig,
+                handler = remember { staveHandler }
+            )
         }
     }
 
@@ -208,7 +213,7 @@ class CreationFragment : Fragment() {
 
     @Composable
     fun Screen(
-        viewModel: CreationViewModel,
+        viewModel: StaveViewModel,
         onExitClick: () -> Unit,
         modifier: Modifier = Modifier
     ) {
@@ -218,6 +223,7 @@ class CreationFragment : Fragment() {
         ) {
             Stave(
                 staveConfig = viewModel.staveConfig,
+                staveHandler = viewModel.staveHandler,
                 isLoading = viewModel.screenState.isLoading,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -277,7 +283,7 @@ class CreationFragment : Fragment() {
                 color = MaterialTheme.colorScheme.background
             ) {
 
-                Stave(StaveConfig(), isLoading = true)
+                Stave(StaveConfig(), StaveHandler(StaveConfig()), isLoading = true)
             }
         }
     }

@@ -1,4 +1,4 @@
-package com.euphoiniateam.euphonia.ui.creation
+package com.euphoiniateam.euphonia.ui.creation.stave
 
 import android.content.Context
 import android.net.Uri
@@ -24,13 +24,14 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 
-class CreationViewModel(
+class StaveViewModel(
     private val staveRepository: StaveRepository,
     private val notesRepository: NotesRepository
 ) : ViewModel() {
     val staveConfig = StaveConfig()
+    val staveHandler = StaveHandler(staveConfig)
     var currentTrackState = MutableStateFlow(Uri.EMPTY)
-    var screenState by mutableStateOf(CreationScreenState())
+    var screenState by mutableStateOf(StaveScreenState())
     private val midiPlayer: MidiPlayer = MidiPlayer()
 
     init {
@@ -50,7 +51,7 @@ class CreationViewModel(
         viewModelScope.launch(Dispatchers.IO) {
             screenState = screenState.copy(isLoading = true)
             val newStave = staveRepository.generateStave()
-            staveConfig.updateNotes(newStave.initialNotes + newStave.generatedNotes)
+            staveHandler.updateNotes(newStave.initialNotes + newStave.generatedNotes)
             screenState = screenState.copy(isLoading = false)
         }
     }
@@ -70,7 +71,7 @@ class CreationViewModel(
                 val newMidi = staveRepository.generateMidi(uri, 5)
 
                 val notes = notesRepository.getNotes(newMidi)
-                notes?.let { staveConfig.updateNotes(it) }
+                notes?.let { staveHandler.updateNotes(it) }
                 setCurrentUri(context, newMidi)
                 currentTrackState.emit(newMidi)
                 screenState.copy(isLoading = false)
@@ -85,7 +86,7 @@ class CreationViewModel(
         viewModelScope.launch(Dispatchers.IO) {
             screenState = screenState.copy(isLoading = true)
             val newStave = staveRepository.getStave()
-            staveConfig.updateNotes(newStave.initialNotes + newStave.generatedNotes)
+            staveHandler.updateNotes(newStave.initialNotes + newStave.generatedNotes)
             screenState = screenState.copy(isLoading = false)
         }
     }
@@ -103,7 +104,7 @@ class CreationViewModel(
             screenState = screenState.copy(isLoading = true)
             val initialNotes = notesRepository.getNotes(uri)
             if (initialNotes != null) {
-                staveConfig.updateNotes(initialNotes)
+                staveHandler.updateNotes(initialNotes)
             }
             screenState = screenState.copy(isLoading = false)
         }
@@ -117,7 +118,7 @@ class CreationViewModel(
     companion object {
         fun provideFactory(context: Context): ViewModelProvider.Factory = viewModelFactory {
             initializer {
-                CreationViewModel(
+                StaveViewModel(
                     staveRepository = StaveRepositoryImpl(
                         StaveCache(context.dataStore),
                         StaveRemoteDataSourceImp(context)

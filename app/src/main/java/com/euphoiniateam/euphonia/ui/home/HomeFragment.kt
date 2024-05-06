@@ -1,6 +1,8 @@
 package com.euphoiniateam.euphonia.ui.home
 
 import android.Manifest
+import android.content.ContentResolver
+import android.content.Context
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -8,6 +10,7 @@ import android.transition.TransitionInflater
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.webkit.MimeTypeMap
 import android.widget.ImageButton
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
@@ -17,17 +20,25 @@ import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import com.euphoiniateam.euphonia.R
 import com.euphoiniateam.euphonia.databinding.FragmentHomeBinding
+import com.euphoiniateam.euphonia.ui.MidiFile
+import java.io.File
+
 class HomeFragment : Fragment() {
 
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
 
+    private val fileExtensions: List<String> = listOf("rtx", "mid", "midi", "smf")
+
     private val getContent = registerForActivityResult(
         ActivityResultContracts.GetContent()
     ) { uri: Uri? ->
-        if (uri != null) {
+        val extension = getMimeType(context, uri)
+        if (fileExtensions.contains(extension)) {
+
             val bundle = Bundle()
-            bundle.putString("uri", uri.toString())
+            val userMidiFile = uri?.let { MidiFile(it) }
+            bundle.putSerializable("midiFile", userMidiFile)
             val navController = findNavController()
             navController.navigate(R.id.action_navigation_home_to_creationFragment, bundle)
         }
@@ -39,8 +50,20 @@ class HomeFragment : Fragment() {
         if (isGranted) {
             getContent.launch("audio/midi")
         } else {
-            Toast.makeText(context, "permisson not granted", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, "permission not granted", Toast.LENGTH_SHORT).show()
         }
+    }
+
+    private fun getMimeType(context: Context?, uri: Uri?): String? {
+        val extension: String? = if (uri?.scheme == ContentResolver.SCHEME_CONTENT) {
+            val mime = MimeTypeMap.getSingleton()
+            mime.getExtensionFromMimeType(context?.contentResolver!!.getType(uri))
+        } else {
+            MimeTypeMap.getFileExtensionFromUrl(
+                Uri.fromFile(uri?.path?.let { File(it) }).toString()
+            )
+        }
+        return extension
     }
 
     override fun onCreateView(
