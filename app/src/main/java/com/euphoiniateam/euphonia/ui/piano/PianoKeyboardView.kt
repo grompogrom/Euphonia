@@ -3,10 +3,11 @@ package com.euphoiniateam.euphonia.ui.piano
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.awaitEachGesture
+import androidx.compose.foundation.gestures.awaitFirstDown
+import androidx.compose.foundation.gestures.detectDragGestures
+import androidx.compose.foundation.gestures.waitForUpOrCancellation
 import androidx.compose.foundation.horizontalScroll
-import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -33,6 +34,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -43,33 +45,36 @@ val blackIndexes = listOf(1, 3, -1, 6, 8, 10)
 @Composable
 fun Key(
     color: Color,
-    onButtonDown: () -> Unit = { println("down") },
-    onButtonUp: () -> Unit = { println("up") },
     modifier: Modifier = Modifier,
+    onButtonDown: () -> Unit = { },
+    onButtonUp: () -> Unit = { },
 ) {
-    val interactionSource = remember { MutableInteractionSource() }
-    val isPressed by interactionSource.collectIsPressedAsState()
-    // try pointer input
+    var isPressed by remember { mutableStateOf(false) }
     val backgroundColor by animateColorAsState(
         targetValue = if (isPressed) Color.Gray else color,
         animationSpec = tween(durationMillis = 200)
     )
 
-    LaunchedEffect(key1 = isPressed) {
-        if (isPressed) {
-            onButtonDown()
-        } else {
-            onButtonUp()
-        }
-    }
     Box(
         modifier = modifier
             .padding(horizontal = 2.dp)
-            .clickable(interactionSource, null) {}
             .background(
                 backgroundColor,
                 RoundedCornerShape(bottomStart = 10.dp, bottomEnd = 10.dp)
-            ),
+            )
+            .pointerInput(onButtonDown) {
+                awaitPointerEventScope { }
+                awaitEachGesture {
+                    awaitFirstDown().also {
+                        isPressed = true
+                        onButtonDown()
+                        it.consume()
+                    }
+                    waitForUpOrCancellation()?.consume()
+                    isPressed = false
+                    onButtonUp()
+                }
+            }
     ) {
     }
 }
@@ -183,6 +188,14 @@ fun PianoKeyboard(
                 )
             }
         }
+    }
+}
+
+@Preview
+@Composable
+private fun KeyPrev() {
+    MaterialTheme {
+        Key(color = Color.White, modifier = Modifier.fillMaxSize())
     }
 }
 
