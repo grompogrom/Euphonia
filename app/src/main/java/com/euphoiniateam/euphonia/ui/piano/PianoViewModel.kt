@@ -27,7 +27,6 @@ import kotlinx.coroutines.launch
 class PianoViewModel(
     private val notesRepository: NotesRepository
 ) : ViewModel() {
-    private val notePosMidi = arrayListOf(0, 2, 1, 4, 3, 5, 7, 6, 9, 8, 11, 10)
     private var recordData: MutableList<PianoEvent> = mutableListOf()
     private var resultUri: Uri? = null
     private val midiPlayer = MidiPlayer()
@@ -112,7 +111,6 @@ class PianoViewModel(
 
     fun onRealiseKey(pitch: Int, key: Int) {
         if (screenState.value.recordingState == PianoState.RECORDING) {
-            Log.d("AAA", "realise key")
             for (l in 0 until recordData.size) {
                 if (recordData[l].elapseTime == -1L &&
                     recordData[l].keyNum == key &&
@@ -175,10 +173,10 @@ class PianoViewModel(
         Toast.makeText(context, "saved to ${file.path}", Toast.LENGTH_LONG).show()
     }
 
-    fun notesToMidiNotes(noteNum: Int, pitch: Int): Int {
-        return if (pitch == 0) notePosMidi[noteNum] + 60
-        else if (pitch == 1) notePosMidi[noteNum] + 72
-        else notePosMidi[noteNum] + 48
+    private fun notesToMidiNotes(noteNum: Int, pitch: Int): Int {
+        return if (pitch == 0) noteNum + 60
+        else if (pitch == 1) noteNum + 72
+        else noteNum + 48
     }
 
     companion object {

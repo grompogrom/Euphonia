@@ -1,19 +1,13 @@
 package com.euphoiniateam.euphonia.ui.piano
 
-import android.annotation.SuppressLint
 import android.content.pm.ActivityInfo
-import android.graphics.drawable.ColorDrawable
 import android.media.SoundPool
 import android.net.Uri
 import android.os.Bundle
-import android.view.Gravity
+import android.util.Log
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.LinearLayout
-import androidx.appcompat.content.res.AppCompatResources.getDrawable
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
@@ -25,8 +19,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.compose.ui.unit.dp
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.content.ContextCompat.getColor
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -39,8 +31,8 @@ import com.euphoiniateam.euphonia.databinding.FragmentPianoBinding
 import com.euphoiniateam.euphonia.ui.creation.StaveView
 import kotlinx.coroutines.launch
 
-private val notes = arrayOf("C", "D", "C#", "E", "D#", "F", "G", "F#", "A", "G#", "B", "A#")
-private val blackKeys = arrayOf(2, 4, 7, 9, 11)
+private val notes = arrayOf("C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B")
+private val blackKeys = arrayOf(1, 3, 6, 8, 10)
 
 class PianoFragment : Fragment() {
 
@@ -60,7 +52,8 @@ class PianoFragment : Fragment() {
     ): View? {
         requireActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE)
         binding = FragmentPianoBinding.inflate(inflater, container, false)
-        initKeyboard(inflater, container)
+//        initKeyboard(inflater, container)
+        initKeyboard2()
         initOverlay()
         initButtons()
         initStave()
@@ -68,77 +61,55 @@ class PianoFragment : Fragment() {
         return binding!!.root
     }
 
-    @SuppressLint("ClickableViewAccessibility") // FIXME
-    private fun initKeyboard(
-        inflater: LayoutInflater,
-        container: ViewGroup?
-    ) {
-        for (i in 0..2) {
-            val pianoView: View = inflater.inflate(R.layout.piano, container, false)
-            val octave: ConstraintLayout = pianoView.findViewById(R.id.octave)
-            for (x in 0 until octave.childCount) {
-                noteMap[pianoKey(notes[x], i)] = sndPool.load(
+    private fun onKeyboardKeyDown(octave: Int, pitch: Int) {
+        noteMap[pianoKey(notes[pitch], octave)]?.let { it1 ->
+            sndPool.play(
+                it1,
+                1F,
+                1F,
+                1,
+                0,
+                1.0f
+            )
+        }
+
+        viewModel.onPushKey(
+            PianoEvent(
+                -1L,
+                System.currentTimeMillis(),
+                pitch,
+                octave
+            )
+        )
+    }
+
+    private fun onKeyboardKeyUp(octave: Int, pitch: Int) {
+        viewModel.onRealiseKey(pitch, octave)
+    }
+
+    private fun initKeyboard2() {
+        val octaveCount = 3
+        for (octaveN in 0 until octaveCount) {
+            for (pitchN in 0 until 12) {
+                noteMap[pianoKey(notes[pitchN], octaveN)] = sndPool.load(
                     requireContext(),
-                    pianoKey(notes[x], i),
+                    pianoKey(notes[pitchN], octaveN),
                     1
                 )
-                (octave.getChildAt(x) as Button).setOnTouchListener { v, event ->
-                    when (event.action) {
-                        MotionEvent.ACTION_DOWN -> {
-                            if (x in blackKeys) {
-                                v.background =
-                                    ColorDrawable(
-                                        resources.getColor(R.color.md_theme_dark_background)
-                                    )
-                            } else {
-                                v.background = ColorDrawable(
-                                    (resources.getColor(androidx.appcompat.R.color.material_grey_50))
-                                )
-                            }
-                            noteMap[pianoKey(notes[x], i)]?.let { it1 ->
-                                sndPool.play(
-                                    it1,
-                                    1F,
-                                    1F,
-                                    1,
-                                    0,
-                                    1.0f
-                                )
-                            }
-                            viewModel.onPushKey(PianoEvent(-1L, System.currentTimeMillis(), x, i))
-                        }
-
-                        MotionEvent.ACTION_UP -> {
-                            if (x in blackKeys) {
-                                v.background =
-                                    ColorDrawable(
-                                        getColor(
-                                            requireContext(),
-                                            androidx.cardview.R.color.cardview_dark_background
-                                        )
-                                    )
-                            } else {
-                                v.background =
-                                    getDrawable(requireContext(), R.drawable.piano_borders)
-                            }
-
-                            viewModel.onRealiseKey(x, i)
-                        }
-
-                        else -> {}
-                    }
-                    true
+            }
+        }
+        binding?.composePiano?.apply {
+            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+            setContent {
+                MaterialTheme(
+                    colorScheme = darkColorScheme()
+                ) {
+                    PianoKeyboard(
+                        onKeyDown = { octave: Int, pitch: Int -> onKeyboardKeyDown(octave, pitch) },
+                        onKeyUp = { octave: Int, pitch: Int -> onKeyboardKeyUp(octave, pitch) }
+                    )
                 }
             }
-            binding!!.linear1.addView(
-                pianoView,
-                i,
-                LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.MATCH_PARENT,
-                    LinearLayout.LayoutParams.MATCH_PARENT
-                )
-                    .apply { gravity = Gravity.TOP }
-            )
         }
     }
 
@@ -236,14 +207,14 @@ class PianoFragment : Fragment() {
 
     private fun showRecordResult() {
         binding?.overviewComposeView?.visibility = View.GONE
-        binding?.scrollView?.visibility = View.GONE
+        binding?.composePiano?.visibility = View.GONE
         binding?.buttonsComposeView?.visibility = View.VISIBLE
         binding?.staveComposeView?.visibility = View.VISIBLE
     }
 
     private fun showPiano() {
         binding?.overviewComposeView?.visibility = View.VISIBLE
-        binding?.scrollView?.visibility = View.VISIBLE
+        binding?.composePiano?.visibility = View.VISIBLE
         binding?.buttonsComposeView?.visibility = View.GONE
         binding?.staveComposeView?.visibility = View.GONE
     }
@@ -254,10 +225,10 @@ class PianoFragment : Fragment() {
     }
 }
 
-private fun pianoKey(key: String, pitch: Int): Int {
+private fun pianoKey(key: String, octave: Int): Int {
     var resource: Int
 
-    if (pitch == 1) { // C5
+    if (octave == 1) { // C5
         resource =
             when (key) {
                 "C" -> R.raw.c
@@ -274,7 +245,7 @@ private fun pianoKey(key: String, pitch: Int): Int {
                 "A#" -> R.raw.ab
                 else -> R.raw.c
             }
-    } else if (pitch == 0) { // C4
+    } else if (octave == 0) { // C4
         resource =
             when (key) {
                 "C" -> R.raw.c4
