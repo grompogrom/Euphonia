@@ -56,23 +56,23 @@ class HistoryFragment : Fragment() {
                 }
             }
         )
-        binding.button1.setBackgroundResource(R.drawable.button_bottom_border)
-        binding.button2.background = null
-        binding.button1.setOnClickListener {
+        binding.btnShowPlayed.setBackgroundResource(R.drawable.button_bottom_border)
+        binding.btnShowGenerated.background = null
+        binding.btnShowPlayed.setOnClickListener {
             if (!pianoData) {
                 pianoData = true
                 listAdapter.setData(getMidFileNamesFromPiano())
-                binding.button1.setBackgroundResource(R.drawable.button_bottom_border)
-                binding.button2.background = null
+                binding.btnShowPlayed.setBackgroundResource(R.drawable.button_bottom_border)
+                binding.btnShowGenerated.background = null
             }
         }
 
-        binding.button2.setOnClickListener {
+        binding.btnShowGenerated.setOnClickListener {
             if (pianoData) {
                 pianoData = false
                 listAdapter.setData(getMidFileNamesFromResults())
-                binding.button2.setBackgroundResource(R.drawable.button_bottom_border)
-                binding.button1.background = null
+                binding.btnShowGenerated.setBackgroundResource(R.drawable.button_bottom_border)
+                binding.btnShowPlayed.background = null
             }
         }
         return rootView

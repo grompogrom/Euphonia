@@ -49,8 +49,8 @@ class HistoryAdapter(private val context: Context, private var data: ArrayList<S
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val textView: TextView = itemView.findViewById(R.id.compositionName)
-        val button1: ImageButton = itemView.findViewById(R.id.button1)
-        val button2: ImageButton = itemView.findViewById(R.id.button2)
+        val button1: ImageButton = itemView.findViewById(R.id.btn_show_played)
+        val button2: ImageButton = itemView.findViewById(R.id.btn_show_generated)
     }
 
     fun filter(query: String?) {

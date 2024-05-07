@@ -21,18 +21,18 @@
             android:layout_gravity="center_vertical"
             android:layout_marginStart="16dp"
             android:layout_weight="1"
-            android:textColor="#E6E0E9"
+            android:textColor="@color/history_list_item_color"
             android:textSize="18sp" />
 
     <ImageButton
-            android:id="@+id/button2"
+            android:id="@+id/btn_show_generated"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/outline_edit_24"
             android:background="@drawable/round_button_background"
             android:layout_marginEnd="5dp"/>
     <ImageButton
-            android:id="@+id/button1"
+            android:id="@+id/btn_show_played"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/outline_play_arrow_24"

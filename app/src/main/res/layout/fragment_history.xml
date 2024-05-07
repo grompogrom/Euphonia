@@ -33,22 +33,22 @@
             app:layout_constraintEnd_toEndOf="parent">
 
         <Button
-                android:id="@+id/button1"
+                android:id="@+id/btn_show_played"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="@android:color/transparent"
                 android:text="@string/btn_choose_played"
-                android:textColor="#E6E0E9"/>
+                android:textColor="@color/history_list_item_color"/>
 
         <Button
-                android:id="@+id/button2"
+                android:id="@+id/btn_show_generated"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="@android:color/transparent"
                 android:text="@string/btn_choose_generated"
-                android:textColor="#E6E0E9"/>
+                android:textColor="@color/history_list_item_color"/>
     </LinearLayout>
     <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/searchResults"
