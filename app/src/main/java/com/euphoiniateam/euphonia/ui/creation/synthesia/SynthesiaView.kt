@@ -62,7 +62,6 @@ fun SynthesiaView(
                 color = MaterialTheme.colorScheme.surfaceVariant,
                 modifier = Modifier
 
-
             ) {
                 Piano(state)
             }
@@ -70,9 +69,8 @@ fun SynthesiaView(
                 modifier = modifier
                     .fillMaxSize()
 
-
             ) {
-                val beginningPoint = 0f //size.width/2 - state.whiteHeight.toPx()
+                val beginningPoint = 0f // size.width/2 - state.whiteHeight.toPx()
                 var prevNotesDuration = 0f
                 handler.visibleNotes.forEachIndexed { index, note ->
 
@@ -96,9 +94,14 @@ fun SynthesiaView(
                             )
                         }
                         prevNotesDuration += durationWidth
-                    }
-                    else if (note.note in blackNotes) {
-                        translate(beginningPoint + prevNotesDuration, (state.whiteHeight.toPx() * note.pitch - (state.blackHeight / 2).toPx()) + 0.8.dp.toPx()) {
+                    } else if (note.note in blackNotes) {
+                        translate(
+                            beginningPoint + prevNotesDuration,
+                            (
+                                state.whiteHeight.toPx() *
+                                    note.pitch - (state.blackHeight / 2).toPx()
+                                ) + 0.8.dp.toPx()
+                        ) {
                             drawRect(
                                 color = colorForBlackNotes,
                                 size = Size(durationWidth, state.blackHeight.toPx())
@@ -106,16 +109,10 @@ fun SynthesiaView(
                         }
                         prevNotesDuration += durationWidth
                     }
-
                 }
             }
         }
-
     }
-
-
-
-
 }
 
 @Composable
@@ -159,7 +156,6 @@ fun PianoOctave(
                         .padding(vertical = 0.5.dp)
                         .fillMaxWidth(whiteWidth),
                 )
-
             }
         }
         Column(
@@ -208,32 +204,32 @@ fun Piano(
     }
 }
 
-
-
-
 @Preview
 @Composable
 fun SynthesiaViewPrev() {
     MaterialTheme {
         SynthesiaView(
             SynthesiaConfig(),
-            SynthesiaHandler(SynthesiaConfig(listOf(
-                Note(1, 1, 0.2f, 0.0f),
-                Note(0, 0, 0.3f, 0.0f),
-                Note(1, 2, 0.45f, 0.0f),
-                Note(2, 3, 0.2f, 0.0f),
-                Note(2, 4, 0.24f, 0.0f),
-                Note(3, 5, 0.1f, 0.0f),
-                Note(4, 6, 0.05f, 0.0f),
-                Note(4, 7, 0.60f, 0.0f),
-                Note(5, 8, 0.80f, 0.0f),
-                Note(5, 9, 0.67f, 0.0f)
-            ))),
+            SynthesiaHandler(
+                SynthesiaConfig(
+                    listOf(
+                        Note(1, 1, 0.2f, 0.0f),
+                        Note(0, 0, 0.3f, 0.0f),
+                        Note(1, 2, 0.45f, 0.0f),
+                        Note(2, 3, 0.2f, 0.0f),
+                        Note(2, 4, 0.24f, 0.0f),
+                        Note(3, 5, 0.1f, 0.0f),
+                        Note(4, 6, 0.05f, 0.0f),
+                        Note(4, 7, 0.60f, 0.0f),
+                        Note(5, 8, 0.80f, 0.0f),
+                        Note(5, 9, 0.67f, 0.0f)
+                    )
+                )
+            ),
             modifier = Modifier.fillMaxSize()
         )
     }
 }
-
 
 class SynthesiaConfig(
     val initialNotes: List<Note> = emptyList(),

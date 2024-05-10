@@ -15,9 +15,8 @@ class SynthesiaHandler(synthesiaConfig: SynthesiaConfig) {
 
     val visibleNotes by derivedStateOf {
         if (notes.isNotEmpty()) {
-            notes// maybe change
-        }
-        else {
+            notes // maybe change
+        } else {
             emptyList()
         }
     }
@@ -26,5 +25,4 @@ class SynthesiaHandler(synthesiaConfig: SynthesiaConfig) {
         notes.clear()
         notes.addAll(newNotes)
     }
-
 }

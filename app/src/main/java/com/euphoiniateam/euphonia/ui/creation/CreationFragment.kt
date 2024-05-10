@@ -185,8 +185,6 @@ class CreationFragment : Fragment() {
                 handler = remember { synthesiaHandler },
             )
         }
-
-
     }
 
     @Composable
@@ -280,8 +278,7 @@ class CreationFragment : Fragment() {
                         .fillMaxWidth()
                         .requiredHeight(500.dp)
                 )
-            }
-            else {
+            } else {
                 Synthesia(
                     synthesiaConfig = viewModel.synthesiaConfig,
                     synthesiaHandler = viewModel.synthesiaHandler,

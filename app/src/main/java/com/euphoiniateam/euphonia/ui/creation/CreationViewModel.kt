@@ -46,7 +46,6 @@ class CreationViewModel(
     var screenState by mutableStateOf(CreationScreenState())
     private val midiPlayer: MidiPlayer = MidiPlayer()
 
-
     private val staveChosen = false
 
     init {
