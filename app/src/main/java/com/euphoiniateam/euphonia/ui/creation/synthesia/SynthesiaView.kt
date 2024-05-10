@@ -7,12 +7,13 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -22,13 +23,23 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.euphoiniateam.euphonia.domain.models.Note
 
+const val note4Duration = 0.55
+const val note8Duration = 0.30
+const val note16Duration = 0.10
+
+const val note4Width = 300f
+const val note8Width = 150f
+const val note16Width = 75f
 
 @Composable
 @SuppressLint("MagicNumber")
@@ -38,25 +49,72 @@ fun SynthesiaView(
     modifier: Modifier = Modifier
 ) {
 
-
-    Canvas(
-        modifier = modifier
-            .fillMaxSize()
-    ) {
-
-
-    }
-    MaterialTheme(
-        colorScheme = darkColorScheme()
-    ) {
-        Surface(
-            color = MaterialTheme.colorScheme.surfaceVariant,
-            modifier = Modifier
-
+    val whiteNotes = intArrayOf(0, 2, 4, 5, 7, 9, 11)
+    val blackNotes = intArrayOf(1, 3, 6, 8, 10)
+    Row {
+        MaterialTheme(
+            colorScheme = darkColorScheme()
         ) {
-            Piano(state)
+            val colorForWhiteNotes = MaterialTheme.colorScheme.onPrimaryContainer
+            val colorForBlackNotes = MaterialTheme.colorScheme.onPrimary
+
+            Surface(
+                color = MaterialTheme.colorScheme.surfaceVariant,
+                modifier = Modifier
+
+
+            ) {
+                Piano(state)
+            }
+            Canvas(
+                modifier = modifier
+                    .fillMaxSize()
+
+
+            ) {
+                val beginningPoint = 0f //size.width/2 - state.whiteHeight.toPx()
+                var prevNotesDuration = 0f
+                handler.visibleNotes.forEachIndexed { index, note ->
+
+                    var durationWidth = 0f
+
+                    if (note.duration >= note4Duration)
+                        durationWidth = note4Width
+                    else if (note.duration >= note8Duration)
+                        durationWidth = note8Width
+                    else if (note.duration >= note16Duration)
+                        durationWidth = note16Width
+
+                    if (note.note in whiteNotes) {
+                        translate(
+                            beginningPoint + prevNotesDuration,
+                            state.whiteHeight.toPx() * note.pitch
+                        ) {
+                            drawRect(
+                                color = colorForWhiteNotes,
+                                size = Size(durationWidth, state.whiteHeight.toPx())
+                            )
+                        }
+                        prevNotesDuration += durationWidth
+                    }
+                    else if (note.note in blackNotes) {
+                        translate(beginningPoint + prevNotesDuration, (state.whiteHeight.toPx() * note.pitch - (state.blackHeight / 2).toPx()) + 0.8.dp.toPx()) {
+                            drawRect(
+                                color = colorForBlackNotes,
+                                size = Size(durationWidth, state.blackHeight.toPx())
+                            )
+                        }
+                        prevNotesDuration += durationWidth
+                    }
+
+                }
+            }
         }
+
     }
+
+
+
 
 }
 
@@ -73,10 +131,9 @@ fun Key(
 
     Box(
         modifier = modifier
-            .padding(horizontal = 2.dp)
             .background(
                 backgroundColor,
-                RoundedCornerShape(bottomStart = 10.dp, bottomEnd = 10.dp)
+                RoundedCornerShape(bottomStart = 5.dp, topStart = 5.dp)
             )
 
     ) {}
@@ -84,39 +141,45 @@ fun Key(
 
 @Composable
 fun PianoOctave(
-    whiteWidth: Dp = 120.dp,
-    blackWidth: Dp = 47.dp,
-    whiteHeight: Float = 1f,
-    blackHeight: Float = 0.5f,
+    whiteHeight: Dp = 120.dp,
+    blackHeight: Dp = 47.dp,
+    whiteWidth: Float = 1f,
+    blackWidth: Float = 0.5f,
     modifier: Modifier = Modifier
 ) {
     Box(modifier = modifier) {
-        Row(
+        Column(
             modifier = modifier
         ) {
             repeat(7) {
                 Key(
                     color = Color.White,
                     modifier = Modifier
-                        .width(whiteWidth)
-                        .fillMaxHeight(whiteHeight),
+                        .height(whiteHeight)
+                        .padding(vertical = 0.5.dp)
+                        .fillMaxWidth(whiteWidth),
                 )
+
             }
         }
-        Row(
-            modifier = modifier.padding(horizontal = whiteWidth - blackWidth / 2),
-            horizontalArrangement = Arrangement.spacedBy(whiteWidth - blackWidth)
+        Column(
+            modifier = modifier
+                .padding(vertical = whiteHeight + 0.5.dp - blackHeight / 2)
+                .align(Alignment.BottomEnd),
+
+            verticalArrangement = Arrangement.spacedBy(whiteHeight - blackHeight)
+
         ) {
             repeat(6) {
                 if (it != 2) {
                     Key(
                         color = Color.Black,
                         modifier = Modifier
-                            .width(blackWidth)
-                            .fillMaxHeight(blackHeight),
+                            .height(blackHeight)
+                            .fillMaxWidth(blackWidth),
                     )
                 } else
-                    Spacer(modifier = Modifier.width(blackWidth))
+                    Spacer(modifier = Modifier.height(blackHeight))
             }
         }
     }
@@ -127,16 +190,17 @@ fun Piano(
     state: SynthesiaConfig,
     modifier: Modifier = Modifier
 ) {
-    Row(
+
+    Column(
         modifier = Modifier
 
     ) {
         repeat(state.octaveCount) {
             PianoOctave(
-                whiteWidth = 20.dp,
-                blackWidth = 15.dp,
-                whiteHeight = 0.15f,
-                blackHeight = 0.1f,
+                whiteHeight = state.whiteHeight,
+                blackHeight = state.blackHeight,
+                whiteWidth = state.whiteWidth,
+                blackWidth = state.blackWidth,
                 modifier = Modifier
 
             )
@@ -152,21 +216,19 @@ fun Piano(
 fun SynthesiaViewPrev() {
     MaterialTheme {
         SynthesiaView(
-            SynthesiaConfig(
-                listOf(
-                    Note(5, 9, 0.25f, 0.0f),
-                    Note(5, 8, 0.25f, 0.0f),
-                    Note(0, 0, 0.25f, 0.0f),
-                    Note(0, 0, 0.0f, 0.0f),
-                    Note(5, 8, 0.25f, 0.0f),
-                    Note(5, 8, 0.25f, 0.0f),
-                    Note(5, 8, 0.25f, 0.0f),
-                    Note(5, 8, 0.25f, 0.0f),
-                    Note(5, 8, 0.25f, 0.0f),
-                    Note(5, 8, 0.25f, 0.0f)
-                )
-            ),
-            SynthesiaHandler(SynthesiaConfig()),
+            SynthesiaConfig(),
+            SynthesiaHandler(SynthesiaConfig(listOf(
+                Note(1, 1, 0.2f, 0.0f),
+                Note(0, 0, 0.3f, 0.0f),
+                Note(1, 2, 0.45f, 0.0f),
+                Note(2, 3, 0.2f, 0.0f),
+                Note(2, 4, 0.24f, 0.0f),
+                Note(3, 5, 0.1f, 0.0f),
+                Note(4, 6, 0.05f, 0.0f),
+                Note(4, 7, 0.60f, 0.0f),
+                Note(5, 8, 0.80f, 0.0f),
+                Note(5, 9, 0.67f, 0.0f)
+            ))),
             modifier = Modifier.fillMaxSize()
         )
     }
@@ -176,6 +238,8 @@ fun SynthesiaViewPrev() {
 class SynthesiaConfig(
     val initialNotes: List<Note> = emptyList(),
     val octaveCount: Int = 3,
-    val colorForWhiteNotes: Color = Color.Green,
-    val colorForBlackNotes: Color = Color.Blue
+    val whiteHeight: Dp = 500.dp / (octaveCount * 7) - 2.dp,
+    val blackHeight: Dp = 10.dp,
+    val whiteWidth: Float = 0.2f,
+    val blackWidth: Float = 0.1f,
 )

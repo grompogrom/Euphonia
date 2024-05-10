@@ -46,6 +46,9 @@ class CreationViewModel(
     var screenState by mutableStateOf(CreationScreenState())
     private val midiPlayer: MidiPlayer = MidiPlayer()
 
+
+    private val staveChosen = false
+
     init {
         viewModelScope.launch {
             midiPlayer.playerState.collect {
@@ -112,7 +115,10 @@ class CreationViewModel(
             screenState = screenState.copy(isLoading = true)
             val initialNotes = notesRepository.getNotes(uri)
             if (initialNotes != null) {
-                staveHandler.updateNotes(initialNotes)
+                if (staveChosen)
+                    staveHandler.updateNotes(initialNotes)
+                else
+                    synthesiaHandler.updateNotes(initialNotes)
             }
             screenState = screenState.copy(isLoading = false)
         }

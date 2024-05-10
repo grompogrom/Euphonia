@@ -253,9 +253,10 @@ fun StaveView(
 fun StaveViewPrev() {
     MaterialTheme {
         StaveView(
-            StaveConfig(
+            StaveConfig(),
+            StaveHandler(StaveConfig(
                 listOf(
-                    Note(5, 9, 0.25f, 0.0f),
+                    Note(0, 0, 0.25f, 0.0f),
                     Note(5, 8, 0.25f, 0.0f),
                     Note(0, 0, 0.25f, 0.0f),
                     Note(0, 0, 0.0f, 0.0f),
@@ -266,8 +267,7 @@ fun StaveViewPrev() {
                     Note(5, 8, 0.25f, 0.0f),
                     Note(5, 8, 0.25f, 0.0f)
                 )
-            ),
-            StaveHandler(StaveConfig()),
+            )),
             modifier = Modifier.fillMaxSize()
         )
     }
