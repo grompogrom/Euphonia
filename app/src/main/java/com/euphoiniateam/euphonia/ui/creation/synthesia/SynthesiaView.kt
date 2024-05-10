@@ -1,10 +1,14 @@
 package com.euphoiniateam.euphonia.ui.creation.synthesia
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.gestures.rememberScrollableState
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -20,6 +24,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -31,6 +36,7 @@ import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import com.euphoiniateam.euphonia.domain.models.Note
 
 const val note4Duration = 0.55
@@ -55,12 +61,16 @@ fun SynthesiaView(
         MaterialTheme(
             colorScheme = darkColorScheme()
         ) {
+            var deltaDraw by remember { mutableFloatStateOf(0f) }
             val colorForWhiteNotes = MaterialTheme.colorScheme.onPrimaryContainer
             val colorForBlackNotes = MaterialTheme.colorScheme.onPrimary
+            val beginningPoint = 0f
+            var scrollDistance = 0f
 
             Surface(
                 color = MaterialTheme.colorScheme.surfaceVariant,
                 modifier = Modifier
+                    .zIndex(100f)
 
             ) {
                 Piano(state)
@@ -68,46 +78,58 @@ fun SynthesiaView(
             Canvas(
                 modifier = modifier
                     .fillMaxSize()
+                    .scrollable(
+                        orientation = Orientation.Horizontal,
+                        state = rememberScrollableState { delta ->
+                            Log.d("delta", deltaDraw.toString())
+                            Log.d("aaa", (beginningPoint - scrollDistance).toString())
+                            if (deltaDraw + delta in (beginningPoint - scrollDistance)..0f)
+                                deltaDraw += delta
+                            delta
+                        }
+                    )
 
             ) {
-                val beginningPoint = 0f // size.width/2 - state.whiteHeight.toPx()
-                var prevNotesDuration = 0f
-                handler.visibleNotes.forEachIndexed { index, note ->
+                translate(deltaDraw, 0f) {
+                    var prevNotesDuration = 0f
+                    handler.visibleNotes.forEachIndexed { index, note ->
 
-                    var durationWidth = 0f
+                        var durationWidth = 0f
 
-                    if (note.duration >= note4Duration)
-                        durationWidth = note4Width
-                    else if (note.duration >= note8Duration)
-                        durationWidth = note8Width
-                    else if (note.duration >= note16Duration)
-                        durationWidth = note16Width
+                        if (note.duration >= note4Duration)
+                            durationWidth = note4Width
+                        else if (note.duration >= note8Duration)
+                            durationWidth = note8Width
+                        else if (note.duration >= note16Duration)
+                            durationWidth = note16Width
 
-                    if (note.note in whiteNotes) {
-                        translate(
-                            beginningPoint + prevNotesDuration,
-                            state.whiteHeight.toPx() * note.pitch
-                        ) {
-                            drawRect(
-                                color = colorForWhiteNotes,
-                                size = Size(durationWidth, state.whiteHeight.toPx())
-                            )
+                        if (note.note in whiteNotes) {
+                            translate(
+                                beginningPoint + prevNotesDuration,
+                                state.whiteHeight.toPx() * note.pitch
+                            ) {
+                                drawRect(
+                                    color = colorForWhiteNotes,
+                                    size = Size(durationWidth, state.whiteHeight.toPx())
+                                )
+                            }
+                            prevNotesDuration += durationWidth
+                        } else if (note.note in blackNotes) {
+                            translate(
+                                beginningPoint + prevNotesDuration,
+                                (
+                                    state.whiteHeight.toPx() *
+                                        note.pitch - (state.blackHeight / 2).toPx()
+                                    ) + 0.8.dp.toPx()
+                            ) {
+                                drawRect(
+                                    color = colorForBlackNotes,
+                                    size = Size(durationWidth, state.blackHeight.toPx())
+                                )
+                            }
+                            prevNotesDuration += durationWidth
                         }
-                        prevNotesDuration += durationWidth
-                    } else if (note.note in blackNotes) {
-                        translate(
-                            beginningPoint + prevNotesDuration,
-                            (
-                                state.whiteHeight.toPx() *
-                                    note.pitch - (state.blackHeight / 2).toPx()
-                                ) + 0.8.dp.toPx()
-                        ) {
-                            drawRect(
-                                color = colorForBlackNotes,
-                                size = Size(durationWidth, state.blackHeight.toPx())
-                            )
-                        }
-                        prevNotesDuration += durationWidth
+                        scrollDistance = prevNotesDuration
                     }
                 }
             }

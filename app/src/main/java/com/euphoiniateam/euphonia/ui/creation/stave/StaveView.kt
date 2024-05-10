@@ -55,7 +55,7 @@ fun StaveView(
             .scrollable(
                 orientation = Orientation.Vertical,
                 state = rememberScrollableState { delta ->
-                    if (deltaDraw + delta in -425.0 * (handler.getLinesCount() - 2)..0.0) // change
+                    if (deltaDraw + delta in -425.0 * (handler.getLinesCount() - 2)..0.0)
                         deltaDraw += delta
                     delta
                 }
