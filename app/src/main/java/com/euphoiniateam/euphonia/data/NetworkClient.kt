@@ -1,7 +1,7 @@
 package com.euphoiniateam.euphonia.data
 
 import com.euphoiniateam.euphonia.BuildConfig
-import com.euphoiniateam.euphonia.data.source.stave.StaveApi
+import com.euphoiniateam.euphonia.data.source.StaveApi
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.create

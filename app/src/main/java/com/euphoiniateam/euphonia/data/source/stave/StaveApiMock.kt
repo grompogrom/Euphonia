@@ -7,7 +7,7 @@ import com.euphoiniateam.euphonia.data.models.RemoteTrackRequest
 import com.euphoiniateam.euphonia.data.models.RemoteTrackResponse
 import kotlin.random.Random
 
-class StaveApiMock() : StaveRemoteDataStore {
+class StaveApiMock() : StaveRemoteDataSource {
     override suspend fun getData(): RemoteStave {
         return RemoteStave(
             tempo = Random.nextInt(),

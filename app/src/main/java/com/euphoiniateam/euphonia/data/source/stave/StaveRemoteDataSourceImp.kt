@@ -8,6 +8,7 @@ import com.euphoiniateam.euphonia.data.models.RemoteTrackRequest
 import com.euphoiniateam.euphonia.data.models.RemoteTrackResponse
 import com.euphoiniateam.euphonia.domain.UnexpectedServerResponse
 import com.euphoiniateam.euphonia.domain.WaitForGenerationTimeoutException
+import com.euphoiniateam.euphonia.tools.saveMidiFileToCache
 import java.io.File
 import kotlinx.coroutines.delay
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -18,7 +19,7 @@ import okhttp3.ResponseBody
 // TODO: StaveApi прокинуть извне или подумать над DI
 internal class StaveRemoteDataSourceImp(
     val context: Context
-) : StaveRemoteDataStore {
+) : StaveRemoteDataSource {
 
     // TODO: вся цепочка с getData кажется бесполезной
     override suspend fun getData(): RemoteStave {
@@ -32,7 +33,7 @@ internal class StaveRemoteDataSourceImp(
         )
         val newTrackBytes = getFileFromServer(token)
         return RemoteTrackResponse(
-            uri = saveToCache(newTrackBytes)
+            uri = saveMidiFileToCache(context, newTrackBytes.inputStream(), token) ?: Uri.EMPTY
         )
     }
 
