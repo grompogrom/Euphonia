@@ -1,4 +1,4 @@
-package com.euphoiniateam.euphonia.ui.creation
+package com.euphoiniateam.euphonia.ui.creation.stave
 
 import android.content.Context
 import android.net.Uri
@@ -20,8 +20,7 @@ import com.euphoiniateam.euphonia.domain.GenerationException
 import com.euphoiniateam.euphonia.domain.repos.GenerationRepository
 import com.euphoiniateam.euphonia.domain.repos.NotesRepository
 import com.euphoiniateam.euphonia.ui.MidiPlayer
-import com.euphoiniateam.euphonia.ui.creation.stave.StaveConfig
-import com.euphoiniateam.euphonia.ui.creation.stave.StaveHandler
+import com.euphoiniateam.euphonia.ui.creation.CreationScreenState
 import com.euphoiniateam.euphonia.ui.creation.synthesia.SynthesiaConfig
 import com.euphoiniateam.euphonia.ui.creation.synthesia.SynthesiaHandler
 import kotlinx.coroutines.Dispatchers
