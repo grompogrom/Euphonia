@@ -1,4 +1,4 @@
-package com.euphoiniateam.euphonia.ui.creation.stave
+package com.euphoiniateam.euphonia.ui.creation
 
 import android.net.Uri
 import android.os.Bundle
@@ -13,8 +13,6 @@ import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.LocalContext
@@ -26,11 +24,11 @@ import androidx.navigation.fragment.findNavController
 import com.euphoiniateam.euphonia.R
 import com.euphoiniateam.euphonia.ui.MidiFile
 
-class StaveFragment : Fragment() {
+class CreationFragment : Fragment() {
 
     private lateinit var viewModel: CreationViewModel
     private lateinit var uri: Uri
-
+    private val staveChosen = false
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -89,14 +87,24 @@ class StaveFragment : Fragment() {
             modifier = modifier,
             verticalArrangement = Arrangement.SpaceBetween
         ) {
-            Stave(
-                staveConfig = viewModel.staveConfig,
-                staveHandler = viewModel.staveHandler,
-                isLoading = viewModel.screenState.isLoading,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .requiredHeight(500.dp)
-            )
+            if (staveChosen) {
+                Stave(
+                    staveConfig = viewModel.staveConfig,
+                    staveHandler = viewModel.staveHandler,
+                    isLoading = viewModel.screenState.isLoading,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .requiredHeight(500.dp)
+                )
+            } else {
+                Synthesia(
+                    synthesiaConfig = viewModel.synthesiaConfig,
+                    synthesiaHandler = viewModel.synthesiaHandler,
+                    isLoading = viewModel.screenState.isLoading,
+                    modifier = Modifier
+                        .requiredHeight(500.dp)
+                )
+            }
             ButtonsSection(
                 onRegenerateClick = { viewModel.updateStave() },
                 onExitClick = onExitClick,

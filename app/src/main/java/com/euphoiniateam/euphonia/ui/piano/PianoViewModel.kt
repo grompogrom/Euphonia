@@ -15,6 +15,8 @@ import com.euphoiniateam.euphonia.domain.repos.NotesRepository
 import com.euphoiniateam.euphonia.ui.MidiPlayer
 import com.euphoiniateam.euphonia.ui.creation.stave.StaveConfig
 import com.euphoiniateam.euphonia.ui.creation.stave.StaveHandler
+import com.euphoiniateam.euphonia.ui.creation.synthesia.SynthesiaConfig
+import com.euphoiniateam.euphonia.ui.creation.synthesia.SynthesiaHandler
 import com.leff.midi.MidiFile
 import com.leff.midi.MidiTrack
 import com.leff.midi.event.NoteOff
@@ -34,12 +36,16 @@ class PianoViewModel(
     private val midiPlayer = MidiPlayer()
     val staveConfig = StaveConfig()
     val staveHandler = StaveHandler(staveConfig)
+    val synthesiaConfig = SynthesiaConfig()
+    val synthesiaHandler = SynthesiaHandler(synthesiaConfig)
     var screenStateFlow = MutableStateFlow(
         PianoScreenState(
             PianoState.NO_RECORD,
             false
         )
     )
+
+    private val staveChosen = false
     val screenState: StateFlow<PianoScreenState>
         get() = screenStateFlow
 
@@ -77,7 +83,10 @@ class PianoViewModel(
     private suspend fun onRecordFinished() {
         val recognizedNotes = notesRepository.getNotes(resultUri)
         if (recognizedNotes != null) {
-            staveHandler.updateNotes(recognizedNotes)
+            if (staveChosen)
+                staveHandler.updateNotes(recognizedNotes)
+            else
+                synthesiaHandler.updateNotes(recognizedNotes)
         }
     }
 

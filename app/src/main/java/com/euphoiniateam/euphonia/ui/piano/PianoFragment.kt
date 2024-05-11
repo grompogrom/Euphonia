@@ -27,7 +27,7 @@ import androidx.navigation.fragment.findNavController
 import com.euphoiniateam.euphonia.R
 import com.euphoiniateam.euphonia.databinding.FragmentPianoBinding
 import com.euphoiniateam.euphonia.ui.MidiFile
-import com.euphoiniateam.euphonia.ui.creation.stave.StaveFragment
+import com.euphoiniateam.euphonia.ui.creation.CreationFragment
 import com.euphoiniateam.euphonia.ui.creation.stave.StaveView
 import kotlinx.coroutines.launch
 
@@ -137,7 +137,7 @@ class PianoFragment : Fragment() {
 
     private fun navigateToCreationScreen(uri: Uri) {
         val bundle = Bundle()
-        bundle.putSerializable(StaveFragment.URI_KEY, MidiFile(uri))
+        bundle.putSerializable(CreationFragment.URI_KEY, MidiFile(uri))
         findNavController().navigate(R.id.action_pianoFragment_to_creationFragment, bundle)
     }
 

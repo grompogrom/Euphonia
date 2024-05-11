@@ -55,7 +55,7 @@ fun StaveView(
             .scrollable(
                 orientation = Orientation.Vertical,
                 state = rememberScrollableState { delta ->
-                    if (deltaDraw + delta in -425.0 * (handler.getLinesCount() - 2)..0.0) // change
+                    if (deltaDraw + delta in -425.0 * (handler.getLinesCount() - 2)..0.0)
                         deltaDraw += delta
                     delta
                 }
@@ -253,21 +253,23 @@ fun StaveView(
 fun StaveViewPrev() {
     MaterialTheme {
         StaveView(
-            StaveConfig(
-                listOf(
-                    Note(5, 9, 0.25f, 0.0f),
-                    Note(5, 8, 0.25f, 0.0f),
-                    Note(0, 0, 0.25f, 0.0f),
-                    Note(0, 0, 0.0f, 0.0f),
-                    Note(5, 8, 0.25f, 0.0f),
-                    Note(5, 8, 0.25f, 0.0f),
-                    Note(5, 8, 0.25f, 0.0f),
-                    Note(5, 8, 0.25f, 0.0f),
-                    Note(5, 8, 0.25f, 0.0f),
-                    Note(5, 8, 0.25f, 0.0f)
+            StaveConfig(),
+            StaveHandler(
+                StaveConfig(
+                    listOf(
+                        Note(0, 0, 0.25f, 0.0f),
+                        Note(5, 8, 0.25f, 0.0f),
+                        Note(0, 0, 0.25f, 0.0f),
+                        Note(0, 0, 0.0f, 0.0f),
+                        Note(5, 8, 0.25f, 0.0f),
+                        Note(5, 8, 0.25f, 0.0f),
+                        Note(5, 8, 0.25f, 0.0f),
+                        Note(5, 8, 0.25f, 0.0f),
+                        Note(5, 8, 0.25f, 0.0f),
+                        Note(5, 8, 0.25f, 0.0f)
+                    )
                 )
             ),
-            StaveHandler(StaveConfig()),
             modifier = Modifier.fillMaxSize()
         )
     }

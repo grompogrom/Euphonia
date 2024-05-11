@@ -1,6 +1,6 @@
-package com.euphoiniateam.euphonia.ui.creation.stave
+package com.euphoiniateam.euphonia.ui.creation
 
-data class StaveScreenState(
+data class CreationScreenState(
     val isLoading: Boolean = false,
     val error: String? = null,
     val isPlaying: Boolean = false,

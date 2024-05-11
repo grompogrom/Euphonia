@@ -1,4 +1,4 @@
-package com.euphoiniateam.euphonia.ui.creation.stave
+package com.euphoiniateam.euphonia.ui.creation
 
 import android.content.Context
 import android.net.Uri
@@ -20,6 +20,10 @@ import com.euphoiniateam.euphonia.domain.GenerationException
 import com.euphoiniateam.euphonia.domain.repos.GenerationRepository
 import com.euphoiniateam.euphonia.domain.repos.NotesRepository
 import com.euphoiniateam.euphonia.ui.MidiPlayer
+import com.euphoiniateam.euphonia.ui.creation.stave.StaveConfig
+import com.euphoiniateam.euphonia.ui.creation.stave.StaveHandler
+import com.euphoiniateam.euphonia.ui.creation.synthesia.SynthesiaConfig
+import com.euphoiniateam.euphonia.ui.creation.synthesia.SynthesiaHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
@@ -31,9 +35,13 @@ class CreationViewModel(
 ) : ViewModel() {
     val staveConfig = StaveConfig()
     val staveHandler = StaveHandler(staveConfig)
+    val synthesiaConfig = SynthesiaConfig()
+    val synthesiaHandler = SynthesiaHandler(synthesiaConfig)
     var currentTrackState = MutableStateFlow(Uri.EMPTY)
-    var screenState by mutableStateOf(StaveScreenState())
+    var screenState by mutableStateOf(CreationScreenState())
     private val midiPlayer: MidiPlayer = MidiPlayer()
+
+    private val staveChosen = false
 
     init {
         viewModelScope.launch {
@@ -101,7 +109,10 @@ class CreationViewModel(
             screenState = screenState.copy(isLoading = true)
             val initialNotes = notesRepository.getNotes(uri)
             if (initialNotes != null) {
-                staveHandler.updateNotes(initialNotes)
+                if (staveChosen)
+                    staveHandler.updateNotes(initialNotes)
+                else
+                    synthesiaHandler.updateNotes(initialNotes)
             }
             screenState = screenState.copy(isLoading = false)
         }

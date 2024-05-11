@@ -1,4 +1,4 @@
-package com.euphoiniateam.euphonia.ui.creation.stave
+package com.euphoiniateam.euphonia.ui.creation
 
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
@@ -38,6 +38,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.euphoiniateam.euphonia.R
+import com.euphoiniateam.euphonia.ui.creation.stave.StaveConfig
+import com.euphoiniateam.euphonia.ui.creation.stave.StaveHandler
+import com.euphoiniateam.euphonia.ui.creation.stave.StaveView
+import com.euphoiniateam.euphonia.ui.creation.synthesia.SynthesiaConfig
+import com.euphoiniateam.euphonia.ui.creation.synthesia.SynthesiaHandler
+import com.euphoiniateam.euphonia.ui.creation.synthesia.SynthesiaView
 
 @Composable
 fun Stave(
@@ -75,6 +81,47 @@ fun Stave(
         StaveView(
             state = staveConfig,
             handler = remember { staveHandler }
+        )
+    }
+}
+
+@Composable
+fun Synthesia(
+    synthesiaConfig: SynthesiaConfig,
+    synthesiaHandler: SynthesiaHandler,
+    modifier: Modifier = Modifier,
+    isLoading: Boolean
+) {
+
+    var alpha by remember { mutableFloatStateOf(0.5f) }
+
+    LaunchedEffect(isLoading) {
+        if (isLoading) {
+            alpha = 1f
+            animate(
+                initialValue = 1f,
+                targetValue = 0.2f,
+                animationSpec = infiniteRepeatable(
+                    animation = tween(500, easing = LinearEasing),
+                    repeatMode = RepeatMode.Reverse
+                ),
+                block = { value, _ -> alpha = value }
+            )
+        } else {
+            alpha = 1f
+        }
+    }
+
+    Surface(
+        color = MaterialTheme.colorScheme.surfaceVariant,
+        shape = RoundedCornerShape(12.dp),
+        modifier = modifier
+            .padding(16.dp)
+            .graphicsLayer(alpha = alpha)
+    ) {
+        SynthesiaView(
+            state = synthesiaConfig,
+            handler = remember { synthesiaHandler },
         )
     }
 }
@@ -195,6 +242,25 @@ fun StavePrev() {
         ) {
 
             Stave(StaveConfig(), StaveHandler(StaveConfig()), isLoading = true)
+        }
+    }
+}
+
+@Preview
+@Composable
+fun SynthesiaPrev() {
+    MaterialTheme(
+        colorScheme = darkColorScheme()
+    ) {
+
+        Surface(
+            modifier = Modifier
+                .fillMaxSize()
+                .graphicsLayer(alpha = 1f),
+            color = MaterialTheme.colorScheme.background
+        ) {
+
+            Synthesia(SynthesiaConfig(), SynthesiaHandler(SynthesiaConfig()), isLoading = true)
         }
     }
 }

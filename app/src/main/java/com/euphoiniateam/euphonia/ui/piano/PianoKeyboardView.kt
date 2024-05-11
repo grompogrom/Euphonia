@@ -83,8 +83,8 @@ fun PianoOctave(
     whiteWidth: Dp = 120.dp,
     blackWidth: Dp = 47.dp,
     blackHeight: Float = 0.5f,
-    onKeyDown: (pitch: Int) -> Unit,
-    onKeyUp: (pitch: Int) -> Unit,
+    onKeyDown: ((pitch: Int) -> Unit),
+    onKeyUp: ((pitch: Int) -> Unit),
     modifier: Modifier = Modifier
 ) {
     Box(modifier = modifier) {
@@ -126,8 +126,8 @@ fun PianoOctave(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PianoKeyboard(
-    onKeyDown: (octave: Int, pitch: Int) -> Unit,
-    onKeyUp: (octave: Int, pitch: Int) -> Unit,
+    onKeyDown: ((octave: Int, pitch: Int) -> Unit),
+    onKeyUp: ((octave: Int, pitch: Int) -> Unit),
     modifier: Modifier = Modifier,
     octaveCount: Int = 3,
 ) {
