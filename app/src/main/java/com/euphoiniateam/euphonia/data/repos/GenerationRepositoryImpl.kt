@@ -8,13 +8,13 @@ import com.euphoiniateam.euphonia.data.datasources.stave.StaveLocalDataStore
 import com.euphoiniateam.euphonia.data.datasources.stave.StaveRemoteDataStore
 import com.euphoiniateam.euphonia.domain.GenerationException
 import com.euphoiniateam.euphonia.domain.models.Stave
-import com.euphoiniateam.euphonia.domain.repos.StaveRepository
+import com.euphoiniateam.euphonia.domain.repos.GenerationRepository
 import kotlinx.coroutines.delay
 
-class StaveRepositoryImpl(
+class GenerationRepositoryImpl(
     private val localDataStore: StaveLocalDataStore,
     private val remoteDataStore: StaveRemoteDataStore
-) : StaveRepository {
+) : GenerationRepository {
 
     override suspend fun getStave(): Stave {
         try {

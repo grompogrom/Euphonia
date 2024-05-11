@@ -15,17 +15,17 @@ import com.euphoiniateam.euphonia.data.dataStore
 import com.euphoiniateam.euphonia.data.datasources.stave.StaveCache
 import com.euphoiniateam.euphonia.data.datasources.stave.StaveRemoteDataSourceImp
 import com.euphoiniateam.euphonia.data.repos.NotesRepositoryImpl
-import com.euphoiniateam.euphonia.data.repos.StaveRepositoryImpl
+import com.euphoiniateam.euphonia.data.repos.GenerationRepositoryImpl
 import com.euphoiniateam.euphonia.domain.GenerationException
 import com.euphoiniateam.euphonia.domain.repos.NotesRepository
-import com.euphoiniateam.euphonia.domain.repos.StaveRepository
+import com.euphoiniateam.euphonia.domain.repos.GenerationRepository
 import com.euphoiniateam.euphonia.ui.MidiPlayer
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 
 class StaveViewModel(
-    private val staveRepository: StaveRepository,
+    private val generationRepository: GenerationRepository,
     private val notesRepository: NotesRepository
 ) : ViewModel() {
     val staveConfig = StaveConfig()
@@ -50,7 +50,7 @@ class StaveViewModel(
     fun updateStave() {
         viewModelScope.launch(Dispatchers.IO) {
             screenState = screenState.copy(isLoading = true)
-            val newStave = staveRepository.generateStave()
+            val newStave = generationRepository.generateStave()
             staveHandler.updateNotes(newStave.initialNotes + newStave.generatedNotes)
             screenState = screenState.copy(isLoading = false)
         }
@@ -68,7 +68,7 @@ class StaveViewModel(
         viewModelScope.launch(Dispatchers.IO) {
             screenState = screenState.copy(isLoading = true)
             screenState = try {
-                val newMidi = staveRepository.generateMidi(uri, 5)
+                val newMidi = generationRepository.generateMidi(uri, 5)
 
                 val notes = notesRepository.getNotes(newMidi)
                 notes?.let { staveHandler.updateNotes(it) }
@@ -85,7 +85,7 @@ class StaveViewModel(
     private fun loadStave() {
         viewModelScope.launch(Dispatchers.IO) {
             screenState = screenState.copy(isLoading = true)
-            val newStave = staveRepository.getStave()
+            val newStave = generationRepository.getStave()
             staveHandler.updateNotes(newStave.initialNotes + newStave.generatedNotes)
             screenState = screenState.copy(isLoading = false)
         }
@@ -119,7 +119,7 @@ class StaveViewModel(
         fun provideFactory(context: Context): ViewModelProvider.Factory = viewModelFactory {
             initializer {
                 StaveViewModel(
-                    staveRepository = StaveRepositoryImpl(
+                    generationRepository = GenerationRepositoryImpl(
                         StaveCache(context.dataStore),
                         StaveRemoteDataSourceImp(context)
                     ),
