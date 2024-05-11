@@ -8,6 +8,7 @@ interface GenerationRepository {
 
     suspend fun generateMidi(prompt: Uri, count: Int): Uri
 
+    // TODO: используется, но не делает полезной работы
     @Deprecated("Use generateMidi instead")
     suspend fun generateStave(): Stave
 }

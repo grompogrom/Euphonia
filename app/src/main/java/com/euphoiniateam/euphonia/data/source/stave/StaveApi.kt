@@ -1,4 +1,4 @@
-package com.euphoiniateam.euphonia.data.datasources.stave
+package com.euphoiniateam.euphonia.data.source.stave
 
 import okhttp3.RequestBody
 import okhttp3.ResponseBody

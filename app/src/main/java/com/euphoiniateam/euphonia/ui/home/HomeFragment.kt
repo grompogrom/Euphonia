@@ -21,6 +21,7 @@ import androidx.navigation.fragment.findNavController
 import com.euphoiniateam.euphonia.R
 import com.euphoiniateam.euphonia.databinding.FragmentHomeBinding
 import com.euphoiniateam.euphonia.ui.MidiFile
+import com.euphoiniateam.euphonia.ui.creation.stave.StaveFragment
 import java.io.File
 
 class HomeFragment : Fragment() {
@@ -38,7 +39,7 @@ class HomeFragment : Fragment() {
 
             val bundle = Bundle()
             val userMidiFile = uri?.let { MidiFile(it) }
-            bundle.putSerializable("midiFile", userMidiFile)
+            bundle.putSerializable(StaveFragment.URI_KEY, userMidiFile)
             val navController = findNavController()
             navController.navigate(R.id.action_navigation_home_to_creationFragment, bundle)
         }

@@ -10,6 +10,8 @@ import java.io.FileOutputStream
 import java.io.IOException
 import java.io.InputStream
 
+// TODO: положим в объект все функции?
+
 fun getMidFileNamesFromResults(): ArrayList<String> {
     val dir = File(
         Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC),
@@ -100,6 +102,7 @@ fun saveMidiFileToCache(context: Context, inputStream: InputStream, fileName: St
     return if (savedFile.exists()) Uri.fromFile(savedFile) else null
 }
 
+// TODO тут лишнее
 fun playMusic(context: Context, songName: String) {
     val mediaPlayer = MediaPlayer()
     try {

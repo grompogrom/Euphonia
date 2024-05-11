@@ -1,11 +1,11 @@
-package com.euphoiniateam.euphonia.data.datasources.stave
+package com.euphoiniateam.euphonia.data.source.stave
 
 import android.content.Context
 import android.net.Uri
 import com.euphoiniateam.euphonia.data.NetworkService
-import com.euphoiniateam.euphonia.data.datamodels.RemoteStave
-import com.euphoiniateam.euphonia.data.datamodels.RemoteTrackRequest
-import com.euphoiniateam.euphonia.data.datamodels.RemoteTrackResponse
+import com.euphoiniateam.euphonia.data.models.RemoteStave
+import com.euphoiniateam.euphonia.data.models.RemoteTrackRequest
+import com.euphoiniateam.euphonia.data.models.RemoteTrackResponse
 import com.euphoiniateam.euphonia.domain.UnexpectedServerResponse
 import com.euphoiniateam.euphonia.domain.WaitForGenerationTimeoutException
 import java.io.File
@@ -14,10 +14,13 @@ import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.ResponseBody
 
-class StaveRemoteDataSourceImp(
+// TODO: make internal
+// TODO: StaveApi прокинуть извне или подумать над DI
+internal class StaveRemoteDataSourceImp(
     val context: Context
 ) : StaveRemoteDataStore {
 
+    // TODO: вся цепочка с getData кажется бесполезной
     override suspend fun getData(): RemoteStave {
         return RemoteStave(1, 1, emptyList(), emptyList())
     }
@@ -33,6 +36,7 @@ class StaveRemoteDataSourceImp(
         )
     }
 
+    //
     suspend fun sendFileForGeneration(uri: Uri, meta: Map<String, String>): String {
         val file = createTempFile()
         context.contentResolver.openInputStream(uri).use { input ->

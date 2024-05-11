@@ -1,13 +1,15 @@
-package com.euphoiniateam.euphonia.data.datasources.stave
+package com.euphoiniateam.euphonia.data.source.stave
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
-import com.euphoiniateam.euphonia.data.datamodels.LocalStave
 import com.euphoiniateam.euphonia.data.getValueByKey
+import com.euphoiniateam.euphonia.data.models.LocalStave
 import com.google.gson.Gson
 
+// TODO: обычное File api тут лучше подойдет
+// TODO: реализации пометить как internal
 class StaveCache(
     private val dataStore: DataStore<Preferences>
 ) : StaveLocalDataStore {

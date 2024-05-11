@@ -2,7 +2,7 @@ package com.euphoiniateam.euphonia.ui.creation.stave
 
 import android.content.Context
 import android.net.Uri
-import android.util.Log
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -12,19 +12,20 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.euphoiniateam.euphonia.data.dataStore
-import com.euphoiniateam.euphonia.data.datasources.stave.StaveCache
-import com.euphoiniateam.euphonia.data.datasources.stave.StaveRemoteDataSourceImp
-import com.euphoiniateam.euphonia.data.repos.NotesRepositoryImpl
 import com.euphoiniateam.euphonia.data.repos.GenerationRepositoryImpl
+import com.euphoiniateam.euphonia.data.repos.NotesRepositoryImpl
+import com.euphoiniateam.euphonia.data.source.stave.StaveCache
+import com.euphoiniateam.euphonia.data.source.stave.StaveRemoteDataSourceImp
 import com.euphoiniateam.euphonia.domain.GenerationException
-import com.euphoiniateam.euphonia.domain.repos.NotesRepository
 import com.euphoiniateam.euphonia.domain.repos.GenerationRepository
+import com.euphoiniateam.euphonia.domain.repos.NotesRepository
 import com.euphoiniateam.euphonia.ui.MidiPlayer
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 
-class StaveViewModel(
+@Stable
+class CreationViewModel(
     private val generationRepository: GenerationRepository,
     private val notesRepository: NotesRepository
 ) : ViewModel() {
@@ -37,8 +38,6 @@ class StaveViewModel(
     init {
         viewModelScope.launch {
             midiPlayer.playerState.collect {
-                Log.d("AAA", "Player state: $it")
-
                 screenState = screenState.copy(isPlaying = it)
             }
         }
@@ -64,7 +63,6 @@ class StaveViewModel(
     }
 
     fun generateNewPart(context: Context, uri: Uri) {
-        Log.d("AAA", "generateNewPart invoked")
         viewModelScope.launch(Dispatchers.IO) {
             screenState = screenState.copy(isLoading = true)
             screenState = try {
@@ -76,7 +74,6 @@ class StaveViewModel(
                 currentTrackState.emit(newMidi)
                 screenState.copy(isLoading = false)
             } catch (e: GenerationException) {
-                Log.e("AAA", null, e)
                 screenState.copy(isLoading = false, error = "Unexpected server error")
             }
         }
@@ -118,7 +115,7 @@ class StaveViewModel(
     companion object {
         fun provideFactory(context: Context): ViewModelProvider.Factory = viewModelFactory {
             initializer {
-                StaveViewModel(
+                CreationViewModel(
                     generationRepository = GenerationRepositoryImpl(
                         StaveCache(context.dataStore),
                         StaveRemoteDataSourceImp(context)

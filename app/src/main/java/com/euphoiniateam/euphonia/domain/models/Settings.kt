@@ -1,5 +1,6 @@
 package com.euphoiniateam.euphonia.domain.models
 
+// TODO: naming и сделать объект по умолчанию
 data class Settings(
     val history: Boolean = true,
     val recording_audio: Boolean = true,

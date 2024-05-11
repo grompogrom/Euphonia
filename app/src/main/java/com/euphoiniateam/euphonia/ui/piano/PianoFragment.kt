@@ -26,11 +26,12 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.euphoiniateam.euphonia.R
 import com.euphoiniateam.euphonia.databinding.FragmentPianoBinding
+import com.euphoiniateam.euphonia.ui.MidiFile
+import com.euphoiniateam.euphonia.ui.creation.stave.StaveFragment
 import com.euphoiniateam.euphonia.ui.creation.stave.StaveView
 import kotlinx.coroutines.launch
 
 private val notes = arrayOf("C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B")
-private val blackKeys = arrayOf(1, 3, 6, 8, 10)
 
 class PianoFragment : Fragment() {
 
@@ -50,7 +51,6 @@ class PianoFragment : Fragment() {
     ): View? {
         requireActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE)
         binding = FragmentPianoBinding.inflate(inflater, container, false)
-//        initKeyboard(inflater, container)
         initKeyboard2()
         initOverlay()
         initButtons()
@@ -118,7 +118,7 @@ class PianoFragment : Fragment() {
                 MaterialTheme(
                     colorScheme = darkColorScheme()
                 ) {
-                    val recordingState by viewModel.screenState.collectAsState()
+                    val recordingState by viewModel.screenStateFlow.collectAsState()
                     PianoOverview(
                         recordState = recordingState.recordingState,
                         onExitClick = { viewModel.exit { findNavController().navigateUp() } },
@@ -137,7 +137,7 @@ class PianoFragment : Fragment() {
 
     private fun navigateToCreationScreen(uri: Uri) {
         val bundle = Bundle()
-        bundle.putString("uri", uri.toString())
+        bundle.putSerializable(StaveFragment.URI_KEY, MidiFile(uri))
         findNavController().navigate(R.id.action_pianoFragment_to_creationFragment, bundle)
     }
 
@@ -148,10 +148,11 @@ class PianoFragment : Fragment() {
                 MaterialTheme(
                     colorScheme = darkColorScheme()
                 ) {
+                    val screenState by viewModel.screenState.collectAsState()
                     ButtonSection(
-                        isPlaying = viewModel.screenState.value.isPlayingResult,
+                        isPlaying = screenState.isPlayingResult,
                         onPlayClick = { viewModel.onPlayPush(requireContext()) },
-                        onApplyClick = { viewModel.applyRecord(::navigateToCreationScreen) },
+                        onApplyClick = { viewModel.applyRecord { navigateToCreationScreen(it) } },
                         onRemakeClick = { viewModel.remake() }
                     )
                 }
@@ -180,14 +181,13 @@ class PianoFragment : Fragment() {
                 }
             }
         }
-        // TODO: init stave compose view
     }
 
     fun observeScreenState() {
         lifecycleScope.launchWhenStarted {
             viewLifecycleOwner.lifecycleScope.launch {
                 viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                    viewModel.screenState.collect { state ->
+                    viewModel.screenStateFlow.collect { state ->
                         when (state.recordingState) {
                             PianoState.RECORDING -> {}
                             PianoState.NO_RECORD -> {
