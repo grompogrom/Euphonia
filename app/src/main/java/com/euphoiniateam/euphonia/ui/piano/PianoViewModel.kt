@@ -111,12 +111,13 @@ class PianoViewModel(
         staveHandler.updateNotes(emptyList())
     }
 
-    fun onRealiseKey(pitch: Int, key: Int) {
+    fun onRealiseKey(pitch: Int, octave: Int) {
+        Log.d("toMidi", "recordData")
         if (screenState.value.recordingState == PianoState.RECORDING) {
             for (l in 0 until recordData.size) {
                 if (recordData[l].elapseTime == -1L &&
-                    recordData[l].keyNum == key &&
-                    recordData[l].pitch == pitch
+                    recordData[l].keyNum == pitch &&
+                    recordData[l].pitch == octave
                 ) {
                     recordData[l].elapseTime = System.currentTimeMillis()
                 }
@@ -136,10 +137,10 @@ class PianoViewModel(
             TimeSignature.DEFAULT_DIVISION
         )
         val tempo = Tempo()
-        tempo.bpm = 228f
+        tempo.bpm = 120f
 
         tempoTrack.insertEvent(ts)
-        tempoTrack.insertEvent(tempo)
+        noteTrack.insertEvent(tempo)
         val noteCount = recordData.size
         for (i in 0 until noteCount) {
             val channel = 0
