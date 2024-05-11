@@ -23,35 +23,38 @@ import com.leff.midi.event.meta.Tempo
 import com.leff.midi.event.meta.TimeSignature
 import java.io.File
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 class PianoViewModel(
     private val notesRepository: NotesRepository
 ) : ViewModel() {
     private var recordData: MutableList<PianoEvent> = mutableListOf()
-    private var resultUri: Uri? = null
+    private var resultUri: Uri = Uri.EMPTY
     private val midiPlayer = MidiPlayer()
     val staveConfig = StaveConfig()
     val staveHandler = StaveHandler(staveConfig)
-    var screenState = MutableStateFlow(
+    var screenStateFlow = MutableStateFlow(
         PianoScreenState(
             PianoState.NO_RECORD,
             false
         )
     )
+    val screenState: StateFlow<PianoScreenState>
+        get() = screenStateFlow
 
     init {
         viewModelScope.launch {
             midiPlayer.playerState.collect {
-                if (screenState.value.isPlayingResult != it) {
-                    screenState.emit(screenState.value.copy(isPlayingResult = it))
+                if (screenStateFlow.value.isPlayingResult != it) {
+                    screenStateFlow.emit(screenStateFlow.value.copy(isPlayingResult = it))
                 }
             }
         }
     }
 
     fun startRecord() {
-        screenState.tryEmit(screenState.value.copy(recordingState = PianoState.RECORDING))
+        screenStateFlow.tryEmit(screenStateFlow.value.copy(recordingState = PianoState.RECORDING))
     }
 
     fun stopRecord(context: Context) {
@@ -59,18 +62,20 @@ class PianoViewModel(
             if (recordData.isNotEmpty()) {
                 createMidiWithApi(context)
                 onRecordFinished()
-                screenState.tryEmit(
-                    screenState.value.copy(recordingState = PianoState.AFTER_RECORD)
+                screenStateFlow.tryEmit(
+                    screenStateFlow.value.copy(recordingState = PianoState.AFTER_RECORD)
                 )
             } else {
-                screenState.tryEmit(screenState.value.copy(recordingState = PianoState.NO_RECORD))
+                screenStateFlow.tryEmit(
+                    screenStateFlow.value.copy(recordingState = PianoState.NO_RECORD)
+                )
                 Toast.makeText(context, "You played nothing)", Toast.LENGTH_LONG).show()
             }
         }
     }
 
     private suspend fun onRecordFinished() {
-        val recognizedNotes = notesRepository.getNotes(resultUri ?: Uri.EMPTY)
+        val recognizedNotes = notesRepository.getNotes(resultUri)
         if (recognizedNotes != null) {
             staveHandler.updateNotes(recognizedNotes)
         }
@@ -82,16 +87,16 @@ class PianoViewModel(
     }
 
     fun remake() {
-        screenState.tryEmit(screenState.value.copy(recordingState = PianoState.NO_RECORD))
+        screenStateFlow.tryEmit(screenStateFlow.value.copy(recordingState = PianoState.NO_RECORD))
         clearRecorded()
     }
 
     fun applyRecord(navigate: (Uri) -> Unit) {
-        resultUri?.apply { navigate(this) }
+        navigate(resultUri)
     }
 
     fun onPushKey(event: PianoEvent) {
-        if (screenState.value.recordingState == PianoState.RECORDING) {
+        if (screenStateFlow.value.recordingState == PianoState.RECORDING) {
             recordData.add(event)
         }
     }
@@ -107,13 +112,13 @@ class PianoViewModel(
     private fun clearRecorded() {
         midiPlayer.release()
         recordData.clear()
-        resultUri = null
+        resultUri = Uri.EMPTY
         staveHandler.updateNotes(emptyList())
     }
 
     fun onRealiseKey(pitch: Int, octave: Int) {
         Log.d("toMidi", "recordData")
-        if (screenState.value.recordingState == PianoState.RECORDING) {
+        if (screenStateFlow.value.recordingState == PianoState.RECORDING) {
             for (l in 0 until recordData.size) {
                 if (recordData[l].elapseTime == -1L &&
                     recordData[l].keyNum == pitch &&
