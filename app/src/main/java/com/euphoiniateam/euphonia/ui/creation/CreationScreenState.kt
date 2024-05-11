@@ -1,4 +1,4 @@
-package com.euphoiniateam.euphonia.ui.creation.stave
+package com.euphoiniateam.euphonia.ui.creation
 
 data class CreationScreenState(
     val isLoading: Boolean = false,

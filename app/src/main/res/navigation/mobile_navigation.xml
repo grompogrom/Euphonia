@@ -65,7 +65,7 @@
     </fragment>
     <fragment
         android:id="@+id/creationFragment"
-        android:name="com.euphoiniateam.euphonia.ui.creation.stave.CreationFragment"
+        android:name="com.euphoiniateam.euphonia.ui.creation.CreationFragment"
         android:label="fragment_creation2"
         tools:layout="@layout/fragment_creation2" />
 </navigation>

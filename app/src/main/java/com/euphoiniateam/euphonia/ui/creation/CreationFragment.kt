@@ -1,4 +1,4 @@
-package com.euphoiniateam.euphonia.ui.creation.stave
+package com.euphoiniateam.euphonia.ui.creation
 
 import android.net.Uri
 import android.os.Bundle
@@ -50,6 +50,9 @@ import androidx.navigation.fragment.findNavController
 import com.euphoiniateam.euphonia.R
 import com.euphoiniateam.euphonia.databinding.FragmentCreation2Binding
 import com.euphoiniateam.euphonia.ui.MidiFile
+import com.euphoiniateam.euphonia.ui.creation.stave.StaveConfig
+import com.euphoiniateam.euphonia.ui.creation.stave.StaveHandler
+import com.euphoiniateam.euphonia.ui.creation.stave.StaveView
 import com.euphoiniateam.euphonia.ui.creation.synthesia.SynthesiaConfig
 import com.euphoiniateam.euphonia.ui.creation.synthesia.SynthesiaHandler
 import com.euphoiniateam.euphonia.ui.creation.synthesia.SynthesiaView
