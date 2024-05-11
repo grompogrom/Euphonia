@@ -1,4 +1,4 @@
-package com.euphoiniateam.euphonia.ui.creation.stave
+package com.euphoiniateam.euphonia.ui.creation
 
 import android.content.Context
 import android.net.Uri
@@ -20,21 +20,17 @@ import com.euphoiniateam.euphonia.domain.GenerationException
 import com.euphoiniateam.euphonia.domain.repos.GenerationRepository
 import com.euphoiniateam.euphonia.domain.repos.NotesRepository
 import com.euphoiniateam.euphonia.ui.MidiPlayer
-import com.euphoiniateam.euphonia.ui.creation.CreationScreenState
+import com.euphoiniateam.euphonia.ui.creation.stave.StaveConfig
+import com.euphoiniateam.euphonia.ui.creation.stave.StaveHandler
 import com.euphoiniateam.euphonia.ui.creation.synthesia.SynthesiaConfig
 import com.euphoiniateam.euphonia.ui.creation.synthesia.SynthesiaHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 
-<<<<<<<< HEAD:app/src/main/java/com/euphoiniateam/euphonia/ui/creation/stave/CreationViewModel.kt
 @Stable
 class CreationViewModel(
     private val generationRepository: GenerationRepository,
-========
-class CreationViewModel(
-    private val staveRepository: StaveRepository,
->>>>>>>> 6f68bd8 (start SynthesiaView):app/src/main/java/com/euphoiniateam/euphonia/ui/creation/CreationViewModel.kt
     private val notesRepository: NotesRepository
 ) : ViewModel() {
     val staveConfig = StaveConfig()
@@ -131,11 +127,7 @@ class CreationViewModel(
         fun provideFactory(context: Context): ViewModelProvider.Factory = viewModelFactory {
             initializer {
                 CreationViewModel(
-<<<<<<<< HEAD:app/src/main/java/com/euphoiniateam/euphonia/ui/creation/stave/CreationViewModel.kt
                     generationRepository = GenerationRepositoryImpl(
-========
-                    staveRepository = StaveRepositoryImpl(
->>>>>>>> 6f68bd8 (start SynthesiaView):app/src/main/java/com/euphoiniateam/euphonia/ui/creation/CreationViewModel.kt
                         StaveCache(context.dataStore),
                         StaveRemoteDataSourceImp(context)
                     ),
