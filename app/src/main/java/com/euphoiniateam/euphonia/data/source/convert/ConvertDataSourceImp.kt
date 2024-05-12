@@ -5,8 +5,8 @@ import android.net.Uri
 import com.euphoiniateam.euphonia.data.NetworkService
 import com.euphoiniateam.euphonia.data.models.RemoteConvertRequest
 import com.euphoiniateam.euphonia.data.models.RemoteTrackResponse
-import com.euphoiniateam.euphonia.domain.UnexpectedServerResponse
-import com.euphoiniateam.euphonia.domain.WaitForGenerationTimeoutException
+import com.euphoiniateam.euphonia.domain.UnexpectedServerResponseException
+import com.euphoiniateam.euphonia.domain.WaitForConvertingTimeoutException
 import com.euphoiniateam.euphonia.tools.saveMidiFileToCache
 import kotlinx.coroutines.delay
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -33,7 +33,7 @@ class ConvertDataSourceImp(private val context: Context) : ConvertDataSource {
 
                 200 -> break
 
-                else -> throw UnexpectedServerResponse(
+                else -> throw UnexpectedServerResponseException(
                     code = response.code(),
                     body = response.body()?.string() ?: ""
                 )
@@ -43,7 +43,7 @@ class ConvertDataSourceImp(private val context: Context) : ConvertDataSource {
 
             return response.body()?.bytes()!!
         }
-        throw WaitForGenerationTimeoutException("Server file not ready")
+        throw WaitForConvertingTimeoutException("Server file not ready")
     }
 
     suspend fun sendFileForConverting(uri: Uri): String {

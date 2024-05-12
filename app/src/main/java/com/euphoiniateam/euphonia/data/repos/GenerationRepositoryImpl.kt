@@ -26,10 +26,10 @@ class GenerationRepositoryImpl(
 
     override suspend fun generateMidi(prompt: Uri, count: Int): Uri {
         try {
-            val remoteTrackRequest = remoteDataStore.generate(
-                RemoteTrackRequest(prompt, 10)
+            val remoteTrackResponse = remoteDataStore.generate(
+                RemoteTrackRequest(prompt, count)
             )
-            return remoteTrackRequest.uri
+            return remoteTrackResponse.uri
         } catch (e: GenerationException) {
             throw e
         } catch (e: Exception) {

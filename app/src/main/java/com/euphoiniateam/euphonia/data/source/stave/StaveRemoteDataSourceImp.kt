@@ -6,7 +6,7 @@ import com.euphoiniateam.euphonia.data.NetworkService
 import com.euphoiniateam.euphonia.data.models.RemoteStave
 import com.euphoiniateam.euphonia.data.models.RemoteTrackRequest
 import com.euphoiniateam.euphonia.data.models.RemoteTrackResponse
-import com.euphoiniateam.euphonia.domain.UnexpectedServerResponse
+import com.euphoiniateam.euphonia.domain.UnexpectedServerResponseException
 import com.euphoiniateam.euphonia.domain.WaitForGenerationTimeoutException
 import com.euphoiniateam.euphonia.tools.saveMidiFileToCache
 import java.io.File
@@ -63,7 +63,7 @@ internal class StaveRemoteDataSourceImp(
 
                 200 -> break
 
-                else -> throw UnexpectedServerResponse(
+                else -> throw UnexpectedServerResponseException(
                     code = response.code(),
                     body = response.body()?.string() ?: ""
                 )
