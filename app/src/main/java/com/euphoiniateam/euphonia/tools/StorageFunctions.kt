@@ -2,12 +2,10 @@ package com.euphoiniateam.euphonia.tools
 
 import android.content.ContentResolver
 import android.content.Context
-import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Environment
 import java.io.File
 import java.io.FileOutputStream
-import java.io.IOException
 import java.io.InputStream
 
 fun getMidFileNamesFromResults(): ArrayList<String> {
@@ -99,4 +97,3 @@ fun saveMidiFileToCache(context: Context, inputStream: InputStream, fileName: St
     val savedFile = File(cacheDir, fileName)
     return if (savedFile.exists()) Uri.fromFile(savedFile) else null
 }
-
