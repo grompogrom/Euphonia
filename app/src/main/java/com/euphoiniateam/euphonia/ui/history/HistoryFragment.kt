@@ -23,7 +23,7 @@ class HistoryFragment : Fragment() {
     private lateinit var searchView: SearchView
     lateinit var listAdapter: HistoryAdapter
 
-    private var  pianoData = true
+    private var pianoData = true
 
     override fun onCreateView(
         inflater: LayoutInflater,

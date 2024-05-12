@@ -11,8 +11,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.euphoiniateam.euphonia.R
 import com.euphoiniateam.euphonia.tools.playMusic
 
-class HistoryAdapter(private val context: Context, private var data: ArrayList<String>, private val navController: NavController) :
-    RecyclerView.Adapter<HistoryAdapter.ViewHolder>() {
+class HistoryAdapter(
+    private val context: Context,
+    private var data: ArrayList<String>,
+    private val navController: NavController
+) : RecyclerView.Adapter<HistoryAdapter.ViewHolder>() {
 
     private var filteredDataList: ArrayList<String> = ArrayList(data)
     private var isResume = false
@@ -28,12 +31,22 @@ class HistoryAdapter(private val context: Context, private var data: ArrayList<S
         holder.button1.setOnClickListener {
             if (!isResume) {
                 isResume = true
-                holder.button1.setImageDrawable(context.resources.getDrawable(R.drawable.baseline_pause_24, null))
+                holder.button1.setImageDrawable(
+                    context.resources.getDrawable(
+                        R.drawable.baseline_pause_24,
+                        null
+                    )
+                )
             } else {
                 isResume = false
-                holder.button1.setImageDrawable(context.resources.getDrawable(R.drawable.outline_play_arrow_24, null))
+                holder.button1.setImageDrawable(
+                    context.resources.getDrawable(
+                        R.drawable.outline_play_arrow_24,
+                        null
+                    )
+                )
             }
-            playMusic(context,item)
+            playMusic(context, item)
         }
 
         holder.button2.setOnClickListener {
@@ -72,6 +85,4 @@ class HistoryAdapter(private val context: Context, private var data: ArrayList<S
         filteredDataList = ArrayList(newData)
         notifyDataSetChanged()
     }
-
 }
-
