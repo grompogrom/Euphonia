@@ -100,17 +100,3 @@ fun saveMidiFileToCache(context: Context, inputStream: InputStream, fileName: St
     return if (savedFile.exists()) Uri.fromFile(savedFile) else null
 }
 
-fun playMusic(context: Context, songName: String) {
-    val mediaPlayer = MediaPlayer()
-    try {
-        val file = File(
-            Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC),
-            "piano/$songName"
-        )
-        mediaPlayer.setDataSource(context, Uri.fromFile(file))
-        mediaPlayer.prepare()
-        mediaPlayer.start()
-    } catch (e: IOException) {
-        e.printStackTrace()
-    }
-}

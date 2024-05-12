@@ -13,6 +13,7 @@ import com.euphoiniateam.euphonia.R
 import com.euphoiniateam.euphonia.databinding.FragmentHistoryBinding
 import com.euphoiniateam.euphonia.tools.getMidFileNamesFromPiano
 import com.euphoiniateam.euphonia.tools.getMidFileNamesFromResults
+import com.euphoiniateam.euphonia.ui.MidiPlayer
 
 class HistoryFragment : Fragment() {
 
@@ -23,7 +24,7 @@ class HistoryFragment : Fragment() {
     private lateinit var searchView: SearchView
     lateinit var listAdapter: HistoryAdapter
 
-    private var pianoData = true
+    private var currentTab = "piano"
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -40,7 +41,9 @@ class HistoryFragment : Fragment() {
             requireContext(),
             getMidFileNamesFromPiano(),
 //            arrayListOf("First", "Second", "Third", "Песенка"),
-            findNavController()
+            findNavController(),
+            currentTab,
+            MidiPlayer()
         )
         recyclerView.adapter = listAdapter
         searchView.setOnQueryTextListener(
@@ -59,18 +62,18 @@ class HistoryFragment : Fragment() {
         binding.btnShowPlayed.setBackgroundResource(R.drawable.button_bottom_border)
         binding.btnShowGenerated.background = null
         binding.btnShowPlayed.setOnClickListener {
-            if (!pianoData) {
-                pianoData = true
-                listAdapter.setData(getMidFileNamesFromPiano())
+            if (currentTab != "piano") {
+                currentTab = "piano"
+                listAdapter.setData(getMidFileNamesFromPiano(), currentTab)
                 binding.btnShowPlayed.setBackgroundResource(R.drawable.button_bottom_border)
                 binding.btnShowGenerated.background = null
             }
         }
 
         binding.btnShowGenerated.setOnClickListener {
-            if (pianoData) {
-                pianoData = false
-                listAdapter.setData(getMidFileNamesFromResults())
+            if (currentTab != "results") {
+                currentTab = "results"
+                listAdapter.setData(getMidFileNamesFromResults(), currentTab)
                 binding.btnShowGenerated.setBackgroundResource(R.drawable.button_bottom_border)
                 binding.btnShowPlayed.background = null
             }
