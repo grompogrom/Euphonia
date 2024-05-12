@@ -13,13 +13,11 @@ import com.euphoiniateam.euphonia.tools.playMusic
 
 class HistoryAdapter(
     private val context: Context,
-    private val data: ArrayList<String>,
+    private var data: ArrayList<String>,
     private val navController: NavController
-) :
-    RecyclerView.Adapter<HistoryAdapter.ViewHolder>() {
+) : RecyclerView.Adapter<HistoryAdapter.ViewHolder>() {
 
     private var filteredDataList: ArrayList<String> = ArrayList(data)
-    private var expandedPosition = RecyclerView.NO_POSITION
     private var isResume = false
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
@@ -30,25 +28,22 @@ class HistoryAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = filteredDataList[position]
         holder.textView.text = item
-
-        val isExpanded = position == expandedPosition
-        holder.optionsView.visibility = if (isExpanded) View.VISIBLE else View.GONE
-
-        holder.itemView.setOnClickListener {
-            expandedPosition = if (isExpanded) RecyclerView.NO_POSITION else position
-            notifyDataSetChanged()
-        }
-
         holder.button1.setOnClickListener {
             if (!isResume) {
                 isResume = true
                 holder.button1.setImageDrawable(
-                    context.resources.getDrawable(R.drawable.baseline_pause, null)
+                    context.resources.getDrawable(
+                        R.drawable.baseline_pause_24,
+                        null
+                    )
                 )
             } else {
                 isResume = false
                 holder.button1.setImageDrawable(
-                    context.resources.getDrawable(R.drawable.play_arrow, null)
+                    context.resources.getDrawable(
+                        R.drawable.outline_play_arrow_24,
+                        null
+                    )
                 )
             }
             playMusic(context, item)
@@ -67,9 +62,8 @@ class HistoryAdapter(
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val textView: TextView = itemView.findViewById(R.id.compositionName)
-        val optionsView: View = itemView.findViewById(R.id.optionsView)
-        val button1: ImageButton = itemView.findViewById(R.id.button1)
-        val button2: ImageButton = itemView.findViewById(R.id.button2)
+        val button1: ImageButton = itemView.findViewById(R.id.btn_show_played)
+        val button2: ImageButton = itemView.findViewById(R.id.btn_show_generated)
     }
 
     fun filter(query: String?) {
@@ -83,6 +77,12 @@ class HistoryAdapter(
                 }
             }
         }
+        notifyDataSetChanged()
+    }
+
+    fun setData(newData: ArrayList<String>) {
+        data = ArrayList(newData)
+        filteredDataList = ArrayList(newData)
         notifyDataSetChanged()
     }
 }

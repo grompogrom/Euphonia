@@ -20,4 +20,6 @@
     <string name="btn_remake_creation_fragment">Remake</string>
     <string name="btn_generate_creation_fragment">Generate</string>
     <string name="settings_saved">Settings saved</string>
+    <string name="btn_choose_played">Played</string>
+    <string name="btn_choose_generated">Generated</string>
 </resources>
