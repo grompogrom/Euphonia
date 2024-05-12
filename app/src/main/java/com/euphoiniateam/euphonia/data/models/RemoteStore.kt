@@ -1,41 +1,41 @@
-package com.euphoiniateam.euphonia.data.datamodels
+package com.euphoiniateam.euphonia.data.models
 
 import com.euphoiniateam.euphonia.domain.models.Note
 import com.euphoiniateam.euphonia.domain.models.Stave
 
-data class LocalStave(
+data class RemoteStave(
     val tempo: Int,
     val tonal: Int,
-    val initialNotes: List<Note>,
-    val generatedNotes: List<Note>
+    val initialNotes: List<RemoteNote>,
+    val generatedNotes: List<RemoteNote>
 )
 
-data class LocalNote(
+data class RemoteNote(
     val pitch: Int,
     val note: Int,
     val duration: Float,
     val beat: Float
 )
 
-fun LocalStave.toStave(): Stave {
+fun RemoteStave.toStave(): Stave {
     return Stave(
         tempo = this.tempo,
         tonal = this.tonal,
-        initialNotes = this.initialNotes,
-        generatedNotes = this.generatedNotes
+        initialNotes = this.initialNotes.map { it.toNote() },
+        generatedNotes = this.generatedNotes.map { it.toNote() }
     )
 }
 
-fun Stave.toLocalStave(): LocalStave {
-    return LocalStave(
+fun Stave.toRemoteStave(): RemoteStave {
+    return RemoteStave(
         tempo = this.tempo,
         tonal = this.tonal,
-        initialNotes = this.initialNotes,
-        generatedNotes = this.generatedNotes
+        initialNotes = this.initialNotes.map { it.toRemoteNote() },
+        generatedNotes = this.generatedNotes.map { it.toRemoteNote() }
     )
 }
 
-fun LocalNote.toNote(): Note {
+fun RemoteNote.toNote(): Note {
     return Note(
         pitch = this.pitch,
         note = this.note,
@@ -44,8 +44,8 @@ fun LocalNote.toNote(): Note {
     )
 }
 
-fun Note.toLocalNote(): LocalNote {
-    return LocalNote(
+fun Note.toRemoteNote(): RemoteNote {
+    return RemoteNote(
         pitch = this.pitch,
         note = this.note,
         duration = this.duration,

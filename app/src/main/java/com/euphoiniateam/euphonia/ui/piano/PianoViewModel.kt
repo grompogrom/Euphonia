@@ -13,7 +13,10 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import com.euphoiniateam.euphonia.data.repos.NotesRepositoryImpl
 import com.euphoiniateam.euphonia.domain.repos.NotesRepository
 import com.euphoiniateam.euphonia.ui.MidiPlayer
-import com.euphoiniateam.euphonia.ui.creation.StaveConfig
+import com.euphoiniateam.euphonia.ui.creation.stave.StaveConfig
+import com.euphoiniateam.euphonia.ui.creation.stave.StaveHandler
+import com.euphoiniateam.euphonia.ui.creation.synthesia.SynthesiaConfig
+import com.euphoiniateam.euphonia.ui.creation.synthesia.SynthesiaHandler
 import com.leff.midi.MidiFile
 import com.leff.midi.MidiTrack
 import com.leff.midi.event.NoteOff
@@ -22,35 +25,42 @@ import com.leff.midi.event.meta.Tempo
 import com.leff.midi.event.meta.TimeSignature
 import java.io.File
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 class PianoViewModel(
     private val notesRepository: NotesRepository
 ) : ViewModel() {
-    private val notePosMidi = arrayListOf(0, 2, 1, 4, 3, 5, 7, 6, 9, 8, 11, 10)
     private var recordData: MutableList<PianoEvent> = mutableListOf()
-    private var resultUri: Uri? = null
+    private var resultUri: Uri = Uri.EMPTY
     private val midiPlayer = MidiPlayer()
     val staveConfig = StaveConfig()
-    var screenState = MutableStateFlow(
+    val staveHandler = StaveHandler(staveConfig)
+    val synthesiaConfig = SynthesiaConfig()
+    val synthesiaHandler = SynthesiaHandler(synthesiaConfig)
+    var screenStateFlow = MutableStateFlow(
         PianoScreenState(
             PianoState.NO_RECORD,
             false
         )
     )
 
+    private val staveChosen = false
+    val screenState: StateFlow<PianoScreenState>
+        get() = screenStateFlow
+
     init {
         viewModelScope.launch {
             midiPlayer.playerState.collect {
-                if (screenState.value.isPlayingResult != it) {
-                    screenState.emit(screenState.value.copy(isPlayingResult = it))
+                if (screenStateFlow.value.isPlayingResult != it) {
+                    screenStateFlow.emit(screenStateFlow.value.copy(isPlayingResult = it))
                 }
             }
         }
     }
 
     fun startRecord() {
-        screenState.tryEmit(screenState.value.copy(recordingState = PianoState.RECORDING))
+        screenStateFlow.tryEmit(screenStateFlow.value.copy(recordingState = PianoState.RECORDING))
     }
 
     fun stopRecord(context: Context) {
@@ -58,20 +68,25 @@ class PianoViewModel(
             if (recordData.isNotEmpty()) {
                 createMidiWithApi(context)
                 onRecordFinished()
-                screenState.tryEmit(
-                    screenState.value.copy(recordingState = PianoState.AFTER_RECORD)
+                screenStateFlow.tryEmit(
+                    screenStateFlow.value.copy(recordingState = PianoState.AFTER_RECORD)
                 )
             } else {
-                screenState.tryEmit(screenState.value.copy(recordingState = PianoState.NO_RECORD))
+                screenStateFlow.tryEmit(
+                    screenStateFlow.value.copy(recordingState = PianoState.NO_RECORD)
+                )
                 Toast.makeText(context, "You played nothing)", Toast.LENGTH_LONG).show()
             }
         }
     }
 
     private suspend fun onRecordFinished() {
-        val recognizedNotes = notesRepository.getNotes(resultUri ?: Uri.EMPTY)
+        val recognizedNotes = notesRepository.getNotes(resultUri)
         if (recognizedNotes != null) {
-            staveConfig.updateNotes(recognizedNotes)
+            if (staveChosen)
+                staveHandler.updateNotes(recognizedNotes)
+            else
+                synthesiaHandler.updateNotes(recognizedNotes)
         }
     }
 
@@ -81,16 +96,16 @@ class PianoViewModel(
     }
 
     fun remake() {
-        screenState.tryEmit(screenState.value.copy(recordingState = PianoState.NO_RECORD))
+        screenStateFlow.tryEmit(screenStateFlow.value.copy(recordingState = PianoState.NO_RECORD))
         clearRecorded()
     }
 
     fun applyRecord(navigate: (Uri) -> Unit) {
-        resultUri?.apply { navigate(this) }
+        navigate(resultUri)
     }
 
     fun onPushKey(event: PianoEvent) {
-        if (screenState.value.recordingState == PianoState.RECORDING) {
+        if (screenStateFlow.value.recordingState == PianoState.RECORDING) {
             recordData.add(event)
         }
     }
@@ -106,17 +121,17 @@ class PianoViewModel(
     private fun clearRecorded() {
         midiPlayer.release()
         recordData.clear()
-        resultUri = null
-        staveConfig.updateNotes(emptyList())
+        resultUri = Uri.EMPTY
+        staveHandler.updateNotes(emptyList())
     }
 
-    fun onRealiseKey(pitch: Int, key: Int) {
-        if (screenState.value.recordingState == PianoState.RECORDING) {
-            Log.d("AAA", "realise key")
+    fun onRealiseKey(pitch: Int, octave: Int) {
+        Log.d("toMidi", "recordData")
+        if (screenStateFlow.value.recordingState == PianoState.RECORDING) {
             for (l in 0 until recordData.size) {
                 if (recordData[l].elapseTime == -1L &&
-                    recordData[l].keyNum == key &&
-                    recordData[l].pitch == pitch
+                    recordData[l].keyNum == pitch &&
+                    recordData[l].pitch == octave
                 ) {
                     recordData[l].elapseTime = System.currentTimeMillis()
                 }
@@ -136,10 +151,10 @@ class PianoViewModel(
             TimeSignature.DEFAULT_DIVISION
         )
         val tempo = Tempo()
-        tempo.bpm = 228f
+        tempo.bpm = 120f
 
         tempoTrack.insertEvent(ts)
-        tempoTrack.insertEvent(tempo)
+        noteTrack.insertEvent(tempo)
         val noteCount = recordData.size
         for (i in 0 until noteCount) {
             val channel = 0
@@ -175,10 +190,10 @@ class PianoViewModel(
         Toast.makeText(context, "saved to ${file.path}", Toast.LENGTH_LONG).show()
     }
 
-    fun notesToMidiNotes(noteNum: Int, pitch: Int): Int {
-        return if (pitch == 0) notePosMidi[noteNum] + 60
-        else if (pitch == 1) notePosMidi[noteNum] + 72
-        else notePosMidi[noteNum] + 48
+    private fun notesToMidiNotes(noteNum: Int, pitch: Int): Int {
+        return if (pitch == 0) noteNum + 60
+        else if (pitch == 1) noteNum + 72
+        else noteNum + 48
     }
 
     companion object {

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        xmlns:tools="http://schemas.android.com/tools"
         android:background="@color/md_theme_dark_background"
         android:orientation="vertical"
         tools:context=".ui.piano.PianoFragment">
@@ -36,30 +36,24 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:visibility="gone" />
+
     <View
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="0.1"/>
+            android:layout_weight="0.1" />
 
     <androidx.compose.ui.platform.ComposeView
             android:id="@+id/buttons_compose_view"
             android:layout_weight="0.3"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:visibility="gone"
-            />
+            android:visibility="gone" />
+
+    <androidx.compose.ui.platform.ComposeView
+            android:id="@+id/compose_piano"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="visible" />
 
 
-    <HorizontalScrollView
-            android:id="@+id/scrollView"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent">
-
-        <LinearLayout
-                android:id="@+id/linear1"
-                android:layout_width="1150dp"
-                android:layout_height="match_parent"
-                android:orientation="horizontal">
-        </LinearLayout>
-    </HorizontalScrollView>
 </LinearLayout>

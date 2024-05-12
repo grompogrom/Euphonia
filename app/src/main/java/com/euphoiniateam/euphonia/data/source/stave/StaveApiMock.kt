@@ -1,10 +1,10 @@
-package com.euphoiniateam.euphonia.data.datasources.stave
+package com.euphoiniateam.euphonia.data.source.stave
 
 import android.net.Uri
-import com.euphoiniateam.euphonia.data.datamodels.RemoteNote
-import com.euphoiniateam.euphonia.data.datamodels.RemoteStave
-import com.euphoiniateam.euphonia.data.datamodels.RemoteTrackRequest
-import com.euphoiniateam.euphonia.data.datamodels.RemoteTrackResponse
+import com.euphoiniateam.euphonia.data.models.RemoteNote
+import com.euphoiniateam.euphonia.data.models.RemoteStave
+import com.euphoiniateam.euphonia.data.models.RemoteTrackRequest
+import com.euphoiniateam.euphonia.data.models.RemoteTrackResponse
 import kotlin.random.Random
 
 class StaveApiMock() : StaveRemoteDataStore {

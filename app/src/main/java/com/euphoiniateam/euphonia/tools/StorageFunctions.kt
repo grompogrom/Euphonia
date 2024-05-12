@@ -8,6 +8,8 @@ import java.io.File
 import java.io.FileOutputStream
 import java.io.InputStream
 
+// TODO: положим в объект все функции?
+
 fun getMidFileNamesFromResults(): ArrayList<String> {
     val dir = File(
         Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC),

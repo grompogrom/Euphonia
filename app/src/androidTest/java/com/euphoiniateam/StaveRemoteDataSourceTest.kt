@@ -7,8 +7,8 @@ import android.util.Log
 import androidx.core.net.toFile
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.runner.AndroidJUnit4
-import com.euphoiniateam.euphonia.data.datamodels.RemoteTrackRequest
-import com.euphoiniateam.euphonia.data.datasources.stave.StaveRemoteDataSourceImp
+import com.euphoiniateam.euphonia.data.models.RemoteTrackRequest
+import com.euphoiniateam.euphonia.data.source.stave.StaveRemoteDataSourceImp
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException

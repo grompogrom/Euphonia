@@ -1,20 +1,20 @@
 package com.euphoiniateam.euphonia.data.repos
 
 import android.net.Uri
-import com.euphoiniateam.euphonia.data.datamodels.RemoteTrackRequest
-import com.euphoiniateam.euphonia.data.datamodels.toLocalStave
-import com.euphoiniateam.euphonia.data.datamodels.toStave
-import com.euphoiniateam.euphonia.data.datasources.stave.StaveLocalDataStore
-import com.euphoiniateam.euphonia.data.datasources.stave.StaveRemoteDataStore
+import com.euphoiniateam.euphonia.data.models.RemoteTrackRequest
+import com.euphoiniateam.euphonia.data.models.toLocalStave
+import com.euphoiniateam.euphonia.data.models.toStave
+import com.euphoiniateam.euphonia.data.source.stave.StaveLocalDataStore
+import com.euphoiniateam.euphonia.data.source.stave.StaveRemoteDataStore
 import com.euphoiniateam.euphonia.domain.GenerationException
 import com.euphoiniateam.euphonia.domain.models.Stave
-import com.euphoiniateam.euphonia.domain.repos.StaveRepository
+import com.euphoiniateam.euphonia.domain.repos.GenerationRepository
 import kotlinx.coroutines.delay
 
-class StaveRepositoryImpl(
+class GenerationRepositoryImpl(
     private val localDataStore: StaveLocalDataStore,
     private val remoteDataStore: StaveRemoteDataStore
-) : StaveRepository {
+) : GenerationRepository {
 
     override suspend fun getStave(): Stave {
         try {
@@ -37,6 +37,7 @@ class StaveRepositoryImpl(
         }
     }
 
+    // TODO: используется, но не делает полезной работы
     @Deprecated("Use generateMidi instead")
     override suspend fun generateStave(): Stave {
         val newStave = remoteDataStore.getData()

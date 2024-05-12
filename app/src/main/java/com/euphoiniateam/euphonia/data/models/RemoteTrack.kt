@@ -1,4 +1,4 @@
-package com.euphoiniateam.euphonia.data.datamodels
+package com.euphoiniateam.euphonia.data.models
 
 import android.net.Uri
 

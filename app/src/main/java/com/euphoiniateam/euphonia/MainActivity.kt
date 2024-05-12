@@ -8,6 +8,9 @@ import androidx.navigation.ui.setupWithNavController
 import com.euphoiniateam.euphonia.databinding.ActivityMainBinding
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
+// TODO:  Дополнительно
+// 1. Удалить мусор Data/Domain
+// 2. roboto regular нужен? в android итак roboto
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding

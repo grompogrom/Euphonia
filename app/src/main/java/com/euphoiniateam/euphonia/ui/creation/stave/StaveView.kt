@@ -1,7 +1,6 @@
-package com.euphoiniateam.euphonia.ui.creation
+package com.euphoiniateam.euphonia.ui.creation.stave
 
 import android.annotation.SuppressLint
-import android.util.Log
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.rememberScrollableState
@@ -9,10 +8,8 @@ import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -24,7 +21,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.euphoiniateam.euphonia.R
 import com.euphoiniateam.euphonia.domain.models.Note
-import kotlin.math.min
 
 const val note4Duration = 0.55
 const val note8Duration = 0.30
@@ -33,6 +29,7 @@ const val note16Duration = 0.10
 @SuppressLint("MagicNumber")
 fun StaveView(
     state: StaveConfig,
+    handler: StaveHandler,
     modifier: Modifier = Modifier
 ) {
 
@@ -58,13 +55,12 @@ fun StaveView(
             .scrollable(
                 orientation = Orientation.Vertical,
                 state = rememberScrollableState { delta ->
-                    if (deltaDraw + delta in -1000.0..0.0) // change
+                    if (deltaDraw + delta in -425.0 * (handler.getLinesCount() - 2)..0.0)
                         deltaDraw += delta
                     delta
                 }
             )
     ) {
-        Log.d("delta", deltaDraw.toString())
         val lineHeight = 2.dp.toPx()
         val lineWidth = size.width - lineHeight
         val topMargin = 50.dp.toPx()
@@ -75,9 +71,8 @@ fun StaveView(
 
         translate(0f, deltaDraw) {
             // draw lines for stave
-            state.setViewSize(size.width, size.height)
-            repeat(state.linesCount) { line ->
-                val lineDelta = if (line != 0 && line != state.lineNotesCount - 1)
+            repeat(handler.getLinesCount()) { line ->
+                val lineDelta = if (line != 0)
                     (verticalOffset + noteLinesHeight) * line else 0f
                 repeat(5) {
                     drawLine(
@@ -122,7 +117,7 @@ fun StaveView(
             }
 
             // draw scriptKeys
-            for (i in 0 until state.linesCount) {
+            for (i in 0 until handler.getLinesCount()) {
                 translate(
                     0.dp.toPx(),
                     topMargin / 2 +
@@ -143,13 +138,13 @@ fun StaveView(
             val topNoteDelta = topMargin + staveLinesDelta * 2.5f
 
             // draw notes
-            state.visibleNotes.forEachIndexed { index, note ->
+            handler.visibleNotes.forEachIndexed { index, note ->
                 val lineIndex = index.div(state.lineNotesCount)
                 val noteIndex = index.mod(state.lineNotesCount)
                 translate(
                     horizontalNoteDelta * (noteIndex + 1.2f),
                     topNoteDelta + (verticalOffset + noteLinesHeight) * lineIndex -
-                        state.visibleNotes[lineIndex * state.lineNotesCount + noteIndex].pitch
+                        handler.visibleNotes[lineIndex * state.lineNotesCount + noteIndex].pitch
                         * staveLinesDelta / 2f
                 ) {
                     // check durations and types of notes
@@ -258,18 +253,21 @@ fun StaveView(
 fun StaveViewPrev() {
     MaterialTheme {
         StaveView(
-            StaveConfig(
-                listOf(
-                    Note(5, 9, 0.25f, 0.0f),
-                    Note(5, 8, 0.25f, 0.0f),
-                    Note(0, 0, 0.25f, 0.0f),
-                    Note(0, 0, 0.0f, 0.0f),
-                    Note(5, 8, 0.25f, 0.0f),
-                    Note(5, 8, 0.25f, 0.0f),
-                    Note(5, 8, 0.25f, 0.0f),
-                    Note(5, 8, 0.25f, 0.0f),
-                    Note(5, 8, 0.25f, 0.0f),
-                    Note(5, 8, 0.25f, 0.0f)
+            StaveConfig(),
+            StaveHandler(
+                StaveConfig(
+                    listOf(
+                        Note(0, 0, 0.25f, 0.0f),
+                        Note(5, 8, 0.25f, 0.0f),
+                        Note(0, 0, 0.25f, 0.0f),
+                        Note(0, 0, 0.0f, 0.0f),
+                        Note(5, 8, 0.25f, 0.0f),
+                        Note(5, 8, 0.25f, 0.0f),
+                        Note(5, 8, 0.25f, 0.0f),
+                        Note(5, 8, 0.25f, 0.0f),
+                        Note(5, 8, 0.25f, 0.0f),
+                        Note(5, 8, 0.25f, 0.0f)
+                    )
                 )
             ),
             modifier = Modifier.fillMaxSize()
@@ -278,37 +276,6 @@ fun StaveViewPrev() {
 }
 
 class StaveConfig(
-    initialNotes: List<Note> = emptyList(),
-    val linesCount: Int = 5,
-    var lineNotesCount: Int = 7,
-) {
-
-    private var viewWidth = 0f
-    private var viewHeight = 0f
-
-    private val notes = mutableStateListOf<Note>()
-
-    val visibleNotes by derivedStateOf {
-        if (notes.isNotEmpty()) {
-            notes.subList(
-                0,
-                min(lineNotesCount * linesCount, notes.size)
-            )
-        } else {
-            emptyList()
-        }
-    }
-    init {
-        updateNotes(initialNotes)
-    }
-
-    fun setViewSize(width: Float, height: Float) {
-        viewWidth = width
-        viewHeight = height
-    }
-
-    fun updateNotes(newNotes: List<Note>) {
-        notes.clear()
-        notes.addAll(newNotes)
-    }
-}
+    val initialNotes: List<Note> = emptyList(),
+    val lineNotesCount: Int = 7,
+)
