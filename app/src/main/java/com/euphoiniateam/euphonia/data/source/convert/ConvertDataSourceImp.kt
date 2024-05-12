@@ -18,7 +18,8 @@ class ConvertDataSourceImp(private val context: Context) : ConvertDataSource {
         val token = sendFileForConverting(mp3.uri)
         val convertedTrackBytes = getFileFromServer(token)
         return RemoteTrackResponse(
-            uri = saveMidiFileToCache(context, convertedTrackBytes.inputStream(), token) ?: Uri.EMPTY
+            uri = saveMidiFileToCache(context, convertedTrackBytes.inputStream(), token)
+                ?: Uri.EMPTY
         )
     }
 

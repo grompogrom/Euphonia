@@ -18,7 +18,7 @@ open class ConvertingException(
 
 class WaitForConvertingTimeoutException(
     override val message: String? = null,
-): ConvertingException(
+) : ConvertingException(
     message = message
 )
 
