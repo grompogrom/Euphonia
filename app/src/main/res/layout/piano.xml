@@ -41,14 +41,14 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/button6"
-        android:layout_width="75dp"
-        android:layout_height="250dp"
-        android:background="@drawable/piano_borders"
-        android:stateListAnimator="@android:anim/fade_in"
-        app:layout_constraintEnd_toStartOf="@+id/button7"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:background="#ffffff" />
+            android:id="@+id/button6"
+            android:layout_width="74dp"
+            android:layout_height="251dp"
+            android:background="@drawable/piano_borders"
+            android:stateListAnimator="@android:anim/fade_in"
+            app:layout_constraintEnd_toStartOf="@+id/button7"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:background="#ffffff" />
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/button16"

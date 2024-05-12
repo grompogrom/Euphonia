@@ -24,6 +24,7 @@ import com.leff.midi.MidiTrack
 import com.leff.midi.event.meta.Tempo
 import com.leff.midi.event.meta.TimeSignature
 import java.io.File
+import kotlin.concurrent.thread
 
 
 class PianoFragment : Fragment() {
@@ -38,7 +39,7 @@ class PianoFragment : Fragment() {
     private var isRecording = false
     private lateinit var recordButton : Button
     private var recordData : MutableList<PianoPlayer> = mutableListOf()
-    private var previousPressTime : Long = 0
+    private var noteLengthData : MutableList<NoteLenght> = mutableListOf()
 
 
     @SuppressLint("ClickableViewAccessibility")
@@ -64,8 +65,6 @@ class PianoFragment : Fragment() {
 
 
             }
-
-//            Toast.makeText(requireContext(), isRecording.toString(), Toast.LENGTH_SHORT).show()
         }
         for(i in 0..2) {
             val pianoView : View = inflater.inflate(R.layout.piano, container, false)
@@ -78,33 +77,15 @@ class PianoFragment : Fragment() {
                     Log.d("dd", "dd")
                     when(event.action) {
                         MotionEvent.ACTION_DOWN -> {
-
-                            if(x == 2 || x == 4 || x == 7 || x == 9 || x == 11) {
-                                v.background =
-                                    ColorDrawable(resources.getColor(R.color.md_theme_dark_background))
-                            }
-                            else {
-                                v.background = ColorDrawable((resources.getColor(androidx.appcompat.R.color.material_grey_50)))
-                            }
-                            noteMap[pianoKey(notes[x], i)]?.let { it1 -> sndPool.play(it1, 1F,
-                                1F, 1 ,0, 1.0f) }
-                            if(isRecording) recordData.add(PianoPlayer(-1L, System.currentTimeMillis(), x, i))
+                            pianoKeyDown(v, x, i)
                             true
                         }
                         MotionEvent.ACTION_UP -> {
-                            if(x == 2 || x == 4 || x == 7 || x == 9 || x == 11) {
-                                v.background =
-                                    ColorDrawable(resources.getColor(androidx.cardview.R.color.cardview_dark_background))
-                            }else {
-                                v.background = (resources.getDrawable(R.drawable.piano_borders))
-                            }
-                            if(isRecording){
-                                for(l in 0 until recordData.size){
-                                    if(recordData[l].elapseTime == -1L && recordData[l].keyNum == x && recordData[l].pitch == i){
-                                        recordData[l].elapseTime = System.currentTimeMillis()
-                                    }
-                                }
-                            }
+                            pianoKeyUp(v, x, i)
+                            true
+                        }
+                        MotionEvent.ACTION_CANCEL -> {
+                            pianoKeyUp(v, x, i)
                             true
                         }
 
@@ -112,24 +93,67 @@ class PianoFragment : Fragment() {
 
                     }
                 }
-               /* (octave.getChildAt(x) as Button).setOnClickListener {
-                    if(isRecording) {
-                        val currentTimeMillis = SystemClock.elapsedRealtime()
-                        val elapsedTimeMillis = if (previousPressTime != 0L) {
-                            currentTimeMillis - previousPressTime
-                        } else 0
-                        previousPressTime = currentTimeMillis
-
-                        recordData.add(PianoPlayer(elapsedTimeMillis, x, i))
-                    }
-                    noteMap[pianoKey(notes[x], i)]?.let { it1 -> sndPool.play(it1, 1F,
-                        1F, 1 ,0, 1.0f) }
-                }*/
             }
             LLayout.addView(pianoView, i)
         }
         return rootView
     }
+
+    fun pianoKeyUp(v : View, x : Int, i : Int){
+        if(x == 2 || x == 4 || x == 7 || x == 9 || x == 11) {
+            v.background =
+                ColorDrawable(resources.getColor(androidx.cardview.R.color.cardview_dark_background))
+        }else {
+            v.background = (resources.getDrawable(R.drawable.piano_borders))
+        }
+        for(l in 0 until noteLengthData.size) {
+            if(noteLengthData[l].keyNum == x && noteLengthData[l].pitch == i){
+                slowVolumeDown(noteLengthData[l].player)
+                noteLengthData.removeAt(l)
+            }
+        }
+        if(isRecording){
+            for(l in 0 until recordData.size){
+                if(recordData[l].elapseTime == -1L && recordData[l].keyNum == x && recordData[l].pitch == i){
+                    recordData[l].elapseTime = System.currentTimeMillis()
+                }
+            }
+        }
+    }
+
+    fun pianoKeyDown(v : View, x : Int, i : Int){
+        if(x == 2 || x == 4 || x == 7 || x == 9 || x == 11) {
+            v.background =
+                ColorDrawable(resources.getColor(R.color.md_theme_dark_background))
+        }
+        else {
+            v.background = ColorDrawable((resources.getColor(androidx.appcompat.R.color.material_grey_50)))
+        }
+        noteMap[pianoKey(notes[x], i)]?.let {
+            sndPool.play(
+                it, 1F,
+                1F, 1 ,0, 1.0f)
+        }?.let {
+            NoteLenght(x, i,
+                it
+            )
+        }?.let { noteLengthData.add(it) }
+        Log.d("Buttons", noteMap[pianoKey(notes[x],i)].toString() + " Pressed")
+        if(isRecording) recordData.add(PianoPlayer(-1L, System.currentTimeMillis(), x, i))
+    }
+
+    fun slowVolumeDown(streamId : Int){
+        var V = 1F
+        thread {
+            while(V > 0.1F){
+                V -= 0.1F
+                sndPool.setVolume(streamId,V,V)
+                Thread.sleep(50)
+            }
+            sndPool.stop(streamId)
+        }
+    }
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProvider(this).get(PianoViewModel::class.java)
@@ -137,7 +161,6 @@ class PianoFragment : Fragment() {
     }
 
     private fun pianoKey(key : String, pitch : Int) : Int {
-//        Log.d("key", key)
         var resource : Int = R.raw.c
 
         if(pitch == 1) { //C5
