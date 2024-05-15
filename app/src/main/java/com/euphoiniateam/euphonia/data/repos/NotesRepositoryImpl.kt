@@ -5,9 +5,9 @@ import android.net.Uri
 import android.util.Log
 import com.euphoiniateam.euphonia.domain.models.Note
 import com.euphoiniateam.euphonia.domain.repos.NotesRepository
-import java.math.RoundingMode
 import jp.kshoji.javax.sound.midi.MidiSystem
 import jp.kshoji.javax.sound.midi.ShortMessage
+import java.math.RoundingMode
 
 class NotesRepositoryImpl(private val context: Context) : NotesRepository {
 
@@ -49,9 +49,9 @@ class NotesRepositoryImpl(private val context: Context) : NotesRepository {
                         Log.d("check", "${message.command} + ${message.data2}")
                         var pitch = 0
                         val command = message.command
-                        val midiNote = message.data1
+                        val midiNote = (message.data1 - 24) % 36
+                        val noteNum = midiNote % 12
                         val amp = message.data2
-                        val noteNum = (midiNote - 24) % 12
                         for (key in notesMap.keys) {
                             if (notesMap[key]?.contains(noteNum) == true)
                                 pitch = key
@@ -61,7 +61,7 @@ class NotesRepositoryImpl(private val context: Context) : NotesRepository {
                             .toFloat()
                         when (command) {
                             ShortMessage.NOTE_ON -> {
-                                val note = Note(pitch, noteNum, 0.25f, beat)
+                                val note = Note(pitch, midiNote, 0.25f, beat)
                                 inflight[midiNote] = note
                             }
                             ShortMessage.NOTE_OFF -> {

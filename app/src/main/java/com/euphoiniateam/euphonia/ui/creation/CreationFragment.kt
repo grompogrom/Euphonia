@@ -28,7 +28,6 @@ class CreationFragment : Fragment() {
 
     private lateinit var viewModel: CreationViewModel
     private lateinit var uri: Uri
-    private val staveChosen = false
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -87,7 +86,7 @@ class CreationFragment : Fragment() {
             modifier = modifier,
             verticalArrangement = Arrangement.SpaceBetween
         ) {
-            if (staveChosen) {
+            if (viewModel.staveChosen) {
                 Stave(
                     staveConfig = viewModel.staveConfig,
                     staveHandler = viewModel.staveHandler,

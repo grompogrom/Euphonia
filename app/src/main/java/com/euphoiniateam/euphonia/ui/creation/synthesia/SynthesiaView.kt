@@ -95,6 +95,10 @@ fun SynthesiaView(
                     handler.visibleNotes.forEachIndexed { index, note ->
 
                         var durationWidth = 0f
+                        val noteNum = note.note % 12
+                        val octave = note.note / 12
+                        val octaveSpace = octave * 7
+
 
                         if (note.duration >= note4Duration)
                             durationWidth = note4Width
@@ -103,10 +107,10 @@ fun SynthesiaView(
                         else if (note.duration >= note16Duration)
                             durationWidth = note16Width
 
-                        if (note.note in whiteNotes) {
+                        if (noteNum in whiteNotes) {
                             translate(
                                 beginningPoint + prevNotesDuration,
-                                state.whiteHeight.toPx() * note.pitch
+                                octaveSpace * state.whiteHeight.toPx() + state.whiteHeight.toPx() * note.pitch
                             ) {
                                 drawRect(
                                     color = colorForWhiteNotes,
@@ -114,11 +118,11 @@ fun SynthesiaView(
                                 )
                             }
                             prevNotesDuration += durationWidth
-                        } else if (note.note in blackNotes) {
+                        } else if (noteNum in blackNotes) {
                             translate(
                                 beginningPoint + prevNotesDuration,
                                 (
-                                    state.whiteHeight.toPx() *
+                                        octaveSpace * state.whiteHeight.toPx() + state.whiteHeight.toPx() *
                                         note.pitch - (state.blackHeight / 2).toPx()
                                     ) + 0.8.dp.toPx()
                             ) {
