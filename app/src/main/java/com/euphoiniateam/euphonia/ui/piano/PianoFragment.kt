@@ -29,6 +29,7 @@ import com.euphoiniateam.euphonia.databinding.FragmentPianoBinding
 import com.euphoiniateam.euphonia.ui.MidiFile
 import com.euphoiniateam.euphonia.ui.creation.CreationFragment
 import com.euphoiniateam.euphonia.ui.creation.stave.StaveView
+import com.euphoiniateam.euphonia.ui.creation.synthesia.SynthesiaView
 import kotlinx.coroutines.launch
 
 private val notes = arrayOf("C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B")
@@ -51,10 +52,14 @@ class PianoFragment : Fragment() {
     ): View? {
         requireActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE)
         binding = FragmentPianoBinding.inflate(inflater, container, false)
+        viewModel.setStaveChosen()
         initKeyboard2()
         initOverlay()
         initButtons()
-        initStave()
+        if (viewModel.getStaveChosen())
+            initStave()
+        else
+            initSynthesia()
         observeScreenState()
         return binding!!.root
     }
@@ -176,6 +181,29 @@ class PianoFragment : Fragment() {
                         StaveView(
                             state = viewModel.staveConfig,
                             handler = viewModel.staveHandler
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    private fun initSynthesia() {
+        binding?.staveComposeView?.apply {
+            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+            setContent {
+                MaterialTheme(
+                    colorScheme = darkColorScheme()
+                ) {
+                    Surface(
+                        color = MaterialTheme.colorScheme.surfaceVariant,
+                        modifier = Modifier
+                            .padding(top = 8.dp)
+                            .clip(RoundedCornerShape(10.dp))
+                    ) {
+                        SynthesiaView(
+                            state = viewModel.synthesiaConfig,
+                            handler = viewModel.synthesiaHandler
                         )
                     }
                 }

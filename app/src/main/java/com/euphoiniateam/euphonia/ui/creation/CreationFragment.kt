@@ -56,6 +56,8 @@ class CreationFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
+        viewModel.setStaveChosen()
+
         val userMidiFile = arguments?.getSerializable("midiFile", MidiFile::class.java)
 
         userMidiFile?.let {
@@ -86,7 +88,7 @@ class CreationFragment : Fragment() {
             modifier = modifier,
             verticalArrangement = Arrangement.SpaceBetween
         ) {
-            if (viewModel.staveChosen) {
+            if (viewModel.getStaveChosen()) {
                 Stave(
                     staveConfig = viewModel.staveConfig,
                     staveHandler = viewModel.staveHandler,

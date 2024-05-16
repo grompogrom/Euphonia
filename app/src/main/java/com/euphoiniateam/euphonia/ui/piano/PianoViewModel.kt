@@ -11,7 +11,9 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.euphoiniateam.euphonia.data.repos.NotesRepositoryImpl
+import com.euphoiniateam.euphonia.data.repos.SettingsRepositoryImpl
 import com.euphoiniateam.euphonia.domain.repos.NotesRepository
+import com.euphoiniateam.euphonia.domain.repos.SettingsRepository
 import com.euphoiniateam.euphonia.ui.MidiPlayer
 import com.euphoiniateam.euphonia.ui.creation.stave.StaveConfig
 import com.euphoiniateam.euphonia.ui.creation.stave.StaveHandler
@@ -23,13 +25,15 @@ import com.leff.midi.event.NoteOff
 import com.leff.midi.event.NoteOn
 import com.leff.midi.event.meta.Tempo
 import com.leff.midi.event.meta.TimeSignature
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import java.io.File
 
 class PianoViewModel(
-    private val notesRepository: NotesRepository
+    private val notesRepository: NotesRepository,
+    private val settingsRepository: SettingsRepository
 ) : ViewModel() {
     private var recordData: MutableList<PianoEvent> = mutableListOf()
     private var resultUri: Uri = Uri.EMPTY
@@ -44,8 +48,7 @@ class PianoViewModel(
             false
         )
     )
-
-    private val staveChosen = false
+    private var staveChosen = true
     val screenState: StateFlow<PianoScreenState>
         get() = screenStateFlow
 
@@ -196,11 +199,23 @@ class PianoViewModel(
         else noteNum + 48
     }
 
+    fun setStaveChosen() {
+        viewModelScope.launch(Dispatchers.IO) {
+            staveChosen = settingsRepository.getSettings().showing_stave
+        }
+    }
+    fun getStaveChosen(): Boolean {
+        return staveChosen
+    }
+
     companion object {
         fun provideFactory(context: Context): ViewModelProvider.Factory = viewModelFactory {
             initializer {
                 PianoViewModel(
                     notesRepository = NotesRepositoryImpl(
+                        context
+                    ),
+                    settingsRepository = SettingsRepositoryImpl(
                         context
                     )
                 )

@@ -14,11 +14,13 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import com.euphoiniateam.euphonia.data.dataStore
 import com.euphoiniateam.euphonia.data.repos.GenerationRepositoryImpl
 import com.euphoiniateam.euphonia.data.repos.NotesRepositoryImpl
+import com.euphoiniateam.euphonia.data.repos.SettingsRepositoryImpl
 import com.euphoiniateam.euphonia.data.source.stave.StaveCache
 import com.euphoiniateam.euphonia.data.source.stave.StaveRemoteDataSourceImp
 import com.euphoiniateam.euphonia.domain.GenerationException
 import com.euphoiniateam.euphonia.domain.repos.GenerationRepository
 import com.euphoiniateam.euphonia.domain.repos.NotesRepository
+import com.euphoiniateam.euphonia.domain.repos.SettingsRepository
 import com.euphoiniateam.euphonia.ui.MidiPlayer
 import com.euphoiniateam.euphonia.ui.creation.stave.StaveConfig
 import com.euphoiniateam.euphonia.ui.creation.stave.StaveHandler
@@ -31,7 +33,8 @@ import kotlinx.coroutines.launch
 @Stable
 class CreationViewModel(
     private val generationRepository: GenerationRepository,
-    private val notesRepository: NotesRepository
+    private val notesRepository: NotesRepository,
+    private val settingsRepository: SettingsRepository
 ) : ViewModel() {
     val staveConfig = StaveConfig()
     val staveHandler = StaveHandler(staveConfig)
@@ -40,8 +43,8 @@ class CreationViewModel(
     var currentTrackState = MutableStateFlow(Uri.EMPTY)
     var screenState by mutableStateOf(CreationScreenState())
     private val midiPlayer: MidiPlayer = MidiPlayer()
+    private var staveChosen: Boolean = true
 
-    val staveChosen = false
 
     init {
         viewModelScope.launch {
@@ -118,6 +121,15 @@ class CreationViewModel(
         }
     }
 
+    fun setStaveChosen() {
+        viewModelScope.launch(Dispatchers.IO) {
+            staveChosen = settingsRepository.getSettings().showing_stave
+        }
+    }
+    fun getStaveChosen(): Boolean {
+        return staveChosen
+    }
+
     override fun onCleared() {
         super.onCleared()
         midiPlayer.release()
@@ -132,6 +144,9 @@ class CreationViewModel(
                         StaveRemoteDataSourceImp(context)
                     ),
                     notesRepository = NotesRepositoryImpl(
+                        context
+                    ),
+                    settingsRepository = SettingsRepositoryImpl(
                         context
                     )
                 )

@@ -110,7 +110,8 @@ fun SynthesiaView(
                         if (noteNum in whiteNotes) {
                             translate(
                                 beginningPoint + prevNotesDuration,
-                                octaveSpace * state.whiteHeight.toPx() + state.whiteHeight.toPx() * note.pitch
+                                octaveSpace * state.whiteHeight.toPx() + state.whiteHeight.toPx()
+                                        * note.pitch
                             ) {
                                 drawRect(
                                     color = colorForWhiteNotes,
@@ -124,7 +125,7 @@ fun SynthesiaView(
                                 (
                                         octaveSpace * state.whiteHeight.toPx() + state.whiteHeight.toPx() *
                                         note.pitch - (state.blackHeight / 2).toPx()
-                                    ) + 0.8.dp.toPx()
+                                        ) + 0.8.dp.toPx()
                             ) {
                                 drawRect(
                                     color = colorForBlackNotes,
