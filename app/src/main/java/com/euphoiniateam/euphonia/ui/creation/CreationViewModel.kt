@@ -45,7 +45,6 @@ class CreationViewModel(
     private val midiPlayer: MidiPlayer = MidiPlayer()
     private var staveChosen: Boolean = true
 
-
     init {
         viewModelScope.launch {
             midiPlayer.playerState.collect {

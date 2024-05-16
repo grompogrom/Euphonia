@@ -15,7 +15,6 @@ import com.google.android.material.switchmaterial.SwitchMaterial
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
-
 class SettingsFragment : Fragment() {
 
     private var _binding: FragmentSettingsBinding? = null
@@ -100,7 +99,6 @@ class SettingsFragment : Fragment() {
 //        })
 //    }
 
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         viewModel = ViewModelProvider(this, SettingsViewModel.provideFactory(requireContext()))
             .get(SettingsViewModel::class.java)
@@ -112,12 +110,7 @@ class SettingsFragment : Fragment() {
                 binding.switchRecordingStave.isChecked = settings.recording_stave
                 binding.sliderStaveSize.value = settings.stave_size
                 binding.switchShowingStave.isChecked = settings.showing_stave
-
             }
-
-
-
-
         }
         // viewModel.loadSettings()
         super.onViewCreated(view, savedInstanceState)

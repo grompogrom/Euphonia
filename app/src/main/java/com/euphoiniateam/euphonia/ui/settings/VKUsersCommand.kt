@@ -9,7 +9,7 @@ import com.vk.api.sdk.internal.ApiCommand
 import org.json.JSONException
 import org.json.JSONObject
 
-class VKUsersCommand(private val uids: IntArray = intArrayOf()): ApiCommand<List<VKUser>>() {
+class VKUsersCommand(private val uids: IntArray = intArrayOf()) : ApiCommand<List<VKUser>>() {
     override fun onExecute(manager: VKApiManager): List<VKUser> {
 
         if (uids.isEmpty()) {

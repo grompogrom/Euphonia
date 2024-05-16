@@ -37,10 +37,10 @@ class MainActivity : AppCompatActivity() {
 //                Log.d("AAA", str.toString())
 //        }
 
-        val authLauncher = VK.login(this) { result : VKAuthenticationResult ->
+        val authLauncher = VK.login(this) { result: VKAuthenticationResult ->
             when (result) {
                 is VKAuthenticationResult.Success -> {
-                    //Toast.makeText(this, "YESYESYESYES", Toast.LENGTH_SHORT).show()
+                    // Toast.makeText(this, "YESYESYESYES", Toast.LENGTH_SHORT).show()
                     VK.addTokenExpiredHandler(tokenTracker)
                     requestUser()
                 }
@@ -50,7 +50,6 @@ class MainActivity : AppCompatActivity() {
             }
         }
         authLauncher.launch(arrayListOf(VKScope.WALL, VKScope.PHOTOS))
-
 
         val navView: BottomNavigationView = binding.navView
 
@@ -69,24 +68,31 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private val tokenTracker = object: VKTokenExpiredHandler {
+    private val tokenTracker = object : VKTokenExpiredHandler {
         override fun onTokenExpired() {
             // token expired
         }
     }
 
     private fun requestUser() {
-        VK.execute(VKUsersCommand(), object: VKApiCallback<List<VKUser>> {
-            override fun success(result: List<VKUser>) {
-                if (result.isNotEmpty()) {
-                    val user = result[0]
-                    val username = "${user.firstName} ${user.lastName}"
-                    Toast.makeText(applicationContext, "Welcome, $username!", Toast.LENGTH_SHORT).show()
+        VK.execute(
+            VKUsersCommand(),
+            object : VKApiCallback<List<VKUser>> {
+                override fun success(result: List<VKUser>) {
+                    if (result.isNotEmpty()) {
+                        val user = result[0]
+                        val username = "${user.firstName} ${user.lastName}"
+                        Toast.makeText(
+                            applicationContext,
+                            "Welcome, $username!",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
+                override fun fail(error: Exception) {
+                    Log.e("VKRequest", error.toString())
                 }
             }
-            override fun fail(error: Exception) {
-                Log.e("VKRequest", error.toString())
-            }
-        })
+        )
     }
 }
