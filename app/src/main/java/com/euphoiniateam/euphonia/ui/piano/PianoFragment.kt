@@ -30,9 +30,11 @@ import com.euphoiniateam.euphonia.R
 import com.euphoiniateam.euphonia.databinding.FragmentPianoBinding
 import com.euphoiniateam.euphonia.ui.creation.StaveView
 import kotlinx.coroutines.launch
+import kotlin.concurrent.thread
 
 private val notes = arrayOf("C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B")
 private val blackKeys = arrayOf(1, 3, 6, 8, 10)
+private var noteLengthData : MutableList<NoteLenght> = mutableListOf()
 
 class PianoFragment : Fragment() {
 
@@ -62,16 +64,16 @@ class PianoFragment : Fragment() {
     }
 
     private fun onKeyboardKeyDown(octave: Int, pitch: Int) {
-        noteMap[pianoKey(notes[pitch], octave)]?.let { it1 ->
+        noteMap[pianoKey(notes[pitch], octave)]?.let {
             sndPool.play(
-                it1,
-                1F,
-                1F,
-                1,
-                0,
-                1.0f
+                it, 1F,
+                1F, 1 ,0, 1.0f)
+        }?.let {
+            NoteLenght(pitch, octave,
+                it
             )
-        }
+        }?.let { noteLengthData.add(it) }
+
 
         viewModel.onPushKey(
             PianoEvent(
@@ -85,6 +87,24 @@ class PianoFragment : Fragment() {
 
     private fun onKeyboardKeyUp(octave: Int, pitch: Int) {
         viewModel.onRealiseKey(pitch, octave)
+        for(l in 0 until noteLengthData.size) {
+            if(noteLengthData[l].keyNum == pitch && noteLengthData[l].pitch == octave){
+                slowVolumeDown(noteLengthData[l].player)
+                noteLengthData.removeAt(l)
+            }
+        }
+    }
+
+    fun slowVolumeDown(streamId : Int){
+        var V = 1F
+        thread {
+            while(V > 0.1F){
+                V -= 0.1F
+                sndPool.setVolume(streamId,V,V)
+                Thread.sleep(50)
+            }
+            sndPool.stop(streamId)
+        }
     }
 
     private fun initKeyboard2() {

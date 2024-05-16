@@ -117,10 +117,13 @@ class PianoViewModel(
                     recordData[l].pitch == pitch
                 ) {
                     recordData[l].elapseTime = System.currentTimeMillis()
+
                 }
             }
         }
     }
+
+
 
     fun createMidiWithApi(context: Context) {
         val file = File(context.applicationContext.externalCacheDir, "out.mid")
