@@ -1,6 +1,7 @@
 package com.euphoiniateam.euphonia.ui.settings
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,8 +11,12 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.euphoiniateam.euphonia.R
 import com.euphoiniateam.euphonia.databinding.FragmentSettingsBinding
+import com.euphoiniateam.euphonia.domain.models.VKUser
 import com.google.android.material.slider.Slider
 import com.google.android.material.switchmaterial.SwitchMaterial
+import com.vk.api.sdk.VK
+import com.vk.api.sdk.VKApiCallback
+import com.vk.api.sdk.VKTokenExpiredHandler
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -31,7 +36,7 @@ class SettingsFragment : Fragment() {
         _binding = FragmentSettingsBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-//        authLauncher = VK.login(requireActivity()) { result : VKAuthenticationResult ->
+//        val authLauncher = VK.login(requireActivity()) { result : VKAuthenticationResult ->
 //            when (result) {
 //                is VKAuthenticationResult.Success -> {
 //                    Toast.makeText(context, "YESYESYESYES", Toast.LENGTH_SHORT).show()
@@ -41,7 +46,7 @@ class SettingsFragment : Fragment() {
 //                }
 //            }
 //        }
-
+//
 //        binding.vkBtn.setOnClickListener {
 //            authLauncher.launch(arrayListOf(VKScope.WALL, VKScope.PHOTOS))
 //            VK.addTokenExpiredHandler(tokenTracker)
@@ -78,26 +83,26 @@ class SettingsFragment : Fragment() {
         return root
     }
 
-//    private val tokenTracker = object: VKTokenExpiredHandler {
-//        override fun onTokenExpired() {
-//            // token expired
-//        }
-//    }
+    private val tokenTracker = object: VKTokenExpiredHandler {
+        override fun onTokenExpired() {
+            // token expired
+        }
+    }
 
-//    private fun requestUser() {
-//        VK.execute(VKUsersCommand(), object: VKApiCallback<List<VKUser>> {
-//            override fun success(result: List<VKUser>) {
-//                if (result.isNotEmpty()) {
-//                    val user = result[0]
-//                    val username = "${user.firstName} ${user.lastName}"
-//                    Toast.makeText(context, "Welcome, $username!", Toast.LENGTH_SHORT).show()
-//                }
-//            }
-//            override fun fail(error: Exception) {
-//                Log.e("VKRequest", error.toString())
-//            }
-//        })
-//    }
+    private fun requestUser() {
+        VK.execute(VKUsersCommand(), object: VKApiCallback<List<VKUser>> {
+            override fun success(result: List<VKUser>) {
+                if (result.isNotEmpty()) {
+                    val user = result[0]
+                    val username = "${user.firstName} ${user.lastName}"
+                    Toast.makeText(context, "Welcome, $username!", Toast.LENGTH_SHORT).show()
+                }
+            }
+            override fun fail(error: Exception) {
+                Log.e("VKRequest", error.toString())
+            }
+        })
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         viewModel = ViewModelProvider(this, SettingsViewModel.provideFactory(requireContext()))
