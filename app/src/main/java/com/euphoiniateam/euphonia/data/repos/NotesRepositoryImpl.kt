@@ -49,9 +49,9 @@ class NotesRepositoryImpl(private val context: Context) : NotesRepository {
                         Log.d("check", "${message.command} + ${message.data2}")
                         var pitch = 0
                         val command = message.command
-                        val midiNote = message.data1
+                        val midiNote = (message.data1 - 24) % 36
+                        val noteNum = midiNote % 12
                         val amp = message.data2
-                        val noteNum = (midiNote - 24) % 12
                         for (key in notesMap.keys) {
                             if (notesMap[key]?.contains(noteNum) == true)
                                 pitch = key
@@ -61,7 +61,7 @@ class NotesRepositoryImpl(private val context: Context) : NotesRepository {
                             .toFloat()
                         when (command) {
                             ShortMessage.NOTE_ON -> {
-                                val note = Note(pitch, noteNum, 0.25f, beat)
+                                val note = Note(pitch, midiNote, 0.25f, beat)
                                 inflight[midiNote] = note
                             }
                             ShortMessage.NOTE_OFF -> {

@@ -28,7 +28,6 @@ class CreationFragment : Fragment() {
 
     private lateinit var viewModel: CreationViewModel
     private lateinit var uri: Uri
-    private val staveChosen = false
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -56,6 +55,8 @@ class CreationFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+
+        viewModel.setStaveChosen()
 
         val userMidiFile = arguments?.getSerializable("midiFile", MidiFile::class.java)
 
@@ -87,7 +88,7 @@ class CreationFragment : Fragment() {
             modifier = modifier,
             verticalArrangement = Arrangement.SpaceBetween
         ) {
-            if (staveChosen) {
+            if (viewModel.getStaveChosen()) {
                 Stave(
                     staveConfig = viewModel.staveConfig,
                     staveHandler = viewModel.staveHandler,

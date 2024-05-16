@@ -89,6 +89,9 @@ dependencies {
 
     implementation("com.google.code.gson:gson:2.8.6")
 
+    implementation("com.vk:android-sdk-core:4.1.0")
+    implementation("com.vk:android-sdk-api:4.1.0")
+
     // test
     val androidXTestVersion = "1.5.0"
     androidTestImplementation("androidx.test:runner:$androidXTestVersion")

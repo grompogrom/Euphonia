@@ -141,6 +141,7 @@ fun StaveView(
             handler.visibleNotes.forEachIndexed { index, note ->
                 val lineIndex = index.div(state.lineNotesCount)
                 val noteIndex = index.mod(state.lineNotesCount)
+                val noteNum = note.note % 12
                 translate(
                     horizontalNoteDelta * (noteIndex + 1.2f),
                     topNoteDelta + (verticalOffset + noteLinesHeight) * lineIndex -
@@ -149,13 +150,13 @@ fun StaveView(
                 ) {
                     // check durations and types of notes
                     if (note.duration >= note4Duration) {
-                        if (note.note in whiteNotes) {
+                        if (noteNum in whiteNotes) {
                             with(note4) {
                                 draw(
                                     this.intrinsicSize
                                 )
                             }
-                        } else if (note.note in blackNotes) {
+                        } else if (noteNum in blackNotes) {
                             translate(
                                 -16.dp.toPx(),
                                 topMargin / 2 + lineHeight * 1.5f
@@ -172,7 +173,7 @@ fun StaveView(
                                     this.intrinsicSize
                                 )
                             }
-                        } else if (note.note == 0) {
+                        } else if (noteNum == 0) {
                             with(note4C) {
                                 draw(
                                     this.intrinsicSize
@@ -180,13 +181,13 @@ fun StaveView(
                             }
                         }
                     } else if (note.duration >= note8Duration) {
-                        if (note.note in whiteNotes) {
+                        if (noteNum in whiteNotes) {
                             with(note8) {
                                 draw(
                                     this.intrinsicSize
                                 )
                             }
-                        } else if (note.note in blackNotes) {
+                        } else if (noteNum in blackNotes) {
                             translate(
                                 -16.dp.toPx(),
                                 topMargin / 2 + lineHeight * 1.5f
@@ -203,7 +204,7 @@ fun StaveView(
                                     this.intrinsicSize
                                 )
                             }
-                        } else if (note.note == 0) {
+                        } else if (noteNum == 0) {
                             with(note8C) {
                                 draw(
                                     this.intrinsicSize
@@ -211,13 +212,13 @@ fun StaveView(
                             }
                         }
                     } else if (note.duration >= note16Duration) {
-                        if (note.note in whiteNotes) {
+                        if (noteNum in whiteNotes) {
                             with(note16) {
                                 draw(
                                     this.intrinsicSize
                                 )
                             }
-                        } else if (note.note in blackNotes) {
+                        } else if (noteNum in blackNotes) {
                             translate(
                                 -16.dp.toPx(),
                                 topMargin / 2 + lineHeight * 1.5f
@@ -234,7 +235,7 @@ fun StaveView(
                                     this.intrinsicSize
                                 )
                             }
-                        } else if (note.note == 0) {
+                        } else if (noteNum == 0) {
                             with(note16C) {
                                 draw(
                                     this.intrinsicSize
