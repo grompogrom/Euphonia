@@ -9,14 +9,17 @@ import android.widget.TextView
 import androidx.navigation.NavController
 import androidx.recyclerview.widget.RecyclerView
 import com.euphoiniateam.euphonia.R
-import com.euphoiniateam.euphonia.tools.playMusic
+import com.euphoiniateam.euphonia.tools.getUriForFileNameFromPiano
+import com.euphoiniateam.euphonia.tools.getUriForFileNameFromResults
+import com.euphoiniateam.euphonia.ui.MidiPlayer
 
 class HistoryAdapter(
     private val context: Context,
     private var data: ArrayList<String>,
-    private val navController: NavController
+    private val navController: NavController,
+    private var currentTab: CurrentTab,
+    private val midiPlayer: MidiPlayer
 ) : RecyclerView.Adapter<HistoryAdapter.ViewHolder>() {
-
     private var filteredDataList: ArrayList<String> = ArrayList(data)
     private var isResume = false
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -26,8 +29,8 @@ class HistoryAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val item = filteredDataList[position]
-        holder.textView.text = item
+        val music = filteredDataList[position]
+        holder.textView.text = music
         holder.button1.setOnClickListener {
             if (!isResume) {
                 isResume = true
@@ -37,6 +40,12 @@ class HistoryAdapter(
                         null
                     )
                 )
+                val uri = if (currentTab == CurrentTab.Piano) {
+                    getUriForFileNameFromPiano(music)
+                } else {
+                    getUriForFileNameFromResults(music)
+                }
+                uri?.let { midiPlayer.play(context, it) }
             } else {
                 isResume = false
                 holder.button1.setImageDrawable(
@@ -45,12 +54,12 @@ class HistoryAdapter(
                         null
                     )
                 )
+                midiPlayer.stop()
             }
-            playMusic(context, item)
         }
 
         holder.button2.setOnClickListener {
-            MusicData.songName = item
+            MusicData.songName = music
             val action = HistoryFragmentDirections.actionNavigationDashboardToCreationFragment()
             navController.navigate(action)
         }
@@ -80,9 +89,10 @@ class HistoryAdapter(
         notifyDataSetChanged()
     }
 
-    fun setData(newData: ArrayList<String>) {
+    fun setData(newData: ArrayList<String>, currentTab: CurrentTab) {
         data = ArrayList(newData)
         filteredDataList = ArrayList(newData)
+        this.currentTab = currentTab
         notifyDataSetChanged()
     }
 }
