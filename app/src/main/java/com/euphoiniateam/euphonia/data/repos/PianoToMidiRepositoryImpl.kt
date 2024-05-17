@@ -2,7 +2,6 @@ package com.euphoiniateam.euphonia.data.repos
 
 import android.content.Context
 import android.net.Uri
-import android.util.Log
 import android.widget.Toast
 import androidx.core.net.toUri
 import com.euphoiniateam.euphonia.domain.repos.PianoToMidiRepository
@@ -18,7 +17,7 @@ class PianoToMidiRepositoryImpl(
     private val context: Context
 ) : PianoToMidiRepository {
     override fun convert(recordData: MutableList<PianoEvent>, bpm: Int, density: Int): Uri {
-        val tick = 60_000  / (bpm * density)
+        val tick = 60_000 / (bpm * density)
         val calibratedData = calibrateTime(recordData)
         val noteTrack = MidiTrack()
 
@@ -27,7 +26,7 @@ class PianoToMidiRepositoryImpl(
 
         noteTrack.insertEvent(tempo)
         calibratedData.forEach {
-            val push = it.pressTime  / tick
+            val push = it.pressTime / tick
             val release = (it.elapseTime + it.pressTime) / tick
             val pitch = notesToMidiNotes(it.keyNum, it.pitch)
             val noteOn = NoteOn(push, 0, pitch, 100)
@@ -60,7 +59,6 @@ class PianoToMidiRepositoryImpl(
     fun createMidiWithApi(rawRecordData: MutableList<PianoEvent>, bmp: Float): Uri {
         val file = File(context.applicationContext.externalCacheDir, "out.mid")
         val recordData = calibrateTime(rawRecordData)
-        Log.d("AAA", "calibrated data: $recordData")
         val noteTrack = MidiTrack()
 
         val tempo = Tempo()
@@ -74,7 +72,6 @@ class PianoToMidiRepositoryImpl(
             val velocity = 100
             val tick = (i * 480).toLong()
             val duration: Long = recordData[i].elapseTime - recordData[i].pressTime
-            Log.d("aaa", duration.toString())
             var durTick: Int
             if (duration <= 100)
                 durTick = 120
