@@ -1,4 +1,4 @@
-package com.euphoiniateam.euphonia.data.source.stave
+package com.euphoiniateam.euphonia.data.source
 
 import okhttp3.RequestBody
 import okhttp3.ResponseBody
@@ -18,5 +18,15 @@ interface StaveApi {
     @POST("generate")
     suspend fun startGeneration(
         @Body midi: RequestBody
+    ): Response<ResponseBody>
+
+    @GET("getc/{token}")
+    suspend fun getConverted(
+        @Path("token") token: String
+    ): Response<ResponseBody>
+
+    @POST("convert")
+    suspend fun startConverting(
+        @Body mp3: RequestBody
     ): Response<ResponseBody>
 }

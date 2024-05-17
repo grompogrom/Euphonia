@@ -122,7 +122,7 @@ class PianoViewModel(
     }
 
     private fun clearRecorded() {
-        midiPlayer.release()
+        midiPlayer.stop()
         recordData.clear()
         resultUri = Uri.EMPTY
         staveHandler.updateNotes(emptyList())

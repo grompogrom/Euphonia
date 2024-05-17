@@ -10,3 +10,7 @@ data class RemoteTrackRequest(
     val uri: Uri,
     val countToGenerate: Int
 )
+
+data class RemoteConvertRequest(
+    val uri: Uri
+)
