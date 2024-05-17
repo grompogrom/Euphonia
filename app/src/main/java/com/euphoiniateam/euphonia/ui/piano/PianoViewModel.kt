@@ -11,8 +11,10 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.euphoiniateam.euphonia.data.repos.NotesRepositoryImpl
+import com.euphoiniateam.euphonia.data.repos.PianoToMidiRepositoryImpl
 import com.euphoiniateam.euphonia.data.repos.SettingsRepositoryImpl
 import com.euphoiniateam.euphonia.domain.repos.NotesRepository
+import com.euphoiniateam.euphonia.domain.repos.PianoToMidiRepository
 import com.euphoiniateam.euphonia.domain.repos.SettingsRepository
 import com.euphoiniateam.euphonia.ui.MidiPlayer
 import com.euphoiniateam.euphonia.ui.creation.stave.StaveConfig
@@ -33,7 +35,8 @@ import kotlinx.coroutines.launch
 
 class PianoViewModel(
     private val notesRepository: NotesRepository,
-    private val settingsRepository: SettingsRepository
+    private val settingsRepository: SettingsRepository,
+    private val pianoToMidiRepository: PianoToMidiRepository
 ) : ViewModel() {
     private var recordData: MutableList<PianoEvent> = mutableListOf()
     private var resultUri: Uri = Uri.EMPTY
@@ -69,7 +72,7 @@ class PianoViewModel(
     fun stopRecord(context: Context) {
         viewModelScope.launch {
             if (recordData.isNotEmpty()) {
-                createMidiWithApi(context)
+                resultUri = pianoToMidiRepository.convert(recordData, 120,480)
                 onRecordFinished()
                 screenStateFlow.tryEmit(
                     screenStateFlow.value.copy(recordingState = PianoState.AFTER_RECORD)
@@ -142,63 +145,6 @@ class PianoViewModel(
         }
     }
 
-    fun createMidiWithApi(context: Context) {
-        val file = File(context.applicationContext.externalCacheDir, "out.mid")
-        val tempoTrack = MidiTrack()
-        val noteTrack = MidiTrack()
-        val ts = TimeSignature()
-        ts.setTimeSignature(
-            4,
-            4,
-            TimeSignature.DEFAULT_METER,
-            TimeSignature.DEFAULT_DIVISION
-        )
-        val tempo = Tempo()
-        tempo.bpm = 120f
-
-        tempoTrack.insertEvent(ts)
-        noteTrack.insertEvent(tempo)
-        val noteCount = recordData.size
-        for (i in 0 until noteCount) {
-            val channel = 0
-            val pitch = notesToMidiNotes(recordData[i].keyNum, recordData[i].pitch)
-            val velocity = 100
-            val tick = (i * 480).toLong()
-            val duration: Long = recordData[i].elapseTime - recordData[i].pressTime
-            Log.d("aaa", duration.toString())
-            var durTick: Int
-            if (duration <= 100)
-                durTick = 120
-            else if (duration <= 300)
-                durTick = 240
-            else if (duration <= 600)
-                durTick = 360
-            else
-                durTick = 480
-
-            val noteOn = NoteOn(tick, channel, pitch, velocity)
-            val noteOff = NoteOff((tick + durTick), channel, pitch, 0)
-
-            noteTrack.insertEvent(noteOn)
-            noteTrack.insertEvent(noteOff)
-//            noteTrack.insertNote(channel, pitch, velocity, tick, duration)
-        }
-        val tracks: MutableList<MidiTrack> = ArrayList()
-        // tracks.add(tempoTrack)
-        tracks.add(noteTrack)
-
-        val midi = MidiFile(MidiFile.DEFAULT_RESOLUTION, tracks)
-        midi.writeToFile(file)
-        resultUri = file.toUri()
-        Toast.makeText(context, "saved to ${file.path}", Toast.LENGTH_LONG).show()
-    }
-
-    private fun notesToMidiNotes(noteNum: Int, pitch: Int): Int {
-        return if (pitch == 0) noteNum + 60
-        else if (pitch == 1) noteNum + 72
-        else noteNum + 48
-    }
-
     fun setStaveChosen() {
         viewModelScope.launch(Dispatchers.IO) {
             staveChosen = settingsRepository.getSettings().showing_stave
@@ -212,12 +158,9 @@ class PianoViewModel(
         fun provideFactory(context: Context): ViewModelProvider.Factory = viewModelFactory {
             initializer {
                 PianoViewModel(
-                    notesRepository = NotesRepositoryImpl(
-                        context
-                    ),
-                    settingsRepository = SettingsRepositoryImpl(
-                        context
-                    )
+                    notesRepository = NotesRepositoryImpl(context),
+                    pianoToMidiRepository = PianoToMidiRepositoryImpl(context),
+                    settingsRepository = SettingsRepositoryImpl(context)
                 )
             }
         }

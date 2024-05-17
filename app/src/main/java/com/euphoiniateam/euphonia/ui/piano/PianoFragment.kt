@@ -16,6 +16,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
@@ -154,9 +155,10 @@ class PianoFragment : Fragment() {
                     colorScheme = darkColorScheme()
                 ) {
                     val screenState by viewModel.screenState.collectAsState()
+                    val context = LocalContext.current
                     ButtonSection(
                         isPlaying = screenState.isPlayingResult,
-                        onPlayClick = { viewModel.onPlayPush(requireContext()) },
+                        onPlayClick = { viewModel.onPlayPush(context) },
                         onApplyClick = { viewModel.applyRecord { navigateToCreationScreen(it) } },
                         onRemakeClick = { viewModel.remake() }
                     )
