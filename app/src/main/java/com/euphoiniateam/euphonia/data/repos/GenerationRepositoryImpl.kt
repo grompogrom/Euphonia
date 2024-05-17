@@ -16,13 +16,7 @@ class GenerationRepositoryImpl(
     private val remoteDataStore: StaveRemoteDataSource
 ) : GenerationRepository {
 
-    override suspend fun getStave(): Stave {
-        try {
-            return localDataStore.loadData().toStave()
-        } catch (e: Exception) {
-            return Stave(0, 0, emptyList(), emptyList())
-        }
-    }
+
 
     override suspend fun generateMidi(prompt: Uri, count: Int): Uri {
         try {

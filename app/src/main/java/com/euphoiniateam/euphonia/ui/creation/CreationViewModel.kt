@@ -89,14 +89,6 @@ class CreationViewModel(
         }
     }
 
-    private fun loadStave() {
-        viewModelScope.launch(Dispatchers.IO) {
-            screenState = screenState.copy(isLoading = true)
-            val newStave = generationRepository.getStave()
-            staveHandler.updateNotes(newStave.initialNotes + newStave.generatedNotes)
-            screenState = screenState.copy(isLoading = false)
-        }
-    }
 
     fun togglePlayPause(context: Context) {
         if (screenState.isPlaying) {
