@@ -17,7 +17,7 @@ class HistoryAdapter(
     private val context: Context,
     private var data: ArrayList<String>,
     private val navController: NavController,
-    private var currentTab: String,
+    private var currentTab: CurrentTab,
     private val midiPlayer: MidiPlayer
 ) : RecyclerView.Adapter<HistoryAdapter.ViewHolder>() {
     private var filteredDataList: ArrayList<String> = ArrayList(data)
@@ -40,7 +40,7 @@ class HistoryAdapter(
                         null
                     )
                 )
-                val uri = if (currentTab == "piano") {
+                val uri = if (currentTab == CurrentTab.Piano) {
                     getUriForFileNameFromPiano(music)
                 } else {
                     getUriForFileNameFromResults(music)
@@ -89,7 +89,7 @@ class HistoryAdapter(
         notifyDataSetChanged()
     }
 
-    fun setData(newData: ArrayList<String>, currentTab: String) {
+    fun setData(newData: ArrayList<String>, currentTab: CurrentTab) {
         data = ArrayList(newData)
         filteredDataList = ArrayList(newData)
         this.currentTab = currentTab

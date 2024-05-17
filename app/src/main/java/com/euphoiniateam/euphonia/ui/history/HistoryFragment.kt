@@ -24,7 +24,7 @@ class HistoryFragment : Fragment() {
     private lateinit var searchView: SearchView
     lateinit var listAdapter: HistoryAdapter
 
-    private var currentTab = "piano"
+    private var currentTab = CurrentTab.Piano
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -62,8 +62,8 @@ class HistoryFragment : Fragment() {
         binding.btnShowPlayed.setBackgroundResource(R.drawable.button_bottom_border)
         binding.btnShowGenerated.background = null
         binding.btnShowPlayed.setOnClickListener {
-            if (currentTab != "piano") {
-                currentTab = "piano"
+            if (currentTab != CurrentTab.Piano) {
+                currentTab = CurrentTab.Piano
                 listAdapter.setData(getMidFileNamesFromPiano(), currentTab)
                 binding.btnShowPlayed.setBackgroundResource(R.drawable.button_bottom_border)
                 binding.btnShowGenerated.background = null
@@ -71,8 +71,8 @@ class HistoryFragment : Fragment() {
         }
 
         binding.btnShowGenerated.setOnClickListener {
-            if (currentTab != "results") {
-                currentTab = "results"
+            if (currentTab != CurrentTab.Result) {
+                currentTab = CurrentTab.Result
                 listAdapter.setData(getMidFileNamesFromResults(), currentTab)
                 binding.btnShowGenerated.setBackgroundResource(R.drawable.button_bottom_border)
                 binding.btnShowPlayed.background = null
@@ -85,4 +85,9 @@ class HistoryFragment : Fragment() {
         super.onDestroyView()
         _binding = null
     }
+}
+
+enum class CurrentTab {
+    Piano,
+    Result
 }
