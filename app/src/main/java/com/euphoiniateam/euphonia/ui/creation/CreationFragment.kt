@@ -114,7 +114,7 @@ class CreationFragment : Fragment() {
                     viewModel.saveGeneratedToStorage(
                         requireContext().contentResolver,
                         uri,
-                        "Kirill.mid"
+                        "Song.mid"
                     )
                 },
                 onShareClick = { viewModel.shareFile(context, uri) },
