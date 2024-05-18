@@ -106,7 +106,10 @@ class SettingsFragment : Fragment() {
                     VkLoadingState.EMPTY -> {}
                     VkLoadingState.LOADING -> {
                         loadingDialog = DialogLoadingFragment().apply {
-                            show(this@SettingsFragment.parentFragmentManager, DialogLoadingFragment.TAG)
+                            show(
+                                this@SettingsFragment.parentFragmentManager,
+                                DialogLoadingFragment.TAG
+                            )
                         }
                     }
                     VkLoadingState.SUCCESS -> {
