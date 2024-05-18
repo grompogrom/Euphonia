@@ -10,32 +10,51 @@ import com.leff.midi.MidiTrack
 import com.leff.midi.event.NoteOff
 import com.leff.midi.event.NoteOn
 import com.leff.midi.event.meta.Tempo
+import com.vk.dto.common.id.UserId
 import java.io.File
 
 class ProfileMapper {
     private val notes: MutableList<PianoEvent> = mutableListOf()
     private var bpm: Int = NORMAL_BPM
+    private var timer : Long = 0
 
     // Набор айдишников(только цифры)
-    fun setFriendsId(mutableList: MutableList<String>) {
+
+
+    fun map(name: String, surname: String, friends : MutableList<String> = mutableListOf(), userId: Int = 0){
+        userName(name, surname)
+        if(friends.size > 0){
+            setFriendsCount(friends.size)
+            setFriendsId(friends)
+        }
+        if(userId != 0){
+            setUserId(userId.toString())
+        }
+    }
+
+
+
+    private fun setFriendsId(mutableList: MutableList<String>) {
         val noteSize = if (mutableList.size > 100) 100 else mutableList.size
         for (i in 0 until noteSize) {
             if (mutableList[i].length % 2 != 0) {
                 mutableList[i] = mutableList[i].substring(0, mutableList[i].length - 1)
             }
-            for (x in 0 until mutableList[i].length step 2)
+            for (x in 0 until mutableList[i].length step 2) {
                 notes.add(
                     PianoEvent(
                         100,
-                        0,
+                        timer,
                         mutableList[i][x].digitToInt(),
                         mutableList[i][x + 1].digitToInt() % 3
                     )
                 )
+                timer += 100
+            }
         }
     }
 
-    fun setUserId(id: String) {
+    private fun setUserId(id: String) {
         var tempId = id
         if (id.length % 2 != 0) {
             tempId = id.substring(0, id.length - 1)
@@ -44,15 +63,16 @@ class ProfileMapper {
             notes.add(
                 PianoEvent(
                     100,
-                    0,
+                    timer,
                     tempId[i].digitToInt(),
                     tempId[i + 1].digitToInt() % 3
                 )
             )
+            timer += 100
         }
     }
 
-    fun setFriendsCount(count: Int) {
+    private fun setFriendsCount(count: Int) {
         bpm = when {
             count < MIN_BPM -> MIN_BPM
             count > MAX_BPM -> MAX_BPM
@@ -60,7 +80,7 @@ class ProfileMapper {
         }
     }
 
-    fun userName(name: String, surname: String) {
+    private fun userName(name: String, surname: String) {
         var username = name + surname
         val asciiStringBuilder = StringBuilder()
         for (char in username) {
@@ -73,8 +93,9 @@ class ProfileMapper {
 
         for (i in username.indices step 2) {
             notes.add(
-                PianoEvent(100, 0, username[i].digitToInt(), username[i + 1].digitToInt() % 3)
+                PianoEvent(100, timer, username[i].digitToInt(), username[i + 1].digitToInt() % 3)
             )
+            timer += 100
         }
     }
 
