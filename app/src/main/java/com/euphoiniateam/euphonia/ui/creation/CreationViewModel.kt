@@ -1,11 +1,13 @@
 package com.euphoiniateam.euphonia.ui.creation
 
 import android.content.Context
+import android.content.Intent
 import android.net.Uri
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.core.content.ContextCompat.startActivity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -112,6 +114,16 @@ class CreationViewModel(
             }
             screenState = screenState.copy(isLoading = false)
         }
+    }
+
+    fun shareFile(context: Context, uri: Uri) {
+        val shareIntent: Intent = Intent().apply {
+            action = Intent.ACTION_SEND
+            putExtra(Intent.EXTRA_STREAM, uri)
+            type = "audio/midi"
+        }
+        shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        startActivity(context, Intent.createChooser(shareIntent, "Share file"), null)
     }
 
     fun setStaveChosen() {

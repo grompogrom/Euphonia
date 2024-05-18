@@ -17,6 +17,7 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material.icons.outlined.PlayArrow
 import androidx.compose.material3.ExtendedFloatingActionButton
@@ -132,8 +133,9 @@ fun ButtonsSection(
     onRegenerateClick: () -> Unit,
     onExitClick: () -> Unit,
     onPlayClick: () -> Unit,
+    onShareClick: () -> Unit,
+    onGenerateClick: () -> Unit,
     isPlaying: Boolean,
-    onGenerateClick: () -> Unit
 ) {
     Row(
         modifier = modifier.padding(bottom = 20.dp)
@@ -143,15 +145,33 @@ fun ButtonsSection(
                 .fillMaxWidth(0.5f)
                 .padding(horizontal = 20.dp)
         ) {
-            ExtendedFloatingActionButton(
-                onClick = onExitClick,
+            Row(
+                horizontalArrangement = Arrangement.SpaceBetween,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 20.dp),
-                containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                icon = { Icon(Icons.Default.ArrowBack, null) },
-                text = { Text(text = stringResource(R.string.btn_exit_creation_fragment)) },
-            )
+                    .padding(vertical = 20.dp)
+            ) {
+                FloatingActionButton(
+                    onClick = onExitClick,
+                    modifier = Modifier
+                        .fillMaxWidth(0.5f)
+                        .padding(end = 10.dp),
+                    containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                ) {
+                    val icon = Icons.Default.ArrowBack
+                    Icon(icon, null)
+                }
+                FloatingActionButton(
+                    onClick = onShareClick,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 10.dp),
+                    containerColor = MaterialTheme.colorScheme.tertiaryContainer,
+                ) {
+                    val icon = Icons.Default.Share
+                    Icon(icon, null)
+                }
+            }
             ExtendedFloatingActionButton(
                 onClick = onRegenerateClick,
                 modifier = Modifier.fillMaxWidth(),
@@ -221,8 +241,9 @@ fun ButtonsSectionPrev() {
             {},
             {},
             {},
+            {},
+            {},
             false,
-            {}
         )
     }
 }
