@@ -132,6 +132,7 @@ fun ButtonsSection(
     modifier: Modifier = Modifier,
     onRegenerateClick: () -> Unit,
     onExitClick: () -> Unit,
+    onSaveClick: () -> Unit,
     onPlayClick: () -> Unit,
     onShareClick: () -> Unit,
     onGenerateClick: () -> Unit,
@@ -194,7 +195,7 @@ fun ButtonsSection(
                         .fillMaxWidth(0.5f)
                         .padding(end = 10.dp),
                     containerColor = MaterialTheme.colorScheme.tertiaryContainer,
-                    onClick = { }
+                    onClick = { onSaveClick() }
                 ) {
                     Icon(Icons.Default.Done, null)
                 }
@@ -238,6 +239,7 @@ fun ButtonsSectionPrev() {
     ) {
         ButtonsSection(
             Modifier.fillMaxWidth(),
+            {},
             {},
             {},
             {},

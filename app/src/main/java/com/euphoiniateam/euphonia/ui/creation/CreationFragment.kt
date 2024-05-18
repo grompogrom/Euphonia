@@ -110,6 +110,13 @@ class CreationFragment : Fragment() {
                 onRegenerateClick = { viewModel.regenerateLastPart(context) },
                 onExitClick = onExitClick,
                 onPlayClick = { viewModel.togglePlayPause(context) },
+                onSaveClick = {
+                    viewModel.saveGeneratedToStorage(
+                        requireContext().contentResolver,
+                        uri,
+                        "Kirill.mid"
+                    )
+                },
                 onShareClick = { viewModel.shareFile(context, uri) },
                 onGenerateClick = { viewModel.generateNewPart(context, uri) },
                 isPlaying = viewModel.screenState.isPlaying,

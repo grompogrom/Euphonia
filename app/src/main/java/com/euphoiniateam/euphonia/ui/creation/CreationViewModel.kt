@@ -1,5 +1,6 @@
 package com.euphoiniateam.euphonia.ui.creation
 
+import android.content.ContentResolver
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -23,6 +24,7 @@ import com.euphoiniateam.euphonia.domain.GenerationException
 import com.euphoiniateam.euphonia.domain.repos.GenerationRepository
 import com.euphoiniateam.euphonia.domain.repos.NotesRepository
 import com.euphoiniateam.euphonia.domain.repos.SettingsRepository
+import com.euphoiniateam.euphonia.tools.saveMidiFileToResultsDir
 import com.euphoiniateam.euphonia.ui.MidiPlayer
 import com.euphoiniateam.euphonia.ui.creation.stave.StaveConfig
 import com.euphoiniateam.euphonia.ui.creation.stave.StaveHandler
@@ -102,6 +104,9 @@ class CreationViewModel(
         }
     }
 
+    fun saveGeneratedToStorage(contentResolver: ContentResolver, uri: Uri, fileName: String) {
+        saveMidiFileToResultsDir(contentResolver, uri, fileName)
+    }
     fun getNotes(uri: Uri) {
         viewModelScope.launch(Dispatchers.IO) {
             screenState = screenState.copy(isLoading = true)

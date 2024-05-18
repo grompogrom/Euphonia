@@ -1,9 +1,11 @@
 package com.euphoiniateam.euphonia.tools
 
 import android.content.ContentResolver
+import android.content.ContentValues
 import android.content.Context
 import android.net.Uri
 import android.os.Environment
+import android.provider.MediaStore
 import java.io.File
 import java.io.FileOutputStream
 import java.io.InputStream
@@ -64,12 +66,23 @@ fun saveMidiFileToPianoDir(contentResolver: ContentResolver, uri: Uri, fileName:
         "piano"
     )
     dir.mkdirs()
-    val inputStream: InputStream? = contentResolver.openInputStream(uri)
-    val outputStream = FileOutputStream(File(dir, fileName))
-    inputStream?.use { input ->
-        outputStream.use { output ->
-            input.copyTo(output)
+    val contentValues = ContentValues().apply {
+        put(MediaStore.MediaColumns.DISPLAY_NAME, fileName)
+        put(MediaStore.MediaColumns.MIME_TYPE, "audio/midi")
+        put(MediaStore.MediaColumns.RELATIVE_PATH, "${Environment.DIRECTORY_MUSIC}/piano")
+    }
+    val insertUri: Uri? = contentResolver.insert(
+        MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
+        contentValues
+    )
+    if (insertUri != null) {
+        contentResolver.openOutputStream(insertUri).use { outputStream ->
+            outputStream?.write(
+                contentResolver.openInputStream(uri)?.readAllBytes() ?: byteArrayOf()
+            )
         }
+    } else {
+        throw IllegalStateException("Unable to create new file in MediaStore")
     }
 }
 
@@ -79,12 +92,23 @@ fun saveMidiFileToResultsDir(contentResolver: ContentResolver, uri: Uri, fileNam
         "results"
     )
     dir.mkdirs()
-    val inputStream: InputStream? = contentResolver.openInputStream(uri)
-    val outputStream = FileOutputStream(File(dir, fileName))
-    inputStream?.use { input ->
-        outputStream.use { output ->
-            input.copyTo(output)
+    val contentValues = ContentValues().apply {
+        put(MediaStore.MediaColumns.DISPLAY_NAME, fileName)
+        put(MediaStore.MediaColumns.MIME_TYPE, "audio/midi")
+        put(MediaStore.MediaColumns.RELATIVE_PATH, "${Environment.DIRECTORY_MUSIC}/results")
+    }
+    val insertUri: Uri? = contentResolver.insert(
+        MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
+        contentValues
+    )
+    if (insertUri != null) {
+        contentResolver.openOutputStream(insertUri).use { outputStream ->
+            outputStream?.write(
+                contentResolver.openInputStream(uri)?.readAllBytes() ?: byteArrayOf()
+            )
         }
+    } else {
+        throw IllegalStateException("Unable to create new file in MediaStore")
     }
 }
 

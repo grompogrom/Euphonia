@@ -72,7 +72,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private val tokenTracker = object: VKTokenExpiredHandler {
+    private val tokenTracker = object : VKTokenExpiredHandler {
         override fun onTokenExpired() {
             // token expired
         }
