@@ -26,7 +26,8 @@ internal class StaveRemoteDataSourceImp(
         Log.d("StaveRemoteDataSourceImpl", "generation request")
         val token = sendFileForGeneration(
             track.uri,
-            mapOf("count" to track.countToGenerate.toString())
+            track.countToGenerate,
+            track.includePrompt,
         )
         val newTrackBytes = getFileFromServer(token)
         return RemoteTrackResponse(
@@ -34,10 +35,15 @@ internal class StaveRemoteDataSourceImp(
         )
     }
 
-    suspend fun sendFileForGeneration(uri: Uri, meta: Map<String, String>): String {
+    suspend fun sendFileForGeneration(
+        uri: Uri,
+        countToGen: Int,
+        includePrompt: Boolean = true
+    ): String {
+
         Log.d("StaveRemoteDataSourceImpl", "file is EMPTY ${uri == Uri.EMPTY}")
         // костыль ибо разные форматы при открытии файла и записи с пиаино
-        var file: File =
+        val file: File =
             try {
                 Uri.parse(uri.toString()).toFile()
             } catch (e: IllegalArgumentException) {
@@ -53,7 +59,11 @@ internal class StaveRemoteDataSourceImp(
         val requestBody = file.asRequestBody("audio/midi".toMediaTypeOrNull())
 
         return NetworkService.euphoniaApi
-            .startGeneration(requestBody).body()?.string() ?: ""
+            .startGeneration(
+                requestBody,
+                if (includePrompt) 1 else 0,
+                countToGen
+            ).body()?.string() ?: ""
     }
 
     suspend fun getFileFromServer(token: String): ByteArray {
