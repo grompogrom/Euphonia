@@ -35,7 +35,11 @@ internal class StaveRemoteDataSourceImp(
         )
     }
 
-    suspend fun sendFileForGeneration(uri: Uri, countToGen: Int, includePrompt: Boolean = true): String {
+    suspend fun sendFileForGeneration(
+        uri: Uri,
+        countToGen: Int,
+        includePrompt: Boolean = true
+    ): String {
 
         Log.d("StaveRemoteDataSourceImpl", "file is EMPTY ${uri == Uri.EMPTY}")
         // костыль ибо разные форматы при открытии файла и записи с пиаино
@@ -55,7 +59,11 @@ internal class StaveRemoteDataSourceImp(
         val requestBody = file.asRequestBody("audio/midi".toMediaTypeOrNull())
 
         return NetworkService.euphoniaApi
-            .startGeneration(requestBody, if (includePrompt) 1 else 0, countToGen).body()?.string() ?: ""
+            .startGeneration(
+                requestBody,
+                if (includePrompt) 1 else 0,
+                countToGen
+            ).body()?.string() ?: ""
     }
 
     suspend fun getFileFromServer(token: String): ByteArray {

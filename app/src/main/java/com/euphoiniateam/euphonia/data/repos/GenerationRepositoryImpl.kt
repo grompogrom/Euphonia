@@ -46,7 +46,7 @@ class GenerationRepositoryImpl(
         return generateMidi(generatedMidiSource ?: currentMidiSource!!, false)
     }
 
-    private suspend fun generateMidi(prompt: Uri , includePrompt: Boolean): Uri {
+    private suspend fun generateMidi(prompt: Uri, includePrompt: Boolean): Uri {
         try {
             val remoteTrackResponse = remoteDataStore.generate(
                 RemoteTrackRequest(prompt, 2, includePrompt)
