@@ -1,5 +1,6 @@
 package com.euphoiniateam.euphonia.ui.settings
 
+import android.util.Log
 import com.euphoiniateam.euphonia.domain.models.VKUser
 import com.vk.api.sdk.VKApiJSONResponseParser
 import com.vk.api.sdk.VKApiManager
@@ -16,7 +17,7 @@ class VKUsersCommand(private val uids: IntArray = intArrayOf()) : ApiCommand<Lis
             // if no uids, send user's data
             val call = VKMethodCall.Builder()
                 .method("users.get")
-                .args("fields", "photo_200")
+                .args("fields", "bdate, photo_200")
                 .version(manager.config.version)
                 .build()
             return manager.execute(call, ResponseApiParser())
@@ -27,7 +28,7 @@ class VKUsersCommand(private val uids: IntArray = intArrayOf()) : ApiCommand<Lis
                 val call = VKMethodCall.Builder()
                     .method("users.get")
                     .args("user_ids", chunk.joinToString(","))
-                    .args("fields", "photo_200")
+                    .args("fields", "bdate, photo_200")
                     .version(manager.config.version)
                     .build()
                 result.addAll(manager.execute(call, ResponseApiParser()))
@@ -44,8 +45,10 @@ class VKUsersCommand(private val uids: IntArray = intArrayOf()) : ApiCommand<Lis
         override fun parse(responseJson: JSONObject): List<VKUser> {
             try {
                 val ja = responseJson.getJSONArray("response")
+
                 val r = ArrayList<VKUser>(ja.length())
                 for (i in 0 until ja.length()) {
+                    Log.d("json", ja.getJSONObject(i).toString())
                     val user = VKUser.parse(ja.getJSONObject(i))
                     r.add(user)
                 }

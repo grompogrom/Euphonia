@@ -61,7 +61,7 @@ class CreationFragment : Fragment() {
         val userMidiFile = arguments?.getSerializable("midiFile", MidiFile::class.java)
 
         userMidiFile?.let {
-            uri = userMidiFile.uri
+            uri = Uri.parse(userMidiFile.uri)
             viewModel.setCurrentUri(requireContext(), uri)
             viewModel.getNotes(uri)
         }
@@ -107,12 +107,14 @@ class CreationFragment : Fragment() {
                 )
             }
             ButtonsSection(
-                onRegenerateClick = { viewModel.updateStave() },
+                onRegenerateClick = { viewModel.regenerateLastPart(context) },
                 onExitClick = onExitClick,
                 onPlayClick = { viewModel.togglePlayPause(context) },
-                isPlaying = viewModel.screenState.isPlaying,
+                onShareClick = { viewModel.shareFile(context, uri) },
                 onGenerateClick = { viewModel.generateNewPart(context, uri) },
+                isPlaying = viewModel.screenState.isPlaying,
                 modifier = Modifier
+
             )
         }
     }

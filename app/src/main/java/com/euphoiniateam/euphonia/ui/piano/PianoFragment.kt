@@ -143,7 +143,7 @@ class PianoFragment : Fragment() {
 
     private fun navigateToCreationScreen(uri: Uri) {
         val bundle = Bundle()
-        bundle.putSerializable(CreationFragment.URI_KEY, MidiFile(uri))
+        bundle.putSerializable(CreationFragment.URI_KEY, MidiFile(uri.toString()))
         findNavController().navigate(R.id.action_pianoFragment_to_creationFragment, bundle)
     }
 

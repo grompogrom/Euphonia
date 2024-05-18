@@ -3,6 +3,7 @@ package com.euphoiniateam.euphonia.data.repos
 import android.content.Context
 import android.net.Uri
 import android.widget.Toast
+import androidx.core.content.FileProvider
 import androidx.core.net.toUri
 import com.euphoiniateam.euphonia.domain.repos.PianoToMidiRepository
 import com.euphoiniateam.euphonia.ui.piano.PianoEvent
@@ -43,7 +44,11 @@ class PianoToMidiRepositoryImpl(
 
         val file = File(context.applicationContext.externalCacheDir, "out.mid")
         midi.writeToFile(file)
-        return file.toUri()
+        return FileProvider.getUriForFile(
+            context,
+            context.applicationContext.packageName + ".provider",
+            file
+        )
     }
 
     private fun calibrateTime(recordData: MutableList<PianoEvent>): List<PianoEvent> {

@@ -4,7 +4,6 @@ import android.app.Instrumentation
 import android.content.Context
 import android.net.Uri
 import android.util.Log
-import androidx.core.net.toFile
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.runner.AndroidJUnit4
 import com.euphoiniateam.euphonia.data.models.RemoteTrackRequest
@@ -47,7 +46,7 @@ class StaveRemoteDataSourceTest() : Instrumentation() {
         val context = InstrumentationRegistry.getInstrumentation().targetContext
 
         val uri = getUriFromAsset(context, "input.mid")
-        val token = source.sendFileForGeneration(uri!!, mapOf())
+        val token = source.sendFileForGeneration(uri!!, 10)
         Log.d("AAA", token)
         Unit
     }
@@ -58,22 +57,12 @@ class StaveRemoteDataSourceTest() : Instrumentation() {
             val source = StaveRemoteDataSourceImp(contextt)
             val remoteTrackRequest = RemoteTrackRequest(
                 uri = getUriFromAsset(contextt, "input.mid")!!,
+                includePrompt = true,
                 countToGenerate = 10
             )
             val res = source.generate(remoteTrackRequest)
             Log.d("AAA", "result is ${res.uri}")
         }
-    }
-
-    @Test
-    fun getUriFromAssetTest() {
-        val assetUri = getUriFromAsset(contextt, "input.mid")!!
-        val newUri = StaveRemoteDataSourceImp(contextt).saveToCache(assetUri.toFile().readBytes())
-        Log.d("DDD", newUri.toFile().readBytes().toString())
-//        assert(assetUri.toFile().readBytes().contentEquals(newUri.toFile().readBytes()))
-        assert(
-            newUri.toFile().readBytes().contentEquals(contextt.assets.open("input.mid").readBytes())
-        )
     }
 
     @Throws(IOException::class)

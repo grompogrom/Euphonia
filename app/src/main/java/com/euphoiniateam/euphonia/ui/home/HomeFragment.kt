@@ -38,7 +38,7 @@ class HomeFragment : Fragment() {
         if (fileExtensions.contains(extension)) {
 
             val bundle = Bundle()
-            val userMidiFile = uri?.let { MidiFile(it) }
+            val userMidiFile = uri?.let { MidiFile(it.toString()) }
             bundle.putSerializable(CreationFragment.URI_KEY, userMidiFile)
             val navController = findNavController()
             navController.navigate(R.id.action_navigation_home_to_creationFragment, bundle)

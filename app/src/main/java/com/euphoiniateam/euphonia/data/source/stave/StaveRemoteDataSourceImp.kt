@@ -2,8 +2,9 @@ package com.euphoiniateam.euphonia.data.source.stave
 
 import android.content.Context
 import android.net.Uri
+import android.util.Log
+import androidx.core.net.toFile
 import com.euphoiniateam.euphonia.data.NetworkService
-import com.euphoiniateam.euphonia.data.models.RemoteStave
 import com.euphoiniateam.euphonia.data.models.RemoteTrackRequest
 import com.euphoiniateam.euphonia.data.models.RemoteTrackResponse
 import com.euphoiniateam.euphonia.domain.UnexpectedServerResponseException
@@ -21,15 +22,12 @@ internal class StaveRemoteDataSourceImp(
     val context: Context
 ) : StaveRemoteDataSource {
 
-    // TODO: вся цепочка с getData кажется бесполезной
-    override suspend fun getData(): RemoteStave {
-        return RemoteStave(1, 1, emptyList(), emptyList())
-    }
-
     override suspend fun generate(track: RemoteTrackRequest): RemoteTrackResponse {
+        Log.d("StaveRemoteDataSourceImpl", "generation request")
         val token = sendFileForGeneration(
             track.uri,
-            mapOf("count" to track.countToGenerate.toString())
+            track.countToGenerate,
+            track.includePrompt,
         )
         val newTrackBytes = getFileFromServer(token)
         return RemoteTrackResponse(
@@ -37,19 +35,35 @@ internal class StaveRemoteDataSourceImp(
         )
     }
 
-    //
-    suspend fun sendFileForGeneration(uri: Uri, meta: Map<String, String>): String {
-        val file = createTempFile()
-        context.contentResolver.openInputStream(uri).use { input ->
-            file.outputStream().use { output ->
-                input?.copyTo(output)
+    suspend fun sendFileForGeneration(
+        uri: Uri,
+        countToGen: Int,
+        includePrompt: Boolean = true
+    ): String {
+
+        Log.d("StaveRemoteDataSourceImpl", "file is EMPTY ${uri == Uri.EMPTY}")
+        // костыль ибо разные форматы при открытии файла и записи с пиаино
+        val file: File =
+            try {
+                Uri.parse(uri.toString()).toFile()
+            } catch (e: IllegalArgumentException) {
+                context.contentResolver.openInputStream(uri).use { input ->
+                    val tmp = createTempFile()
+                    tmp.outputStream().use { output ->
+                        input?.copyTo(output)
+                    }
+                    tmp
+                }
             }
-        }
+
         val requestBody = file.asRequestBody("audio/midi".toMediaTypeOrNull())
-//        file.delete()
 
         return NetworkService.euphoniaApi
-            .startGeneration(requestBody).body()?.string() ?: ""
+            .startGeneration(
+                requestBody,
+                if (includePrompt) 1 else 0,
+                countToGen
+            ).body()?.string() ?: ""
     }
 
     suspend fun getFileFromServer(token: String): ByteArray {
@@ -74,13 +88,5 @@ internal class StaveRemoteDataSourceImp(
             return response.body()?.bytes()!!
         }
         throw WaitForGenerationTimeoutException("Server file not ready")
-    }
-
-    fun saveToCache(file: ByteArray): Uri {
-        val cacheDir = context.cacheDir
-        val newFile = File(cacheDir, "new.mid")
-        newFile.writeBytes(file)
-        newFile.createNewFile()
-        return Uri.fromFile(newFile)
     }
 }
