@@ -2,6 +2,7 @@ package com.euphoiniateam.euphonia.tools
 
 import android.content.Context
 import android.net.Uri
+import android.widget.Toast
 import androidx.core.net.toUri
 import com.euphoiniateam.euphonia.ui.piano.PianoEvent
 import com.leff.midi.MidiFile
@@ -11,11 +12,7 @@ import com.leff.midi.event.NoteOn
 import com.leff.midi.event.meta.Tempo
 import java.io.File
 
-object ProfileMapper {
-    val MAX_BPM = 240
-    val MIN_BPM = 80
-    val NORMAL_BPM = 140
-
+class ProfileMapper {
     private val notes: MutableList<PianoEvent> = mutableListOf()
     private var bpm: Int = NORMAL_BPM
     private var timer: Long = 0
@@ -23,21 +20,19 @@ object ProfileMapper {
     // Набор айдишников(только цифры)
 
     fun map(
-        context: Context,
         name: String,
         surname: String,
-        friends: List<String> = mutableListOf(),
-        userId: Long = 0
-    ): Uri {
+        friends: MutableList<String> = mutableListOf(),
+        userId: Int = 0
+    ) {
         userName(name, surname)
         if (friends.size > 0) {
             setFriendsCount(friends.size)
-            setFriendsId(friends.toMutableList())
+            setFriendsId(friends)
         }
-        if (userId != 0L) {
+        if (userId != 0) {
             setUserId(userId.toString())
         }
-        return createMidiWithApi(context)
     }
 
     private fun setFriendsId(mutableList: MutableList<String>) {
@@ -68,7 +63,7 @@ object ProfileMapper {
         for (i in tempId.indices step 2) {
             notes.add(
                 PianoEvent(
-                    timer + 100,
+                    100,
                     timer,
                     tempId[i].digitToInt(),
                     tempId[i + 1].digitToInt() % 3
@@ -142,7 +137,7 @@ object ProfileMapper {
 
         val midi = MidiFile(MidiFile.DEFAULT_RESOLUTION, tracks)
         midi.writeToFile(file)
-//        Toast.makeText(context, "saved to ${file.path}", Toast.LENGTH_LONG).show()
+        Toast.makeText(context, "saved to ${file.path}", Toast.LENGTH_LONG).show()
         return file.toUri()
     }
 
@@ -162,5 +157,11 @@ object ProfileMapper {
                 pressTime = it.pressTime - zeroTime
             )
         }
+    }
+
+    companion object {
+        val MAX_BPM = 240
+        val MIN_BPM = 80
+        val NORMAL_BPM = 140
     }
 }
