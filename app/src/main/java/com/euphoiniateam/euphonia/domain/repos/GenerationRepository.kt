@@ -9,4 +9,6 @@ interface GenerationRepository {
 
     // use for regeneration
     suspend fun regenerateLast(): Uri
+
+    suspend fun generateNewNoIncludedPrompt(prompt: Uri): Uri
 }

@@ -9,7 +9,8 @@ data class RemoteTrackResponse(
 data class RemoteTrackRequest(
     val uri: Uri,
     // does not affect now
-    val countToGenerate: Int
+    val countToGenerate: Int,
+    val includePrompt: Boolean
 )
 
 data class RemoteConvertRequest(

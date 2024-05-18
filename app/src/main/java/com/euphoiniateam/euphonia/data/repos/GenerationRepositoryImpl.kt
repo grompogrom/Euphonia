@@ -23,14 +23,14 @@ class GenerationRepositoryImpl(
         Log.d("StaveRemoteDataSourceImpl", "new uri is EMPTY ${prompt == Uri.EMPTY}")
 
         Log.d("StaveRemoteDataSourceImpl", "current uri is EMPTY ${currentMidiSource == Uri.EMPTY}")
-        return generateMidi(generatedMidiSource ?: currentMidiSource!!)
+        return generateMidi(generatedMidiSource ?: currentMidiSource!!, true)
     }
 
     override suspend fun regenerateLast(): Uri {
-        var tmp = generatedMidiSource
+        val tmp = generatedMidiSource
         try {
             generatedMidiSource = null
-            val result = generateMidi(currentMidiSource ?: Uri.EMPTY)
+            val result = generateMidi(currentMidiSource ?: Uri.EMPTY, true)
             return result
         } catch (e: Exception) {
             generatedMidiSource = tmp
@@ -38,10 +38,18 @@ class GenerationRepositoryImpl(
         }
     }
 
-    private suspend fun generateMidi(prompt: Uri): Uri {
+    override suspend fun generateNewNoIncludedPrompt(prompt: Uri): Uri {
+        if (currentMidiSource == null) {
+            currentMidiSource = prompt
+            generatedMidiSource = null
+        }
+        return generateMidi(generatedMidiSource ?: currentMidiSource!!, false)
+    }
+
+    private suspend fun generateMidi(prompt: Uri , includePrompt: Boolean): Uri {
         try {
             val remoteTrackResponse = remoteDataStore.generate(
-                RemoteTrackRequest(prompt, 10)
+                RemoteTrackRequest(prompt, 2, includePrompt)
             )
             onSuccessGeneration(remoteTrackResponse.uri)
             return remoteTrackResponse.uri

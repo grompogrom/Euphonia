@@ -46,7 +46,7 @@ class StaveRemoteDataSourceTest() : Instrumentation() {
         val context = InstrumentationRegistry.getInstrumentation().targetContext
 
         val uri = getUriFromAsset(context, "input.mid")
-        val token = source.sendFileForGeneration(uri!!, mapOf())
+        val token = source.sendFileForGeneration(uri!!, 10)
         Log.d("AAA", token)
         Unit
     }
@@ -57,6 +57,7 @@ class StaveRemoteDataSourceTest() : Instrumentation() {
             val source = StaveRemoteDataSourceImp(contextt)
             val remoteTrackRequest = RemoteTrackRequest(
                 uri = getUriFromAsset(contextt, "input.mid")!!,
+                includePrompt = true,
                 countToGenerate = 10
             )
             val res = source.generate(remoteTrackRequest)
