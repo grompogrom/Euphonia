@@ -25,7 +25,6 @@ class MidiPlayer {
         Log.d("MidPlayer", "Player prepared")
     }
 
-
     fun play(context: Context, midiUri: Uri) {
         initWithTrack(context, midiUri)
         playerState.tryEmit(true)

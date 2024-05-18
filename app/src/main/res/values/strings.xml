@@ -12,8 +12,8 @@
     <string name="settings_recording_audio">Save the recording in audio format</string>
     <string name="settings_recording_stave">Save the recording as a stave</string>
     <string name="settings_piano_size">Piano key size</string>
-    <string name="settings_stave_size">Stave size</string>
-    <string name="settings_showing_stave">Show stave, when playing the piano</string>
+    <string name="settings_notes_amount">Amount of notes in generation</string>
+    <string name="settings_stave_on">Stave off/on</string>
     <string name="settings_save">Save</string>
     <string name="settings_default">Default</string>
     <string name="settings_vk">VK</string>

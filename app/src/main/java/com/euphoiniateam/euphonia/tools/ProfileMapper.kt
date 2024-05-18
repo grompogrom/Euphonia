@@ -10,29 +10,30 @@ import com.leff.midi.MidiTrack
 import com.leff.midi.event.NoteOff
 import com.leff.midi.event.NoteOn
 import com.leff.midi.event.meta.Tempo
-import com.vk.dto.common.id.UserId
 import java.io.File
 
 class ProfileMapper {
     private val notes: MutableList<PianoEvent> = mutableListOf()
     private var bpm: Int = NORMAL_BPM
-    private var timer : Long = 0
+    private var timer: Long = 0
 
     // Набор айдишников(только цифры)
 
-
-    fun map(name: String, surname: String, friends : MutableList<String> = mutableListOf(), userId: Int = 0){
+    fun map(
+        name: String,
+        surname: String,
+        friends: MutableList<String> = mutableListOf(),
+        userId: Int = 0
+    ) {
         userName(name, surname)
-        if(friends.size > 0){
+        if (friends.size > 0) {
             setFriendsCount(friends.size)
             setFriendsId(friends)
         }
-        if(userId != 0){
+        if (userId != 0) {
             setUserId(userId.toString())
         }
     }
-
-
 
     private fun setFriendsId(mutableList: MutableList<String>) {
         val noteSize = if (mutableList.size > 100) 100 else mutableList.size

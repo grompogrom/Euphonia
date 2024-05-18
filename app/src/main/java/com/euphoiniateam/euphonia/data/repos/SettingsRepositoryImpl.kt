@@ -9,8 +9,8 @@ private const val KEY_HISTORY = "history"
 private const val KEY_RECORDING_AUDIO = "recording_audio"
 private const val KEY_RECORDING_STAVE = "recording_stave"
 private const val KEY_PIANO_SIZE = "piano_size"
-private const val KEY_STAVE_SIZE = "stave_size"
-private const val KEY_SHOWING_STAVE = "showing_stave"
+private const val KEY_NOTES_AMOUNT = "notes_amount"
+private const val KEY_STAVE_ON = "stave_on"
 class SettingsRepositoryImpl(private val context: Context) : SettingsRepository {
 
     val sharedPreferences = context.getSharedPreferences(
@@ -21,11 +21,11 @@ class SettingsRepositoryImpl(private val context: Context) : SettingsRepository 
     override suspend fun saveSettings(saveParam: Settings): Boolean {
 
         sharedPreferences.edit().putBoolean(KEY_HISTORY, saveParam.history).apply()
-        sharedPreferences.edit().putBoolean(KEY_RECORDING_AUDIO, saveParam.recording_audio).apply()
-        sharedPreferences.edit().putBoolean(KEY_RECORDING_STAVE, saveParam.recording_stave).apply()
-        sharedPreferences.edit().putFloat(KEY_PIANO_SIZE, saveParam.piano_size).apply()
-        sharedPreferences.edit().putFloat(KEY_STAVE_SIZE, saveParam.stave_size).apply()
-        sharedPreferences.edit().putBoolean(KEY_SHOWING_STAVE, saveParam.showing_stave).apply()
+        sharedPreferences.edit().putBoolean(KEY_RECORDING_AUDIO, saveParam.recordingAudio).apply()
+        sharedPreferences.edit().putBoolean(KEY_RECORDING_STAVE, saveParam.recordingStave).apply()
+        sharedPreferences.edit().putFloat(KEY_PIANO_SIZE, saveParam.pianoSize).apply()
+        sharedPreferences.edit().putFloat(KEY_NOTES_AMOUNT, saveParam.notesAmount).apply()
+        sharedPreferences.edit().putBoolean(KEY_STAVE_ON, saveParam.staveOn).apply()
 
         return true
     }
@@ -35,10 +35,10 @@ class SettingsRepositoryImpl(private val context: Context) : SettingsRepository 
         val history = sharedPreferences.getBoolean(KEY_HISTORY, true)
         val recordingAudio = sharedPreferences.getBoolean(KEY_RECORDING_AUDIO, true)
         val recordingStave = sharedPreferences.getBoolean(KEY_RECORDING_STAVE, true)
-        val pianoSize = sharedPreferences.getFloat(KEY_PIANO_SIZE, 7f)
-        val staveSize = sharedPreferences.getFloat(KEY_STAVE_SIZE, 5f)
-        val showingStave = sharedPreferences.getBoolean(KEY_SHOWING_STAVE, true)
+        val pianoSize = sharedPreferences.getFloat(KEY_PIANO_SIZE, 10f)
+        val notesAmount = sharedPreferences.getFloat(KEY_NOTES_AMOUNT, 5f)
+        val staveOn = sharedPreferences.getBoolean(KEY_STAVE_ON, true)
 
-        return Settings(history, recordingAudio, recordingStave, pianoSize, staveSize, showingStave)
+        return Settings(history, recordingAudio, recordingStave, pianoSize, notesAmount, staveOn)
     }
 }

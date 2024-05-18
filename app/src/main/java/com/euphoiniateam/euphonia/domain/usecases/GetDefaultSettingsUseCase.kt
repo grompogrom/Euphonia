@@ -8,7 +8,7 @@ class GetDefaultSettingsUseCase {
             true,
             true,
             true,
-            7f,
+            10f,
             5f,
             true
         )

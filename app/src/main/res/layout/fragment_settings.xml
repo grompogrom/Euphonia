@@ -164,9 +164,9 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
-                android:valueFrom="1"
-                android:valueTo="14"
-                android:stepSize="1"
+                android:valueFrom="10"
+                android:valueTo="100"
+                android:stepSize="10"
                 android:layout_marginEnd="10dp"/>
 
 
@@ -192,7 +192,7 @@
                 android:paddingLeft="15dp"
                 android:paddingTop="25dp"
                 android:paddingBottom="25dp"
-                android:text="@string/settings_stave_size"
+                android:text="@string/settings_notes_amount"
                 android:textColor="@color/md_theme_light_onPrimary"
                 android:textSize="16dp" />
 
@@ -202,7 +202,7 @@
                 android:layout_weight="1"/>
 
             <com.google.android.material.slider.Slider
-                android:id="@+id/slider_stave_size"
+                android:id="@+id/slider_notes_amount"
                 android:layout_width="88dp"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
@@ -234,7 +234,7 @@
                 android:paddingLeft="15dp"
                 android:paddingTop="25dp"
                 android:paddingBottom="25dp"
-                android:text="@string/settings_showing_stave"
+                android:text="@string/settings_stave_on"
                 android:textColor="@color/md_theme_light_onPrimary"
                 android:textSize="16dp" />
 
@@ -244,7 +244,7 @@
                 android:layout_weight="1"/>
 
             <com.google.android.material.switchmaterial.SwitchMaterial
-                android:id="@+id/switch_showing_stave"
+                android:id="@+id/switch_stave_on"
                 android:layout_width="50dp"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"

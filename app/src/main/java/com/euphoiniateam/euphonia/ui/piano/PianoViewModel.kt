@@ -139,7 +139,7 @@ class PianoViewModel(
 
     fun setStaveChosen() {
         viewModelScope.launch(Dispatchers.IO) {
-            staveChosen = settingsRepository.getSettings().showing_stave
+            staveChosen = settingsRepository.getSettings().staveOn
         }
     }
     fun getStaveChosen(): Boolean {

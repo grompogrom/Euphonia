@@ -25,7 +25,6 @@ class SettingsFragment : Fragment() {
     private var _binding: FragmentSettingsBinding? = null
     private val binding get() = _binding!!
     private lateinit var viewModel: SettingsViewModel
-    // private lateinit var authLauncher: ActivityResultLauncher<Collection<VKScope>>
     private var loadingDialog: DialogLoadingFragment? = null
 
     override fun onCreateView(
@@ -59,8 +58,8 @@ class SettingsFragment : Fragment() {
         val switchRecordingAudio: SwitchMaterial = binding.switchRecordingAudio
         val switchRecordingStave: SwitchMaterial = binding.switchRecordingStave
         val sliderPianoSize: Slider = binding.sliderPianoSize
-        val sliderStaveSize: Slider = binding.sliderStaveSize
-        val switchShowingStave: SwitchMaterial = binding.switchShowingStave
+        val sliderNotesAmount: Slider = binding.sliderNotesAmount
+        val switchShowingStave: SwitchMaterial = binding.switchStaveOn
 
         binding.saveBtn.setOnClickListener {
             viewModel.saveSettings(
@@ -68,7 +67,7 @@ class SettingsFragment : Fragment() {
                 switchRecordingAudio.isChecked,
                 switchRecordingStave.isChecked,
                 sliderPianoSize.value,
-                sliderStaveSize.value,
+                sliderNotesAmount.value,
                 switchShowingStave.isChecked
             )
             toast.show()
@@ -86,12 +85,12 @@ class SettingsFragment : Fragment() {
 
         lifecycleScope.launch {
             viewModel.settingsStateFlow.collectLatest { settings ->
-                binding.sliderPianoSize.value = settings.piano_size
+                binding.sliderPianoSize.value = settings.pianoSize
                 binding.switchHistory.isChecked = settings.history
-                binding.switchRecordingAudio.isChecked = settings.recording_audio
-                binding.switchRecordingStave.isChecked = settings.recording_stave
-                binding.sliderStaveSize.value = settings.stave_size
-                binding.switchShowingStave.isChecked = settings.showing_stave
+                binding.switchRecordingAudio.isChecked = settings.recordingAudio
+                binding.switchRecordingStave.isChecked = settings.recordingStave
+                binding.sliderNotesAmount.value = settings.notesAmount
+                binding.switchStaveOn.isChecked = settings.staveOn
             }
         }
 
@@ -116,7 +115,8 @@ class SettingsFragment : Fragment() {
                         loadingDialog?.dismiss()
                         loadingDialog = null
                         viewModel.endProfileProcess()
-                        val action = SettingsFragmentDirections.actionNavigationNotificationsToCreationFragment()
+                        val action = SettingsFragmentDirections
+                            .actionNavigationNotificationsToCreationFragment()
                         findNavController().navigate(action)
                         Log.d("MyState", "$it")
                     }
