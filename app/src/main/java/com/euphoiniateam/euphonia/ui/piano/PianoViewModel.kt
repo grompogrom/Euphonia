@@ -4,7 +4,6 @@ import android.content.Context
 import android.net.Uri
 import android.util.Log
 import android.widget.Toast
-import androidx.core.net.toUri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -21,13 +20,6 @@ import com.euphoiniateam.euphonia.ui.creation.stave.StaveConfig
 import com.euphoiniateam.euphonia.ui.creation.stave.StaveHandler
 import com.euphoiniateam.euphonia.ui.creation.synthesia.SynthesiaConfig
 import com.euphoiniateam.euphonia.ui.creation.synthesia.SynthesiaHandler
-import com.leff.midi.MidiFile
-import com.leff.midi.MidiTrack
-import com.leff.midi.event.NoteOff
-import com.leff.midi.event.NoteOn
-import com.leff.midi.event.meta.Tempo
-import com.leff.midi.event.meta.TimeSignature
-import java.io.File
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -72,7 +64,7 @@ class PianoViewModel(
     fun stopRecord(context: Context) {
         viewModelScope.launch {
             if (recordData.isNotEmpty()) {
-                resultUri = pianoToMidiRepository.convert(recordData, 120,480)
+                resultUri = pianoToMidiRepository.convert(recordData, 120, 480)
                 onRecordFinished()
                 screenStateFlow.tryEmit(
                     screenStateFlow.value.copy(recordingState = PianoState.AFTER_RECORD)

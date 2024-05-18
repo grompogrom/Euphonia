@@ -23,5 +23,6 @@
     <string name="settings_saved">Settings saved</string>
     <string name="btn_choose_played">Played</string>
     <string name="btn_choose_generated">Generated</string>
+    <string name="btn_generate_vk_music">Generate VK music</string>
     <integer name="com_vk_sdk_AppId">51925055</integer>
 </resources>

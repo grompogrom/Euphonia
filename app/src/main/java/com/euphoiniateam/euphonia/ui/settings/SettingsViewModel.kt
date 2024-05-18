@@ -13,6 +13,7 @@ import com.euphoiniateam.euphonia.domain.usecases.GetDefaultSettingsUseCase
 import com.euphoiniateam.euphonia.domain.usecases.GetSettingsUseCase
 import com.euphoiniateam.euphonia.domain.usecases.SaveSettingsUseCase
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 
@@ -22,6 +23,9 @@ class SettingsViewModel(private val repository: SettingsRepository) : ViewModel(
     private val saveSettingsUseCase by lazy { SaveSettingsUseCase(settingsRepository = repository) }
     val settingsStateFlow = MutableStateFlow(Settings())
     val isSavedStateFlow: MutableStateFlow<Boolean?> = MutableStateFlow(false)
+    var screenStateFlow = MutableStateFlow(
+        VkLoadingState.EMPTY
+    )
 
     init {
         loadSettings()
@@ -31,6 +35,20 @@ class SettingsViewModel(private val repository: SettingsRepository) : ViewModel(
         viewModelScope.launch(Dispatchers.IO) {
             val settingsConfig = getSettingsUseCase.execute()
             settingsStateFlow.tryEmit(settingsConfig)
+        }
+    }
+
+    fun processProfile() {
+        viewModelScope.launch {
+            screenStateFlow.emit(VkLoadingState.LOADING)
+            delay(5000)
+            screenStateFlow.emit(VkLoadingState.SUCCESS)
+        }
+    }
+
+    fun endProfileProcess() {
+        viewModelScope.launch {
+            screenStateFlow.emit(VkLoadingState.EMPTY)
         }
     }
 
@@ -73,4 +91,10 @@ class SettingsViewModel(private val repository: SettingsRepository) : ViewModel(
             }
         }
     }
+}
+
+enum class VkLoadingState {
+    EMPTY,
+    LOADING,
+    SUCCESS
 }
