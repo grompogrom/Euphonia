@@ -22,7 +22,7 @@ class SettingsFragment : Fragment() {
     private var _binding: FragmentSettingsBinding? = null
     private val binding get() = _binding!!
     private lateinit var viewModel: SettingsViewModel
-    //private lateinit var authLauncher: ActivityResultLauncher<Collection<VKScope>>
+    // private lateinit var authLauncher: ActivityResultLauncher<Collection<VKScope>>
 
     override fun onCreateView(
         inflater: LayoutInflater,

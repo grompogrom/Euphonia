@@ -65,26 +65,31 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private val tokenTracker = object: VKTokenExpiredHandler {
+    private val tokenTracker = object : VKTokenExpiredHandler {
         override fun onTokenExpired() {
             // token expired
         }
     }
 
     private fun requestUser() {
-        VK.execute(VKUsersCommand(), object: VKApiCallback<List<VKUser>> {
-            override fun success(result: List<VKUser>) {
-                if (result.isNotEmpty()) {
-                    val user = result[0]
-                    val username = "${user.firstName} ${user.lastName}"
-                    Toast.makeText(this@MainActivity, "Welcome, $username!", Toast.LENGTH_SHORT).show()
+        VK.execute(
+            VKUsersCommand(),
+            object : VKApiCallback<List<VKUser>> {
+                override fun success(result: List<VKUser>) {
+                    if (result.isNotEmpty()) {
+                        val user = result[0]
+                        val username = "${user.firstName} ${user.lastName}"
+                        Toast.makeText(
+                            this@MainActivity,
+                            "Welcome, $username!",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
+                override fun fail(error: Exception) {
+                    Log.e("VKRequest", error.toString())
                 }
             }
-            override fun fail(error: Exception) {
-                Log.e("VKRequest", error.toString())
-            }
-        })
+        )
     }
-
-
 }

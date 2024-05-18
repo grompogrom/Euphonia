@@ -107,7 +107,7 @@ class CreationFragment : Fragment() {
                 )
             }
             ButtonsSection(
-                onRegenerateClick = { viewModel.updateStave() },
+                onRegenerateClick = { viewModel.regenerateLastPart(context) },
                 onExitClick = onExitClick,
                 onPlayClick = { viewModel.togglePlayPause(context) },
                 isPlaying = viewModel.screenState.isPlaying,

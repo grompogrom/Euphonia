@@ -10,22 +10,22 @@ import retrofit2.http.Path
 
 interface StaveApi {
 
-    @GET("get/{token}")
+    @GET("get/{token}/")
     suspend fun getGenerated(
         @Path("token") token: String
     ): Response<ResponseBody>
 
-    @POST("generate")
+    @POST("generate/")
     suspend fun startGeneration(
         @Body midi: RequestBody
     ): Response<ResponseBody>
 
-    @GET("getc/{token}")
+    @GET("getc/{token}/")
     suspend fun getConverted(
         @Path("token") token: String
     ): Response<ResponseBody>
 
-    @POST("convert")
+    @POST("convert/")
     suspend fun startConverting(
         @Body mp3: RequestBody
     ): Response<ResponseBody>
