@@ -1,14 +1,12 @@
 package com.euphoiniateam.euphonia.domain.repos
 
 import android.net.Uri
-import com.euphoiniateam.euphonia.domain.models.Stave
 
 interface GenerationRepository {
-    suspend fun getStave(): Stave
 
-    suspend fun generateMidi(prompt: Uri, count: Int): Uri
+    // use for first and additional generation
+    suspend fun generateNew(prompt: Uri): Uri
 
-    // TODO: используется, но не делает полезной работы
-    @Deprecated("Use generateMidi instead")
-    suspend fun generateStave(): Stave
+    // use for regeneration
+    suspend fun regenerateLast(): Uri
 }

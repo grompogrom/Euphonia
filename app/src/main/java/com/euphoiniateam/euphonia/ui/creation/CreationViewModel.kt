@@ -53,18 +53,6 @@ class CreationViewModel(
         }
     }
 
-    // TODO: move current uri from fragment to VM as field or state param
-    // TODO: use UseCases instead repos
-    // TODO: move stave config to screenState
-    fun updateStave() {
-        viewModelScope.launch(Dispatchers.IO) {
-            screenState = screenState.copy(isLoading = true)
-            val newStave = generationRepository.generateStave()
-            staveHandler.updateNotes(newStave.initialNotes + newStave.generatedNotes)
-            screenState = screenState.copy(isLoading = false)
-        }
-    }
-
     fun setCurrentUri(context: Context, uri: Uri) {
         viewModelScope.launch {
             midiPlayer.initWithTrack(context, uri)
@@ -76,8 +64,7 @@ class CreationViewModel(
         viewModelScope.launch(Dispatchers.IO) {
             screenState = screenState.copy(isLoading = true)
             screenState = try {
-                val newMidi = generationRepository.generateMidi(uri, 5)
-
+                val newMidi = generationRepository.generateNew(uri)
                 val notes = notesRepository.getNotes(newMidi)
                 notes?.let { staveHandler.updateNotes(it) }
                 setCurrentUri(context, newMidi)
@@ -89,12 +76,19 @@ class CreationViewModel(
         }
     }
 
-    private fun loadStave() {
+    fun regenerateLastPart(context: Context) {
         viewModelScope.launch(Dispatchers.IO) {
             screenState = screenState.copy(isLoading = true)
-            val newStave = generationRepository.getStave()
-            staveHandler.updateNotes(newStave.initialNotes + newStave.generatedNotes)
-            screenState = screenState.copy(isLoading = false)
+            screenState = try {
+                val newMidi = generationRepository.regenerateLast()
+                val notes = notesRepository.getNotes(newMidi)
+                notes?.let { staveHandler.updateNotes(it) }
+                setCurrentUri(context, newMidi)
+                currentTrackState.emit(newMidi)
+                screenState.copy(isLoading = false)
+            } catch (e: GenerationException) {
+                screenState.copy(isLoading = false, error = "Unexpected server error")
+            }
         }
     }
 
