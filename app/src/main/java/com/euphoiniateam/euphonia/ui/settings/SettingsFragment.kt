@@ -59,7 +59,7 @@ class SettingsFragment : Fragment() {
         val switchRecordingStave: SwitchMaterial = binding.switchRecordingStave
         val sliderPianoSize: Slider = binding.sliderPianoSize
         val sliderNotesAmount: Slider = binding.sliderNotesAmount
-        val switchShowingStave: SwitchMaterial = binding.switchStaveOn
+        val switchStaveOn: SwitchMaterial = binding.switchStaveOn
 
         binding.saveBtn.setOnClickListener {
             viewModel.saveSettings(
@@ -68,7 +68,7 @@ class SettingsFragment : Fragment() {
                 switchRecordingStave.isChecked,
                 sliderPianoSize.value,
                 sliderNotesAmount.value,
-                switchShowingStave.isChecked
+                switchStaveOn.isChecked
             )
             toast.show()
         }
