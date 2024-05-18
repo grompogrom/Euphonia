@@ -32,8 +32,14 @@ class MainActivity : AppCompatActivity() {
         when (result) {
             is VKAuthenticationResult.Success -> {
                 VK.addTokenExpiredHandler(tokenTracker)
-                user = requestUser()
-                friends = requestFriends()
+                requestUser(
+                    onSuccess = { user = it!! },
+                    onFail = {}
+                )
+                requestFriends(
+                    onSuccess = { friends = it!! },
+                    onFail = {}
+                )
             }
 
             is VKAuthenticationResult.Failed -> {
@@ -78,7 +84,13 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun requestUser(): VKUser? {
+    fun requestUser(
+        onSuccess: (VKUser?) -> Unit,
+        onFail: () -> Unit
+    ): VKUser? {
+        user?.let {
+            return user
+        }
         var user: VKUser? = null
         VK.execute(
             VKUsersCommand(),
@@ -92,10 +104,11 @@ class MainActivity : AppCompatActivity() {
                             "Welcome, $username!",
                             Toast.LENGTH_SHORT
                         ).show()
-                        showUser(user!!)
+                        onSuccess(user)
                     }
                 }
                 override fun fail(error: Exception) {
+                    onFail()
                     Log.e("userRequest", error.toString())
                 }
             }
@@ -103,7 +116,13 @@ class MainActivity : AppCompatActivity() {
         return user
     }
 
-    private fun requestFriends(): List<VKUser>? {
+    fun requestFriends(
+        onSuccess: (List<VKUser>?) -> Unit,
+        onFail: () -> Unit
+    ): List<VKUser>? {
+        friends?.let {
+            return friends
+        }
         var friends: List<VKUser>? = null
         val fields = listOf(UsersFieldsDto.PHOTO_200, UsersFieldsDto.BDATE)
         VK.execute(
@@ -121,10 +140,11 @@ class MainActivity : AppCompatActivity() {
                                 photo = friend.photo200 ?: "",
                             )
                         }
-                        showFriends(friends!!)
+                        onSuccess(friends)
                     }
                 }
                 override fun fail(error: Exception) {
+                    onFail()
                     Log.e("friendsRequest", error.toString())
                 }
             }

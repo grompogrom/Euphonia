@@ -1,5 +1,6 @@
 package com.euphoiniateam.euphonia.ui.settings
 
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -13,6 +14,8 @@ import androidx.navigation.fragment.findNavController
 import com.euphoiniateam.euphonia.MainActivity
 import com.euphoiniateam.euphonia.R
 import com.euphoiniateam.euphonia.databinding.FragmentSettingsBinding
+import com.euphoiniateam.euphonia.ui.MidiFile
+import com.euphoiniateam.euphonia.ui.creation.CreationFragment
 import com.google.android.material.slider.Slider
 import com.google.android.material.switchmaterial.SwitchMaterial
 import com.vk.api.sdk.VK
@@ -44,7 +47,22 @@ class SettingsFragment : Fragment() {
         Log.d("MyState", "${viewModel.screenStateFlow.value}")
         binding.generateVkBtn.setOnClickListener {
             if (VK.isLoggedIn()) {
-                viewModel.processProfile()
+                viewModel.processProfile(
+                    getFriends = {
+                        (requireActivity() as MainActivity).requestFriends(
+                            { viewModel.friendsStateFlow.tryEmit(it) },
+                            {}
+                        )
+                    },
+                    getProfile = {
+                        (requireActivity() as MainActivity).requestUser(
+                            { viewModel.userStateFlow.tryEmit(it) },
+                            {}
+                        )
+                    },
+                    onSuccess = { midi -> onSuccessVkProfileCovert(midi) },
+                    requireContext()
+                )
             } else {
                 authLauncher.launch(arrayListOf(VKScope.WALL, VKScope.PHOTOS))
             }
@@ -102,7 +120,10 @@ class SettingsFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.screenStateFlow.collect {
                 when (it) {
-                    VkLoadingState.EMPTY -> {}
+                    VkLoadingState.EMPTY -> {
+                        loadingDialog?.dismiss()
+                        loadingDialog = null
+                    }
                     VkLoadingState.LOADING -> {
                         loadingDialog = DialogLoadingFragment().apply {
                             show(
@@ -111,18 +132,25 @@ class SettingsFragment : Fragment() {
                             )
                         }
                     }
-                    VkLoadingState.SUCCESS -> {
-                        loadingDialog?.dismiss()
-                        loadingDialog = null
-                        viewModel.endProfileProcess()
-                        val action = SettingsFragmentDirections
-                            .actionNavigationNotificationsToCreationFragment()
-                        findNavController().navigate(action)
-                        Log.d("MyState", "$it")
-                    }
+                    VkLoadingState.SUCCESS -> { }
                 }
             }
         }
+    }
+
+    private fun onSuccessVkProfileCovert(uri: Uri) {
+        loadingDialog?.dismiss()
+        loadingDialog = null
+        viewModel.endProfileProcess(requireContext(), {})
+//        val action = SettingsFragmentDirections.actionNavigationNotificationsToCreationFragment()
+//        findNavController().navigate(action)
+
+        val bundle = Bundle()
+        bundle.putSerializable(CreationFragment.URI_KEY, MidiFile(uri.toString()))
+        findNavController().navigate(
+            R.id.action_navigation_notifications_to_creationFragment,
+            bundle
+        )
     }
 
     override fun onDestroyView() {
