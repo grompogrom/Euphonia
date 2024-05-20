@@ -11,7 +11,11 @@ class MicrophoneFunctions() {
     fun startRecording(applicationContext: Context): Boolean {
         val outputFile = getOutputFile(applicationContext)
         if (outputFile == null) {
-            Toast.makeText(applicationContext, "Failed to create audio file", Toast.LENGTH_SHORT).show()
+            Toast.makeText(
+                applicationContext,
+                "Failed to create audio file",
+                Toast.LENGTH_SHORT
+            ).show()
             return false
         }
 
