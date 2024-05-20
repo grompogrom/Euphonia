@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -116,6 +117,7 @@ class CreationFragment : Fragment() {
                         uri,
                         "Song.mid"
                     )
+                    Toast.makeText(context, "saved as song", Toast.LENGTH_LONG).show()
                 },
                 onShareClick = { viewModel.shareFile(context, uri) },
                 onGenerateClick = { viewModel.generateNewPart(context, uri) },
