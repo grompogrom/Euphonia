@@ -108,7 +108,6 @@ class CreationViewModel(
     fun saveGeneratedToStorage(contentResolver: ContentResolver, uri: Uri, fileName: String) {
         saveMidiFileToResultsDir(contentResolver, currentTrackState.value, fileName)
         saveMidiFileToPianoDir(contentResolver, uri, fileName)
-
     }
     fun getNotes(uri: Uri) {
         viewModelScope.launch(Dispatchers.IO) {

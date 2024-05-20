@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import com.euphoiniateam.euphonia.databinding.FragmentHomeListenBinding
+import com.euphoiniateam.euphonia.tools.MicrophoneFunctions
 
 class HomeListenFragment : Fragment() {
 
@@ -34,7 +35,7 @@ class HomeListenFragment : Fragment() {
             android.R.transition.move
         )
         sharedElementEnterTransition = animation
-
+        context?.let { it1 -> MicrophoneFunctions().startRecording(it1) }
         val btnOpenHome: ImageButton = binding.btnToEndMicro
         btnOpenHome.setOnClickListener {
             val extras = FragmentNavigatorExtras(
@@ -42,6 +43,7 @@ class HomeListenFragment : Fragment() {
                 binding.v2After to "v2",
                 binding.btnToEndMicro to "micro"
             )
+            context?.let { it2 -> MicrophoneFunctions().stopRecording(it2) }
             val action = HomeListenFragmentDirections.actionHomeListenFragmentToCreationFragment()
             val navController = findNavController()
             navController.navigate(action, navigatorExtras = extras)
