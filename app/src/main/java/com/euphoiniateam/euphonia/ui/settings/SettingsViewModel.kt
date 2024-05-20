@@ -84,7 +84,7 @@ class SettingsViewModel(
     }
 
     fun endProfileProcess(context: Context, onSuccess: (Uri) -> Unit) {
-        genJob?.let { it.cancel()}
+        genJob?.let { it.cancel() }
         genJob = viewModelScope.launch {
             try {
                 val prompt = ProfileMapper.map(

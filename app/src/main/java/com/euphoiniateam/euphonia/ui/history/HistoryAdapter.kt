@@ -1,12 +1,12 @@
 package com.euphoiniateam.euphonia.ui.history
 
 import android.content.Context
+import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.TextView
-import androidx.navigation.NavController
 import androidx.recyclerview.widget.RecyclerView
 import com.euphoiniateam.euphonia.R
 import com.euphoiniateam.euphonia.tools.getUriForFileNameFromPiano
@@ -16,7 +16,7 @@ import com.euphoiniateam.euphonia.ui.MidiPlayer
 class HistoryAdapter(
     private val context: Context,
     private var data: ArrayList<String>,
-    private val navController: NavController,
+    private val onClick: (Uri) -> Unit,
     private var currentTab: CurrentTab,
     private val midiPlayer: MidiPlayer
 ) : RecyclerView.Adapter<HistoryAdapter.ViewHolder>() {
@@ -60,8 +60,12 @@ class HistoryAdapter(
 
         holder.button2.setOnClickListener {
             MusicData.songName = music
-            val action = HistoryFragmentDirections.actionNavigationDashboardToCreationFragment()
-            navController.navigate(action)
+            val uri = if (currentTab == CurrentTab.Piano) {
+                getUriForFileNameFromPiano(music)
+            } else {
+                getUriForFileNameFromResults(music)
+            }
+            uri?.let { onClick(uri) }
         }
     }
 

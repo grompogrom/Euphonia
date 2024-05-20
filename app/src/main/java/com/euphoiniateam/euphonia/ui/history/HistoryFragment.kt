@@ -1,5 +1,6 @@
 package com.euphoiniateam.euphonia.ui.history
 
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -13,7 +14,9 @@ import com.euphoiniateam.euphonia.R
 import com.euphoiniateam.euphonia.databinding.FragmentHistoryBinding
 import com.euphoiniateam.euphonia.tools.getMidFileNamesFromPiano
 import com.euphoiniateam.euphonia.tools.getMidFileNamesFromResults
+import com.euphoiniateam.euphonia.ui.MidiFile
 import com.euphoiniateam.euphonia.ui.MidiPlayer
+import com.euphoiniateam.euphonia.ui.creation.CreationFragment
 
 class HistoryFragment : Fragment() {
 
@@ -40,8 +43,7 @@ class HistoryFragment : Fragment() {
         listAdapter = HistoryAdapter(
             requireContext(),
             getMidFileNamesFromPiano(),
-//            arrayListOf("First", "Second", "Third", "Песенка"),
-            findNavController(),
+            ::navigateToCreation,
             currentTab,
             MidiPlayer()
         )
@@ -79,6 +81,15 @@ class HistoryFragment : Fragment() {
             }
         }
         return rootView
+    }
+
+    private fun navigateToCreation(uri: Uri) {
+        val bundle = Bundle()
+        bundle.putSerializable(CreationFragment.URI_KEY, MidiFile(uri.toString()))
+        findNavController().navigate(
+            R.id.action_navigation_dashboard_to_creationFragment,
+            bundle
+        )
     }
 
     override fun onDestroyView() {
