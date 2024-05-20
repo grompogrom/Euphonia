@@ -71,7 +71,10 @@ class CreationViewModel(
             screenState = try {
                 val newMidi = generationRepository.generateNew(uri)
                 val notes = notesRepository.getNotes(newMidi)
-                notes?.let { staveHandler.updateNotes(it) }
+                if (settingsRepository.getSettings().staveOn)
+                    notes?.let { staveHandler.updateNotes(it) }
+                else
+                    notes?.let { synthesiaHandler.updateNotes(it) }
                 setCurrentUri(context, newMidi)
                 currentTrackState.emit(newMidi)
                 screenState.copy(isLoading = false)
@@ -87,7 +90,10 @@ class CreationViewModel(
             screenState = try {
                 val newMidi = generationRepository.regenerateLast()
                 val notes = notesRepository.getNotes(newMidi)
-                notes?.let { staveHandler.updateNotes(it) }
+                if (settingsRepository.getSettings().staveOn)
+                    notes?.let { staveHandler.updateNotes(it) }
+                else
+                    notes?.let { synthesiaHandler.updateNotes(it) }
                 setCurrentUri(context, newMidi)
                 currentTrackState.emit(newMidi)
                 screenState.copy(isLoading = false)

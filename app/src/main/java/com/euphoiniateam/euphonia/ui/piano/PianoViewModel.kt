@@ -64,7 +64,7 @@ class PianoViewModel(
     fun stopRecord(context: Context) {
         viewModelScope.launch {
             if (recordData.isNotEmpty()) {
-                resultUri = pianoToMidiRepository.convert(recordData, 120, 480)
+                resultUri = pianoToMidiRepository.convert(recordData, 300, 480)
                 onRecordFinished()
                 screenStateFlow.tryEmit(
                     screenStateFlow.value.copy(recordingState = PianoState.AFTER_RECORD)

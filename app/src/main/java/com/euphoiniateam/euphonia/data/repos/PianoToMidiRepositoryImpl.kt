@@ -2,6 +2,7 @@ package com.euphoiniateam.euphonia.data.repos
 
 import android.content.Context
 import android.net.Uri
+import android.util.Log
 import android.widget.Toast
 import androidx.core.content.FileProvider
 import androidx.core.net.toUri
@@ -18,7 +19,7 @@ class PianoToMidiRepositoryImpl(
     private val context: Context
 ) : PianoToMidiRepository {
     override fun convert(recordData: MutableList<PianoEvent>, bpm: Int, density: Int): Uri {
-        val tick = 60_000 / (bpm * density)
+        val tick = 60_000f / (bpm * density)
         val calibratedData = calibrateTime(recordData)
         val noteTrack = MidiTrack()
 
@@ -27,11 +28,13 @@ class PianoToMidiRepositoryImpl(
 
         noteTrack.insertEvent(tempo)
         calibratedData.forEach {
-            val push = it.pressTime / tick
-            val release = (it.elapseTime + it.pressTime) / tick
+            val push = (it.pressTime.toDouble() / tick).toLong()
+            val release = (it.elapseTime.toDouble() / tick).toLong()
             val pitch = notesToMidiNotes(it.keyNum, it.pitch)
             val noteOn = NoteOn(push, 0, pitch, 100)
             val noteOff = NoteOff(release, 0, pitch, 0)
+            Log.d("notePiano", push.toString())
+            Log.d("notePiano", release.toString())
 
             noteTrack.insertEvent(noteOn)
             noteTrack.insertEvent(noteOff)
