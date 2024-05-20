@@ -3,6 +3,7 @@ package com.euphoiniateam.euphonia.data.source.stave
 import android.content.Context
 import android.net.Uri
 import android.util.Log
+import androidx.core.content.FileProvider
 import androidx.core.net.toFile
 import com.euphoiniateam.euphonia.data.NetworkService
 import com.euphoiniateam.euphonia.data.models.RemoteTrackRequest
@@ -31,7 +32,7 @@ internal class StaveRemoteDataSourceImp(
         )
         val newTrackBytes = getFileFromServer(token)
         return RemoteTrackResponse(
-            uri = saveMidiFileToCache(context, newTrackBytes.inputStream(), token) ?: Uri.EMPTY
+            uri = saveMidiFileToCache(context, newTrackBytes.inputStream(), "outfile.mid") ?: Uri.EMPTY
         )
     }
 
@@ -68,7 +69,7 @@ internal class StaveRemoteDataSourceImp(
 
     suspend fun getFileFromServer(token: String): ByteArray {
         var response: retrofit2.Response<ResponseBody>? = null
-        for (i in 1..100) {
+        for (i in 1..200) {
             response = NetworkService.euphoniaApi.getGenerated(token)
             when (response.code()) {
                 202 -> {

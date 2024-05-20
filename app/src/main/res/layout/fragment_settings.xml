@@ -273,6 +273,7 @@
                 android:lineHeight="20dp"
                 android:text="@string/settings_vk"
                 android:textSize="15dp"
+                android:visibility="gone"
                 android:layout_centerHorizontal="true"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/save_btn" />
