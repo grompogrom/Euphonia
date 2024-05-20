@@ -43,7 +43,7 @@ class GenerationRepositoryImpl(
             currentMidiSource = prompt
             generatedMidiSource = null
         }
-        return generateMidi(generatedMidiSource ?: currentMidiSource!!, false, 20)
+        return generateMidi(generatedMidiSource ?: currentMidiSource!!, false, 8)
     }
 
     private suspend fun generateMidi(prompt: Uri, includePrompt: Boolean, count: Int = 5): Uri {

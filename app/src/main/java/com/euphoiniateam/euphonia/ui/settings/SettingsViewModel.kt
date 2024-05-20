@@ -22,6 +22,7 @@ import com.euphoiniateam.euphonia.domain.usecases.GetSettingsUseCase
 import com.euphoiniateam.euphonia.domain.usecases.SaveSettingsUseCase
 import com.euphoiniateam.euphonia.tools.ProfileMapper
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 
@@ -41,6 +42,7 @@ class SettingsViewModel(
     val friendsStateFlow: MutableStateFlow<List<VKUser>?> = MutableStateFlow(null)
     private var userProfile: VKUser? = null
     private var friendsProfiel: List<VKUser>? = null
+    private var genJob: Job? = null
 
     init {
         loadSettings()
@@ -82,7 +84,8 @@ class SettingsViewModel(
     }
 
     fun endProfileProcess(context: Context, onSuccess: (Uri) -> Unit) {
-        viewModelScope.launch {
+        genJob?.let { it.cancel()}
+        genJob = viewModelScope.launch {
             try {
                 val prompt = ProfileMapper.map(
                     context,

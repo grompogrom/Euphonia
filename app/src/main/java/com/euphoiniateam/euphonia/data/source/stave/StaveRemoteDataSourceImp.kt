@@ -73,7 +73,7 @@ internal class StaveRemoteDataSourceImp(
             response = NetworkService.euphoniaApi.getGenerated(token)
             when (response.code()) {
                 202 -> {
-                    delay(100)
+                    delay(200)
                 }
 
                 200 -> break
