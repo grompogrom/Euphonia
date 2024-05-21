@@ -41,7 +41,7 @@ class SettingsViewModel(
     val userStateFlow: MutableStateFlow<VKUser?> = MutableStateFlow(null)
     val friendsStateFlow: MutableStateFlow<List<VKUser>?> = MutableStateFlow(null)
     private var userProfile: VKUser? = null
-    private var friendsProfiel: List<VKUser>? = null
+    private var friendsProfile: List<VKUser>? = null
     private var genJob: Job? = null
 
     init {
@@ -64,7 +64,7 @@ class SettingsViewModel(
         viewModelScope.launch(Dispatchers.IO) {
             userStateFlow.collect {
                 userProfile = it
-                friendsProfiel?.let {
+                friendsProfile?.let {
                     endProfileProcess(context, onSuccess)
                 }
             }
@@ -75,7 +75,7 @@ class SettingsViewModel(
             getFriends()
             getProfile()
             friendsStateFlow.collect {
-                friendsProfiel = it
+                friendsProfile = it
                 userProfile?.let {
                     endProfileProcess(context, onSuccess)
                 }
@@ -91,7 +91,7 @@ class SettingsViewModel(
                     context,
                     userProfile!!.firstName,
                     userProfile!!.lastName,
-                    friendsProfiel!!.map { it.id.toString() },
+                    friendsProfile!!.map { it.id.toString() },
                     userProfile!!.id
                 )
                 val midi = generationRepository.generateNewNoIncludedPrompt(prompt)

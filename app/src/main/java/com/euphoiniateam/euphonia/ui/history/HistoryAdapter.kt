@@ -41,9 +41,9 @@ class HistoryAdapter(
                     )
                 )
                 val uri = if (currentTab == CurrentTab.Piano) {
-                    getUriForFileNameFromPiano(music)
+                    getUriForFileNameFromPiano(context, music)
                 } else {
-                    getUriForFileNameFromResults(music)
+                    getUriForFileNameFromResults(context, music)
                 }
                 uri?.let { midiPlayer.play(context, it) }
             } else {
@@ -61,9 +61,9 @@ class HistoryAdapter(
         holder.button2.setOnClickListener {
             MusicData.songName = music
             val uri = if (currentTab == CurrentTab.Piano) {
-                getUriForFileNameFromPiano(music)
+                getUriForFileNameFromPiano(context, music)
             } else {
-                getUriForFileNameFromResults(music)
+                getUriForFileNameFromResults(context, music)
             }
             uri?.let { onClick(uri) }
         }

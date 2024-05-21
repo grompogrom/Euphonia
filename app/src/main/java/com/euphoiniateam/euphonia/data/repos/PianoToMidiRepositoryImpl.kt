@@ -2,7 +2,6 @@ package com.euphoiniateam.euphonia.data.repos
 
 import android.content.Context
 import android.net.Uri
-import android.util.Log
 import android.widget.Toast
 import androidx.core.content.FileProvider
 import androidx.core.net.toUri
@@ -33,8 +32,6 @@ class PianoToMidiRepositoryImpl(
             val pitch = notesToMidiNotes(it.keyNum, it.pitch)
             val noteOn = NoteOn(push, 0, pitch, 100)
             val noteOff = NoteOff(release, 0, pitch, 0)
-            Log.d("notePiano", push.toString())
-            Log.d("notePiano", release.toString())
 
             noteTrack.insertEvent(noteOn)
             noteTrack.insertEvent(noteOff)

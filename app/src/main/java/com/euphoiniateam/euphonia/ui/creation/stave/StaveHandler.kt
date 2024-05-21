@@ -4,6 +4,7 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import com.euphoiniateam.euphonia.domain.models.Note
+import kotlin.math.max
 import kotlin.math.min
 
 class StaveHandler(staveConfig: StaveConfig) {
@@ -16,8 +17,11 @@ class StaveHandler(staveConfig: StaveConfig) {
     val visibleNotes by derivedStateOf {
         if (notes.isNotEmpty()) {
 
-            linesCount = (notes.size / staveConfig.lineNotesCount) +
-                (notes.size % staveConfig.lineNotesCount != 0).toInt()
+            linesCount = max(
+                (notes.size / staveConfig.lineNotesCount) +
+                    (notes.size % staveConfig.lineNotesCount != 0).toInt(),
+                3
+            )
 
             notes.subList(
                 0,

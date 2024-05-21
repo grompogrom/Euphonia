@@ -22,9 +22,9 @@ import androidx.compose.ui.unit.dp
 import com.euphoiniateam.euphonia.R
 import com.euphoiniateam.euphonia.domain.models.Note
 
-const val note4Duration = 0.55
-const val note8Duration = 0.30
-const val note16Duration = 0.10
+const val note4Duration = 1.0
+const val note8Duration = 0.6
+const val note16Duration = 0.3
 @Composable
 @SuppressLint("MagicNumber")
 fun StaveView(
@@ -55,7 +55,7 @@ fun StaveView(
             .scrollable(
                 orientation = Orientation.Vertical,
                 state = rememberScrollableState { delta ->
-                    if (deltaDraw + delta in -425.0 * (handler.getLinesCount() - 2)..0.0)
+                    if (deltaDraw + delta in -425.0 * (handler.getLinesCount() - 3)..0.0)
                         deltaDraw += delta
                     delta
                 }
@@ -211,7 +211,7 @@ fun StaveView(
                                 )
                             }
                         }
-                    } else if (note.duration >= note16Duration) {
+                    } else if (note.duration >= note16Duration || note.duration < note16Duration) {
                         if (noteNum in whiteNotes) {
                             with(note16) {
                                 draw(

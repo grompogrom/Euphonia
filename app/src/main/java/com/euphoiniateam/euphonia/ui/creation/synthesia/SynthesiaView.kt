@@ -1,7 +1,6 @@
 package com.euphoiniateam.euphonia.ui.creation.synthesia
 
 import android.annotation.SuppressLint
-import android.util.Log
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
@@ -39,9 +38,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import com.euphoiniateam.euphonia.domain.models.Note
 
-const val note4Duration = 0.55
-const val note8Duration = 0.30
-const val note16Duration = 0.10
+const val note4Duration = 1.0
+const val note8Duration = 0.6
+const val note16Duration = 0.3
 
 const val note4Width = 300f
 const val note8Width = 150f
@@ -81,8 +80,6 @@ fun SynthesiaView(
                     .scrollable(
                         orientation = Orientation.Horizontal,
                         state = rememberScrollableState { delta ->
-                            Log.d("delta", deltaDraw.toString())
-                            Log.d("aaa", (beginningPoint - scrollDistance).toString())
                             if (deltaDraw + delta in (beginningPoint - scrollDistance)..0f)
                                 deltaDraw += delta
                             delta
@@ -105,6 +102,8 @@ fun SynthesiaView(
                             durationWidth = note8Width
                         else if (note.duration >= note16Duration)
                             durationWidth = note16Width
+                        else
+                            durationWidth = note16Width
 
                         if (noteNum in whiteNotes) {
                             translate(
@@ -114,7 +113,7 @@ fun SynthesiaView(
                             ) {
                                 drawRect(
                                     color = colorForWhiteNotes,
-                                    size = Size(durationWidth, state.whiteHeight.toPx())
+                                    size = Size(durationWidth, state.whiteHeight.toPx()),
                                 )
                             }
                             prevNotesDuration += durationWidth

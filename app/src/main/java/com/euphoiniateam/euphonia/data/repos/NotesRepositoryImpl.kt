@@ -2,12 +2,11 @@ package com.euphoiniateam.euphonia.data.repos
 
 import android.content.Context
 import android.net.Uri
-import android.util.Log
 import com.euphoiniateam.euphonia.domain.models.Note
 import com.euphoiniateam.euphonia.domain.repos.NotesRepository
+import java.math.RoundingMode
 import jp.kshoji.javax.sound.midi.MidiSystem
 import jp.kshoji.javax.sound.midi.ShortMessage
-import java.math.RoundingMode
 
 class NotesRepositoryImpl(private val context: Context) : NotesRepository {
 
@@ -28,25 +27,23 @@ class NotesRepositoryImpl(private val context: Context) : NotesRepository {
                 setSequence(stream)
             }
         }
-        val initialNotes = sequencer.sequence?.toNotes()
-        if (initialNotes != null) {
-            for (note in initialNotes) {
-                Log.d("note", note.toString())
-            }
-        }
+//        val initialNotes = sequencer.sequence?.toNotes()
+//        if (initialNotes != null) {
+//            for (note in initialNotes) {
+//                Log.d("note", note.toString())
+//            }
+//        }
 
         return sequencer.sequence?.toNotes()
     }
 
     private fun jp.kshoji.javax.sound.midi.Sequence.toNotes(): List<Note> {
         return tracks.flatMap { track ->
-            Log.d("track", "$track")
             val inflight = mutableMapOf<Int, Note>()
             (0 until track.size()).asSequence().map { idx ->
                 val event = track[idx]
                 when (val message = event.message) {
                     is ShortMessage -> {
-                        Log.d("check", "${message.command} + ${message.data2}")
                         var pitch = 0
                         val command = message.command
                         val midiNote = (message.data1 - 24) % 36
@@ -67,9 +64,8 @@ class NotesRepositoryImpl(private val context: Context) : NotesRepository {
                             ShortMessage.NOTE_OFF -> {
                                 val note = inflight.remove(midiNote)
                                 return@map note?.let {
-                                    Log.d("beat", beat.toString())
-                                    Log.d("beat", it.beat.toString())
-                                    it.copy(duration = beat - it.beat) }
+                                    it.copy(duration = beat - it.beat)
+                                }
                             }
                         }
                     }

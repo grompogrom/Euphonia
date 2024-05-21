@@ -2,7 +2,7 @@ package com.euphoiniateam.euphonia.tools
 
 import android.content.Context
 import android.net.Uri
-import androidx.core.net.toUri
+import androidx.core.content.FileProvider
 import com.euphoiniateam.euphonia.ui.piano.PianoEvent
 import com.leff.midi.MidiFile
 import com.leff.midi.MidiTrack
@@ -106,7 +106,6 @@ object ProfileMapper {
     }
 
     fun createMidiWithApi(context: Context): Uri {
-        val file = File(context.applicationContext.externalCacheDir, "out.mid")
         val recordData = calibrateTime(notes)
         val noteTrack = MidiTrack()
 
@@ -141,9 +140,13 @@ object ProfileMapper {
         tracks.add(noteTrack)
 
         val midi = MidiFile(MidiFile.DEFAULT_RESOLUTION, tracks)
+        val file = File(context.applicationContext.externalCacheDir, "out.mid")
         midi.writeToFile(file)
-//        Toast.makeText(context, "saved to ${file.path}", Toast.LENGTH_LONG).show()
-        return file.toUri()
+        return FileProvider.getUriForFile(
+            context,
+            context.applicationContext.packageName + ".provider",
+            file
+        )
     }
 
     private fun notesToMidiNotes(noteNum: Int, pitch: Int): Int {

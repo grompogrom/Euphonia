@@ -119,7 +119,9 @@ class CreationFragment : Fragment() {
                     )
                     Toast.makeText(context, "saved as song", Toast.LENGTH_LONG).show()
                 },
-                onShareClick = { viewModel.shareFile(context, uri) },
+                onShareClick = {
+                    viewModel.shareFile(context, uri)
+                },
                 onGenerateClick = { viewModel.generateNewPart(context, uri) },
                 isPlaying = viewModel.screenState.isPlaying,
                 modifier = Modifier

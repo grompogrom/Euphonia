@@ -6,6 +6,7 @@ import android.content.Context
 import android.net.Uri
 import android.os.Environment
 import android.provider.MediaStore
+import androidx.core.content.FileProvider
 import java.io.File
 import java.io.FileOutputStream
 import java.io.InputStream
@@ -42,22 +43,30 @@ fun getMidFileNamesFromPiano(): ArrayList<String> {
     return midiFilesNames
 }
 
-fun getUriForFileNameFromPiano(fileName: String): Uri? {
+fun getUriForFileNameFromPiano(context: Context, fileName: String): Uri? {
     val dir = File(
         Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC),
         "piano"
     )
     val file = File(dir, fileName)
-    return if (file.exists()) Uri.fromFile(file) else null
+    return if (file.exists()) FileProvider.getUriForFile(
+        context,
+        context.applicationContext.packageName + ".provider",
+        file
+    ) else null
 }
 
-fun getUriForFileNameFromResults(fileName: String): Uri? {
+fun getUriForFileNameFromResults(context: Context, fileName: String): Uri? {
     val dir = File(
         Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC),
         "results"
     )
     val file = File(dir, fileName)
-    return if (file.exists()) Uri.fromFile(file) else null
+    return if (file.exists()) FileProvider.getUriForFile(
+        context,
+        context.applicationContext.packageName + ".provider",
+        file
+    ) else null
 }
 
 fun saveMidiFileToPianoDir(contentResolver: ContentResolver, uri: Uri, fileName: String) {
@@ -113,7 +122,7 @@ fun saveMidiFileToResultsDir(contentResolver: ContentResolver, uri: Uri, fileNam
 }
 
 fun saveMidiFileToCache(context: Context, inputStream: InputStream, fileName: String): Uri? {
-    val cacheDir = context.cacheDir
+    val cacheDir = context.applicationContext.externalCacheDir
     val outputStream = FileOutputStream(File(cacheDir, fileName))
     inputStream.use { input ->
         outputStream.use { output ->
@@ -121,5 +130,11 @@ fun saveMidiFileToCache(context: Context, inputStream: InputStream, fileName: St
         }
     }
     val savedFile = File(cacheDir, fileName)
-    return if (savedFile.exists()) Uri.fromFile(savedFile) else null
+    return if (savedFile.exists())
+        FileProvider.getUriForFile(
+            context,
+            context.applicationContext.packageName + ".provider",
+            savedFile
+        )
+    else null
 }
