@@ -41,7 +41,7 @@ object ProfileMapper {
     }
 
     private fun setFriendsId(mutableList: MutableList<String>) {
-        val noteSize = if (mutableList.size > 100) 100 else mutableList.size
+        val noteSize = minOf( mutableList.size, 20)
         for (i in 0 until noteSize) {
             if (mutableList[i].length % 2 != 0) {
                 mutableList[i] = mutableList[i].substring(0, mutableList[i].length - 1)

@@ -1,282 +1,305 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".ui.settings.SettingsFragment">
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".ui.settings.SettingsFragment">
 
     <LinearLayout
-        android:id="@+id/linearLayout1"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/settings_fill"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-
-                android:fontFamily="@font/roboto_regular"
-                android:lineHeight="24dp"
-                android:paddingLeft="15dp"
-                android:paddingTop="25dp"
-                android:paddingBottom="25dp"
-                android:text="@string/settings_history"
-                android:textColor="@color/md_theme_light_onPrimary"
-                android:textSize="16dp" />
-
-            <View
-                android:layout_width="0dp"
-                android:layout_height="1dp"
-                android:layout_weight="1"/>
-
-            <com.google.android.material.switchmaterial.SwitchMaterial
-                android:id="@+id/switch_history"
-                android:layout_width="50dp"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true"
-                android:layout_marginEnd="20dp"
-                app:switchMinWidth="50dp"/>
-
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/linearLayout2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/settings_fill"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout1">
-
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-
-                android:fontFamily="@font/roboto_regular"
-                android:lineHeight="24dp"
-                android:paddingLeft="15dp"
-                android:paddingTop="25dp"
-                android:paddingBottom="25dp"
-                android:text="@string/settings_recording_audio"
-                android:textColor="@color/md_theme_light_onPrimary"
-                android:textSize="16dp" />
-
-            <View
-                android:layout_width="0dp"
-                android:layout_height="1dp"
-                android:layout_weight="1"/>
-
-            <com.google.android.material.switchmaterial.SwitchMaterial
-                android:id="@+id/switch_recording_audio"
-                android:layout_width="50dp"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="20dp"
-                app:switchMinWidth="50dp"/>
-
-
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/linearLayout3"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/settings_fill"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout2">
-
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-
-                android:fontFamily="@font/roboto_regular"
-                android:lineHeight="24dp"
-                android:paddingLeft="15dp"
-                android:paddingTop="25dp"
-                android:paddingBottom="25dp"
-                android:text="@string/settings_recording_stave"
-                android:textColor="@color/md_theme_light_onPrimary"
-                android:textSize="16dp" />
-
-            <View
-                android:layout_width="0dp"
-                android:layout_height="1dp"
-                android:layout_weight="1"/>
-
-            <com.google.android.material.switchmaterial.SwitchMaterial
-                android:id="@+id/switch_recording_stave"
-                android:layout_width="50dp"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true"
-                android:layout_marginEnd="20dp"
-                app:switchMinWidth="50dp"/>
-
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/linearLayout4"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/settings_fill"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout3">
-
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-
-                android:fontFamily="@font/roboto_regular"
-                android:lineHeight="24dp"
-                android:paddingLeft="15dp"
-                android:paddingTop="25dp"
-                android:paddingBottom="25dp"
-                android:text="@string/settings_piano_size"
-                android:textColor="@color/md_theme_light_onPrimary"
-                android:textSize="16dp" />
-
-            <View
-                android:layout_width="0dp"
-                android:layout_height="1dp"
-                android:layout_weight="1"/>
-
-            <com.google.android.material.slider.Slider
-                android:id="@+id/slider_piano_size"
-                android:layout_width="88dp"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true"
-                android:valueFrom="10"
-                android:valueTo="100"
-                android:stepSize="10"
-                android:layout_marginEnd="10dp"/>
-
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/linearLayout5"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/settings_fill"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout4">
-
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-
-                android:fontFamily="@font/roboto_regular"
-                android:lineHeight="24dp"
-                android:paddingLeft="15dp"
-                android:paddingTop="25dp"
-                android:paddingBottom="25dp"
-                android:text="@string/settings_notes_amount"
-                android:textColor="@color/md_theme_light_onPrimary"
-                android:textSize="16dp" />
-
-            <View
-                android:layout_width="0dp"
-                android:layout_height="1dp"
-                android:layout_weight="1"/>
-
-            <com.google.android.material.slider.Slider
-                android:id="@+id/slider_notes_amount"
-                android:layout_width="88dp"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true"
-                android:valueFrom="1"
-                android:valueTo="10"
-                android:stepSize="1"
-                android:layout_marginEnd="10dp"/>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/linearLayout6"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/settings_fill"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout5">
-
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-
-                android:fontFamily="@font/roboto_regular"
-                android:lineHeight="24dp"
-                android:paddingLeft="15dp"
-                android:paddingTop="25dp"
-                android:paddingBottom="25dp"
-                android:text="@string/settings_stave_on"
-                android:textColor="@color/md_theme_light_onPrimary"
-                android:textSize="16dp" />
-
-            <View
-                android:layout_width="0dp"
-                android:layout_height="1dp"
-                android:layout_weight="1"/>
-
-            <com.google.android.material.switchmaterial.SwitchMaterial
-                android:id="@+id/switch_stave_on"
-                android:layout_width="50dp"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true"
-                android:layout_marginEnd="20dp"
-                app:switchMinWidth="50dp"/>
-
-
-    </LinearLayout>
-
-    <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/linearLayout6"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:id="@+id/relativeLayout"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintVertical_bias="0.33">
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
-        <Button
-                android:id="@+id/vk_btn"
-                android:layout_width="100dp"
-                android:layout_height="60dp"
-                android:lineHeight="20dp"
-                android:text="@string/settings_vk"
-                android:textSize="15dp"
+
+        <LinearLayout
+                android:id="@+id/linearLayout1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:visibility="gone"
-                android:layout_centerHorizontal="true"
+                android:background="@color/settings_fill"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/save_btn" />
+                app:layout_constraintTop_toTopOf="parent">
+
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+
+                    android:fontFamily="@font/roboto_regular"
+                    android:lineHeight="24dp"
+                    android:paddingLeft="15dp"
+                    android:paddingTop="25dp"
+                    android:paddingBottom="25dp"
+                    android:text="@string/settings_history"
+                    android:textColor="@color/md_theme_light_onPrimary"
+                    android:textSize="16dp" />
+
+            <View
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:layout_weight="1" />
+
+            <com.google.android.material.switchmaterial.SwitchMaterial
+                    android:id="@+id/switch_history"
+                    android:layout_width="50dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="20dp"
+                    app:switchMinWidth="50dp" />
+
+
+        </LinearLayout>
+
+        <LinearLayout
+                android:id="@+id/linearLayout2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:background="@color/settings_fill"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+
+                app:layout_constraintTop_toBottomOf="@+id/linearLayout1">
+
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+
+                    android:fontFamily="@font/roboto_regular"
+                    android:lineHeight="24dp"
+                    android:paddingLeft="15dp"
+                    android:paddingTop="25dp"
+                    android:paddingBottom="25dp"
+                    android:text="@string/settings_recording_audio"
+                    android:textColor="@color/md_theme_light_onPrimary"
+                    android:textSize="16dp" />
+
+            <View
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:layout_weight="1" />
+
+            <com.google.android.material.switchmaterial.SwitchMaterial
+                    android:id="@+id/switch_recording_audio"
+                    android:layout_width="50dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="20dp"
+                    app:switchMinWidth="50dp" />
+
+
+        </LinearLayout>
+
+        <LinearLayout
+                android:id="@+id/linearLayout3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/settings_fill"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/linearLayout2">
+
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+
+                    android:fontFamily="@font/roboto_regular"
+                    android:lineHeight="24dp"
+                    android:paddingLeft="15dp"
+                    android:paddingTop="25dp"
+                    android:paddingBottom="25dp"
+                    android:text="@string/settings_recording_stave"
+                    android:textColor="@color/md_theme_light_onPrimary"
+                    android:textSize="16dp" />
+
+            <View
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:layout_weight="1" />
+
+            <com.google.android.material.switchmaterial.SwitchMaterial
+                    android:id="@+id/switch_recording_stave"
+                    android:layout_width="50dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="20dp"
+                    app:switchMinWidth="50dp" />
+
+
+        </LinearLayout>
+
+        <LinearLayout
+                android:id="@+id/linearLayout4"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/settings_fill"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/linearLayout3">
+
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.2"
+
+                    android:fontFamily="@font/roboto_regular"
+                    android:lineHeight="24dp"
+                    android:paddingLeft="15dp"
+                    android:paddingTop="25dp"
+                    android:paddingBottom="25dp"
+                    android:text="@string/settings_piano_size"
+                    android:textColor="@color/md_theme_light_onPrimary"
+                    android:textSize="16dp" />
+
+
+            <com.google.android.material.slider.Slider
+                    android:id="@+id/slider_piano_size"
+                    android:layout_width="0dp"
+                    android:layout_weight="0.5"
+                    android:layout_gravity="center"
+                    android:layout_height="wrap_content"
+                    android:valueFrom="10"
+                    android:valueTo="100"
+                    android:stepSize="10"
+                    android:layout_marginEnd="10dp" />
+
+
+        </LinearLayout>
+
+        <LinearLayout
+                android:id="@+id/linearLayout5"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/settings_fill"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/linearLayout4">
+
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.2"
+
+                    android:lineHeight="24dp"
+                    android:paddingStart="15dp"
+                    android:paddingTop="25dp"
+                    android:paddingBottom="25dp"
+                    android:text="@string/settings_notes_amount"
+                    android:textColor="@color/md_theme_light_onPrimary"
+                    android:textSize="16dp" />
+
+
+            <com.google.android.material.slider.Slider
+                    android:id="@+id/slider_notes_amount"
+                    android:layout_width="88dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.5"
+                    android:layout_gravity="center"
+                    android:valueFrom="2"
+                    android:valueTo="10"
+                    android:stepSize="1"
+                    android:layout_marginEnd="10dp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+                android:id="@+id/linearLayout6"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/settings_fill"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/linearLayout5">
+
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+
+                    android:fontFamily="@font/roboto_regular"
+                    android:lineHeight="24dp"
+                    android:paddingLeft="15dp"
+                    android:paddingTop="25dp"
+                    android:paddingBottom="25dp"
+                    android:text="@string/settings_stave_on"
+                    android:textColor="@color/md_theme_light_onPrimary"
+                    android:textSize="16dp" />
+
+            <View
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:layout_weight="1" />
+
+            <com.google.android.material.switchmaterial.SwitchMaterial
+                    android:id="@+id/switch_stave_on"
+                    android:layout_width="50dp"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginEnd="20dp"
+                    app:switchMinWidth="50dp" />
+
+
+        </LinearLayout>
+
+
+        <LinearLayout
+                android:id="@+id/layout_gen_vk"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/settings_fill"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/linearLayout5"
+                android:clickable="true">
+
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+
+                    android:lineHeight="24dp"
+                    android:paddingLeft="15dp"
+                    android:paddingTop="25dp"
+                    android:paddingBottom="25dp"
+                    android:text="@string/btn_generate_vk_music"
+                    android:textColor="@color/md_theme_light_onPrimary"
+                    android:textSize="16dp" />
+
+
+        </LinearLayout>
+
+        <LinearLayout
+                android:id="@+id/layout_reset_to_default"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/settings_fill"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                android:clickable="true">
+
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+
+                    android:lineHeight="24dp"
+                    android:paddingLeft="15dp"
+                    android:paddingTop="25dp"
+                    android:paddingBottom="25dp"
+                    android:text="@string/settings_reset_default"
+                    android:textColor="@color/md_theme_light_onPrimary"
+                    android:textSize="16dp" />
+
+
+        </LinearLayout>
+
 
         <Button
                 android:id="@+id/save_btn"
@@ -284,53 +307,19 @@
                 android:layout_height="60dp"
                 android:lineHeight="20dp"
                 android:text="@string/settings_save"
+                android:layout_marginTop="20dp"
+                android:layout_gravity="end"
                 android:textSize="15dp"
-                android:layout_alignParentStart="true"
-                android:layout_marginLeft="20dp" />
-
-        <Button
-                android:id="@+id/default_btn"
-                android:layout_width="100dp"
-                android:layout_height="60dp"
-                android:lineHeight="20dp"
-                android:text="@string/settings_default"
-                android:textSize="15dp"
-                android:layout_alignParentEnd="true"
-                android:layout_marginRight="20dp" />
+                android:layout_marginEnd="20dp" />
 
 
-    </RelativeLayout>
-
-    <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/relativeLayout"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:id="@+id/relativeLayout2"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintVertical_bias="0.33">
-        <Button
-                android:id="@+id/generate_vk_btn"
-                android:layout_width="200dp"
-                android:layout_height="60dp"
-                android:lineHeight="20dp"
-                android:text="@string/btn_generate_vk_music"
-                android:textSize="15dp"
-                android:visibility="visible"
-                android:layout_centerHorizontal="true"
-                app:layout_constraintStart_toStartOf="parent" />
-    </RelativeLayout>
+    </LinearLayout>
 
     <ProgressBar
             style="?android:attr/progressBarStyle"
             android:layout_width="80dp"
             android:layout_height="80dp"
+            android:layout_gravity="center"
             android:id="@+id/progressBar"
-            android:visibility="invisible"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+            android:visibility="invisible" />
+</FrameLayout>

@@ -42,11 +42,8 @@ class SettingsFragment : Fragment() {
         val root: View = binding.root
         val authLauncher = (activity as MainActivity).authLauncher
 
-        binding.vkBtn.setOnClickListener {
-            authLauncher.launch(arrayListOf(VKScope.WALL, VKScope.PHOTOS))
-        }
         Log.d("MyState", "${viewModel.screenStateFlow.value}")
-        binding.generateVkBtn.setOnClickListener {
+        binding.layoutGenVk.setOnClickListener {
             if (VK.isLoggedIn()) {
                 viewModel.processProfile(
                     getFriends = {
@@ -92,7 +89,7 @@ class SettingsFragment : Fragment() {
             toast.show()
         }
 
-        binding.defaultBtn.setOnClickListener {
+        binding.layoutResetToDefault.setOnClickListener {
             viewModel.defaultSettings()
         }
         subscribeOnScreenState()

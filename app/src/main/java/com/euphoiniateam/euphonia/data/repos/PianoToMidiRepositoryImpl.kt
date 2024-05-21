@@ -13,6 +13,8 @@ import com.leff.midi.event.NoteOff
 import com.leff.midi.event.NoteOn
 import com.leff.midi.event.meta.Tempo
 import java.io.File
+import kotlin.math.roundToInt
+import kotlin.math.roundToLong
 
 class PianoToMidiRepositoryImpl(
     private val context: Context
@@ -27,8 +29,8 @@ class PianoToMidiRepositoryImpl(
 
         noteTrack.insertEvent(tempo)
         calibratedData.forEach {
-            val push = (it.pressTime.toDouble() / tick).toLong()
-            val release = (it.elapseTime.toDouble() / tick).toLong()
+            val push = (it.pressTime.toDouble() / tick).roundToLong()
+            val release = (it.elapseTime.toDouble()  / tick).roundToLong()
             val pitch = notesToMidiNotes(it.keyNum, it.pitch)
             val noteOn = NoteOn(push, 0, pitch, 100)
             val noteOff = NoteOff(release, 0, pitch, 0)
@@ -52,7 +54,7 @@ class PianoToMidiRepositoryImpl(
     }
 
     private fun calibrateTime(recordData: MutableList<PianoEvent>): List<PianoEvent> {
-        val zeroTime = recordData.sortedBy { it.pressTime }.first().pressTime
+        val zeroTime = recordData.minBy { it.pressTime }.pressTime
         return recordData.map {
             it.copy(
                 elapseTime = it.elapseTime - zeroTime,
