@@ -6,6 +6,6 @@ data class Settings(
     val recordingAudio: Boolean = true,
     val recordingStave: Boolean = true,
     val pianoSize: Float = 7f,
-    val notesAmount: Float = 5f,
+    val notesAmount: Int = 5,
     val staveOn: Boolean = true
 )

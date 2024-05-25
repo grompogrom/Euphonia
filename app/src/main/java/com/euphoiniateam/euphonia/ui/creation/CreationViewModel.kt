@@ -52,8 +52,14 @@ class CreationViewModel(
 
     init {
         viewModelScope.launch {
-            midiPlayer.playerState.collect {
-                screenState = screenState.copy(isPlaying = it)
+            launch {
+                midiPlayer.playerState.collect {
+                    screenState = screenState.copy(isPlaying = it)
+                }
+            }
+            launch(Dispatchers.IO) {
+                val countToGen = settingsRepository.getSettings().notesAmount
+                generationRepository.setCountToGenerate(countToGen)
             }
         }
     }

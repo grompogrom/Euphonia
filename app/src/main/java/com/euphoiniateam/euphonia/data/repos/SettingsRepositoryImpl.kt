@@ -9,7 +9,7 @@ private const val KEY_HISTORY = "history"
 private const val KEY_RECORDING_AUDIO = "recording_audio"
 private const val KEY_RECORDING_STAVE = "recording_stave"
 private const val KEY_PIANO_SIZE = "piano_size"
-private const val KEY_NOTES_AMOUNT = "notes_amount"
+private const val KEY_NOTES_AMOUNT = "notes_gen_amount"
 private const val KEY_STAVE_ON = "stave_on"
 class SettingsRepositoryImpl(private val context: Context) : SettingsRepository {
 
@@ -24,7 +24,7 @@ class SettingsRepositoryImpl(private val context: Context) : SettingsRepository 
         sharedPreferences.edit().putBoolean(KEY_RECORDING_AUDIO, saveParam.recordingAudio).apply()
         sharedPreferences.edit().putBoolean(KEY_RECORDING_STAVE, saveParam.recordingStave).apply()
         sharedPreferences.edit().putFloat(KEY_PIANO_SIZE, saveParam.pianoSize).apply()
-        sharedPreferences.edit().putFloat(KEY_NOTES_AMOUNT, saveParam.notesAmount).apply()
+        sharedPreferences.edit().putInt(KEY_NOTES_AMOUNT, saveParam.notesAmount).apply()
         sharedPreferences.edit().putBoolean(KEY_STAVE_ON, saveParam.staveOn).apply()
 
         return true
@@ -36,7 +36,7 @@ class SettingsRepositoryImpl(private val context: Context) : SettingsRepository 
         val recordingAudio = sharedPreferences.getBoolean(KEY_RECORDING_AUDIO, true)
         val recordingStave = sharedPreferences.getBoolean(KEY_RECORDING_STAVE, true)
         val pianoSize = sharedPreferences.getFloat(KEY_PIANO_SIZE, 10f)
-        val notesAmount = sharedPreferences.getFloat(KEY_NOTES_AMOUNT, 5f)
+        val notesAmount = sharedPreferences.getInt(KEY_NOTES_AMOUNT, 5)
         val staveOn = sharedPreferences.getBoolean(KEY_STAVE_ON, true)
 
         return Settings(history, recordingAudio, recordingStave, pianoSize, notesAmount, staveOn)

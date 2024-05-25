@@ -5,6 +5,8 @@ import android.net.Uri
 interface GenerationRepository {
 
     // use for first and additional generation
+    fun setCountToGenerate(count: Int)
+
     suspend fun generateNew(prompt: Uri): Uri
 
     // use for regeneration
