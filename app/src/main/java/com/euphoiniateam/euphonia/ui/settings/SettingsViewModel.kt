@@ -110,7 +110,7 @@ class SettingsViewModel(
         recordingAudio: Boolean,
         recordingStave: Boolean,
         pianoSize: Float,
-        notesAmount: Float,
+        notesAmount: Int,
         staveOn: Boolean
     ) {
         viewModelScope.launch(Dispatchers.IO) {

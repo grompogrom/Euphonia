@@ -226,6 +226,6 @@ private fun OctavePrev() {
 
 class PianoConfig(
     val defaultWhiteWidth: Dp = 100.dp,
-    val defaultBlackWidth: Dp = 35.dp,
+    val defaultBlackWidth: Dp = 40.dp,
     val defaultBlackHeight: Float = 0.5f
 )

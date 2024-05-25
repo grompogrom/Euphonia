@@ -20,6 +20,7 @@ import com.google.android.material.slider.Slider
 import com.google.android.material.switchmaterial.SwitchMaterial
 import com.vk.api.sdk.VK
 import com.vk.api.sdk.auth.VKScope
+import kotlin.math.roundToInt
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -83,7 +84,7 @@ class SettingsFragment : Fragment() {
                 switchRecordingAudio.isChecked,
                 switchRecordingStave.isChecked,
                 sliderPianoSize.value,
-                sliderNotesAmount.value,
+                sliderNotesAmount.value.roundToInt(),
                 switchStaveOn.isChecked
             )
             toast.show()
@@ -105,7 +106,7 @@ class SettingsFragment : Fragment() {
                 binding.switchHistory.isChecked = settings.history
                 binding.switchRecordingAudio.isChecked = settings.recordingAudio
                 binding.switchRecordingStave.isChecked = settings.recordingStave
-                binding.sliderNotesAmount.value = settings.notesAmount
+                binding.sliderNotesAmount.value = settings.notesAmount.toFloat()
                 binding.switchStaveOn.isChecked = settings.staveOn
             }
         }

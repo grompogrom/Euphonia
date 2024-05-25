@@ -14,7 +14,12 @@ class GenerationRepositoryImpl(
 ) : GenerationRepository {
     private var currentMidiSource: Uri? = null
     private var generatedMidiSource: Uri? = null
+    private var countToGenerate: Int = 5
 
+    override fun setCountToGenerate(count: Int) {
+        val candidate = minOf(count, 20)
+        countToGenerate = maxOf(candidate, 2)
+    }
     override suspend fun generateNew(prompt: Uri): Uri {
         if (currentMidiSource == null) {
             currentMidiSource = prompt
@@ -46,7 +51,11 @@ class GenerationRepositoryImpl(
         return generateMidi(generatedMidiSource ?: currentMidiSource!!, false, 8)
     }
 
-    private suspend fun generateMidi(prompt: Uri, includePrompt: Boolean, count: Int = 5): Uri {
+    private suspend fun generateMidi(
+        prompt: Uri,
+        includePrompt: Boolean,
+        count: Int = countToGenerate
+    ): Uri {
         try {
             val remoteTrackResponse = remoteDataStore.generate(
                 RemoteTrackRequest(prompt, count, includePrompt)
