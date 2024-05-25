@@ -6,23 +6,14 @@ import android.widget.Toast
 import java.io.File
 import java.io.IOException
 
-class MicrophoneFunctions() {
+object MicrophoneFunctions {
     private var mediaRecorder: MediaRecorder? = null
-    fun startRecording(applicationContext: Context): Boolean {
-        val outputFile = getOutputFile(applicationContext)
-        if (outputFile == null) {
-            Toast.makeText(
-                applicationContext,
-                "Failed to create audio file",
-                Toast.LENGTH_SHORT
-            ).show()
-            return false
-        }
+    fun startRecording(applicationContext: Context, outputFile: File): Boolean {
 
         mediaRecorder = MediaRecorder(applicationContext).apply {
             setAudioSource(MediaRecorder.AudioSource.MIC)
-            setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)
-            setAudioEncoder(MediaRecorder.AudioEncoder.AAC)
+            setOutputFormat(MediaRecorder.OutputFormat.OGG)
+            setAudioEncoder(MediaRecorder.AudioEncoder.OPUS)
             setOutputFile(outputFile.absolutePath)
             try {
                 prepare()
@@ -37,18 +28,11 @@ class MicrophoneFunctions() {
         return true
     }
 
-    fun stopRecording(applicationContext: Context) {
+    fun stopRecording() {
         mediaRecorder?.apply {
             stop()
             release()
         }
         mediaRecorder = null
-        Toast.makeText(applicationContext, "Recording stopped", Toast.LENGTH_SHORT).show()
-    }
-    private fun getOutputFile(applicationContext: Context): File? {
-        val cacheDir = applicationContext.cacheDir
-        val timeStamp = System.currentTimeMillis()
-        val audioFileName = "AUDIO_$timeStamp.mp3"
-        return File(cacheDir, audioFileName)
     }
 }

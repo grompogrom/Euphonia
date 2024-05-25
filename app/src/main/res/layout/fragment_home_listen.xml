@@ -1,55 +1,68 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".ui.home.HomeListenFragment">
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".ui.record.HomeListenFragment">
 
     <TextView
-        android:id="@+id/textView2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="25dp"
-        android:layout_marginTop="65dp"
-        android:layout_marginRight="25dp"
-        android:fontFamily="@font/roboto_regular"
-        android:lineHeight="36dp"
-        android:text="@string/home_listen_title"
-        android:textAlignment="center"
-        android:textColor="@color/md_theme_light_onPrimary"
-        android:textSize="28sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+            android:id="@+id/recording_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="25dp"
+            android:layout_marginTop="65dp"
+            android:layout_marginRight="25dp"
+            android:fontFamily="@font/roboto_regular"
+            android:lineHeight="36dp"
+            android:text="@string/home_listen_title"
+            android:textAlignment="center"
+            android:textColor="@color/md_theme_light_onPrimary"
+            android:textSize="28sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+    <ProgressBar
+            android:id="@+id/progress"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:visibility="gone"
+            app:layout_constraintTop_toBottomOf="@id/recording_title"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
 
     <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView2">
+            android:id="@+id/micro_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/recording_title">
 
 
         <View
-            android:id="@+id/v1_after"
-            android:layout_width="192dp"
-            android:layout_height="192dp"
-            android:background="@drawable/shape_rounded_outline"
-            android:layout_centerInParent="true"
-            android:elevation="1dp"
-            android:transitionName="v1"/>
+                android:id="@+id/v1_after"
+                android:layout_width="192dp"
+                android:layout_height="192dp"
+                android:background="@drawable/shape_rounded_outline"
+                android:layout_centerInParent="true"
+                android:elevation="1dp"
+                android:transitionName="v1" />
 
         <View
-            android:id="@+id/v2_after"
-            android:layout_width="150dp"
-            android:layout_height="150dp"
-            android:background="@drawable/shape_rounded_primary"
-            android:layout_centerInParent="true"
-            android:elevation="2dp"
-            android:transitionName="v2"/>
+                android:id="@+id/v2_after"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:background="@drawable/shape_rounded_primary"
+                android:layout_centerInParent="true"
+                android:elevation="2dp"
+                android:transitionName="v2" />
 
         <ImageButton
                 android:id="@+id/btn_to_end_micro"
@@ -58,7 +71,7 @@
                 android:background="@drawable/shape_rounded_purple"
                 android:elevation="3dp"
                 android:padding="30dp"
-                android:src="@drawable/ic_micro"
+                android:src="@drawable/baseline_pause_36"
                 android:transitionName="micro"
                 android:layout_centerInParent="true">
 
