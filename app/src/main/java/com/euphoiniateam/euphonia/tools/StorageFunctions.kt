@@ -138,3 +138,9 @@ fun saveMidiFileToCache(context: Context, inputStream: InputStream, fileName: St
         )
     else null
 }
+
+fun getMicroOutputFile(applicationContext: Context): File {
+    val cacheDir = applicationContext.externalCacheDir
+    val audioFileName = "AUDIO_MICRO.ogg"
+    return File(cacheDir, audioFileName)
+}

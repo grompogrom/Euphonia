@@ -18,7 +18,7 @@ class ConvertDataSourceImp(private val context: Context) : ConvertDataSource {
         val token = sendFileForConverting(mp3.uri)
         val convertedTrackBytes = getFileFromServer(token)
         return RemoteTrackResponse(
-            uri = saveMidiFileToCache(context, convertedTrackBytes.inputStream(), token)
+            uri = saveMidiFileToCache(context, convertedTrackBytes.inputStream(), "$token.mid")
                 ?: Uri.EMPTY
         )
     }
@@ -29,7 +29,7 @@ class ConvertDataSourceImp(private val context: Context) : ConvertDataSource {
             response = NetworkService.euphoniaApi.getConverted(token)
             when (response.code()) {
                 202 -> {
-                    delay(100)
+                    delay(1000)
                 }
 
                 200 -> break
