@@ -11,7 +11,7 @@
             android:layout_height="28dp"
             android:layout_gravity="center"
             android:scaleType="centerCrop"
-            android:src="@drawable/account_outline"
+            android:src="@drawable/ic_piano"
             android:layout_marginStart="8dp"/>
 
     <TextView

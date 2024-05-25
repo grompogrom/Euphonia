@@ -6,6 +6,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.SearchView
+import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -48,6 +50,25 @@ class HistoryFragment : Fragment() {
             MidiPlayer()
         )
         recyclerView.adapter = listAdapter
+        val searchTextId = searchView.context.resources.getIdentifier(
+            "android:id/search_src_text",
+            null,
+            null
+        )
+        val searchText = searchView.findViewById<TextView>(searchTextId)
+        searchText.setTextColor(
+            ContextCompat.getColor(requireContext(), R.color.md_theme_light_outlineVariant)
+        )
+        searchText.setHintTextColor(
+            ContextCompat.getColor(requireContext(), R.color.md_theme_light_outlineVariant)
+        )
+        val searchUnderlineId = searchView.context.resources.getIdentifier(
+            "android:id/search_plate",
+            null,
+            null
+        )
+        val searchUnderline = searchView.findViewById<View>(searchUnderlineId)
+        searchUnderline.background = null
         searchView.setOnQueryTextListener(
             object : SearchView.OnQueryTextListener {
                 override fun onQueryTextSubmit(query: String?): Boolean {
