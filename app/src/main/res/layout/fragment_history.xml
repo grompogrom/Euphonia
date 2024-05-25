@@ -7,20 +7,20 @@
     tools:context=".ui.history.HistoryFragment">
 
     <SearchView
-        android:id="@+id/idSV"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        android:layout_marginBottom="7dp"
-        android:iconifiedByDefault="false"
-        android:padding="4dp"
-        android:queryHint="Search in history"
-        app:layout_constraintBottom_toTopOf="@+id/searchResults"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0"
-        />
+            android:id="@+id/idSV"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:layout_margin="8dp"
+            android:layout_marginBottom="7dp"
+            android:iconifiedByDefault="false"
+            android:queryHint="Search in history"
+            android:background="@drawable/rounded_search_view_background"
+            app:layout_constraintBottom_toTopOf="@+id/searchResults"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="1.0"
+            />
     <LinearLayout
             android:id="@+id/buttonLayout"
             android:layout_width="match_parent"
