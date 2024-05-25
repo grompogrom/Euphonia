@@ -45,11 +45,21 @@ class HomeFragment : Fragment() {
         }
     }
 
-    private val requestPermission = registerForActivityResult(
+    private val requestFilePermission = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { isGranted ->
         if (isGranted) {
             getContent.launch("audio/midi")
+        } else {
+            Toast.makeText(context, "permission not granted", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private val requestMicroPermission = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted ->
+        if (isGranted) {
+            navigateToMicro()
         } else {
             Toast.makeText(context, "permission not granted", Toast.LENGTH_SHORT).show()
         }
@@ -95,27 +105,31 @@ class HomeFragment : Fragment() {
 
         val btnStartMicro: ImageButton = binding.btnToMicro
         btnStartMicro.setOnClickListener {
-            val extras = FragmentNavigatorExtras(
-                binding.v1Before to "v1",
-                binding.v2Before to "v2",
-                binding.btnToMicro to "micro"
-            )
-            val action = HomeFragmentDirections.actionNavigationHomeToHomeListenFragment()
-            val navController = findNavController()
-            navController.navigate(
-                action,
-                navigatorExtras = extras
-            )
+            requestMicroPermission.launch(Manifest.permission.RECORD_AUDIO)
         }
 
         return root
     }
 
+    private fun navigateToMicro() {
+        val extras = FragmentNavigatorExtras(
+            binding.v1Before to "v1",
+            binding.v2Before to "v2",
+            binding.btnToMicro to "micro"
+        )
+        val action = HomeFragmentDirections.actionNavigationHomeToHomeListenFragment()
+        val navController = findNavController()
+        navController.navigate(
+            action,
+            navigatorExtras = extras
+        )
+    }
+
     private fun getFileReadPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            requestPermission.launch(Manifest.permission.READ_MEDIA_AUDIO)
+            requestFilePermission.launch(Manifest.permission.READ_MEDIA_AUDIO)
         } else {
-            requestPermission.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
+            requestFilePermission.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
         }
     }
 

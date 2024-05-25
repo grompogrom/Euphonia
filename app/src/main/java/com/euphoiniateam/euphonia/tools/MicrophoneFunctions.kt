@@ -6,7 +6,7 @@ import android.widget.Toast
 import java.io.File
 import java.io.IOException
 
-class MicrophoneFunctions() {
+object MicrophoneFunctions {
     private var mediaRecorder: MediaRecorder? = null
     fun startRecording(applicationContext: Context): Boolean {
         val outputFile = getOutputFile(applicationContext)

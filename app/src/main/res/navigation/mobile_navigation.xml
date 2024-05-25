@@ -59,7 +59,7 @@
     </fragment>
     <fragment
         android:id="@+id/homeListenFragment"
-        android:name="com.euphoiniateam.euphonia.ui.home.HomeListenFragment"
+        android:name="com.euphoiniateam.euphonia.ui.record.HomeListenFragment"
         android:label="fragment_home_listen"
         tools:layout="@layout/fragment_home_listen" >
         <action
