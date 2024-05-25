@@ -80,9 +80,10 @@ fun Key(
 
 @Composable
 fun PianoOctave(
-    whiteWidth: Dp = 120.dp,
-    blackWidth: Dp = 47.dp,
-    blackHeight: Float = 0.5f,
+    pianoConfig: PianoConfig,
+    whiteWidth: Dp = pianoConfig.defaultWhiteWidth,
+    blackWidth: Dp = pianoConfig.defaultBlackWidth,
+    blackHeight: Float = pianoConfig.defaultBlackHeight,
     onKeyDown: ((pitch: Int) -> Unit),
     onKeyUp: ((pitch: Int) -> Unit),
     modifier: Modifier = Modifier
@@ -126,6 +127,10 @@ fun PianoOctave(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PianoKeyboard(
+    pianoConfig: PianoConfig,
+    whiteWidth: Dp = pianoConfig.defaultWhiteWidth,
+    blackWidth: Dp = pianoConfig.defaultWhiteWidth,
+    blackHeight: Float = pianoConfig.defaultBlackHeight,
     onKeyDown: ((octave: Int, pitch: Int) -> Unit),
     onKeyUp: ((octave: Int, pitch: Int) -> Unit),
     modifier: Modifier = Modifier,
@@ -180,6 +185,10 @@ fun PianoKeyboard(
         ) {
             repeat(octaveCount) {
                 PianoOctave(
+                    PianoConfig(),
+                    whiteWidth,
+                    blackWidth,
+                    blackHeight,
                     onKeyDown = { pitch: Int -> onKeyDown(it, pitch) },
                     onKeyUp = { pitch: Int -> onKeyUp(it, pitch) },
                     modifier = Modifier
@@ -203,13 +212,20 @@ private fun KeyPrev() {
 private fun OctavePrev() {
     MaterialTheme {
         PianoKeyboard(
-            { octave: Int, pitch: Int ->
+            pianoConfig = PianoConfig(),
+            onKeyDown = { octave: Int, pitch: Int ->
                 println("key down octave $octave pitch $pitch")
             },
-            { octave: Int, pitch: Int ->
+            onKeyUp = { octave: Int, pitch: Int ->
                 println("key up octave $octave pitch $pitch")
             },
-            Modifier.fillMaxSize()
+            modifier = Modifier.fillMaxSize()
         )
     }
 }
+
+class PianoConfig(
+    val defaultWhiteWidth: Dp = 100.dp,
+    val defaultBlackWidth: Dp = 35.dp,
+    val defaultBlackHeight: Float = 0.5f
+)

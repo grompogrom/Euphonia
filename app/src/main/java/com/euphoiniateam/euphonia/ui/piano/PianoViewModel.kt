@@ -37,6 +37,7 @@ class PianoViewModel(
     val staveHandler = StaveHandler(staveConfig)
     val synthesiaConfig = SynthesiaConfig()
     val synthesiaHandler = SynthesiaHandler(synthesiaConfig)
+    val pianoConfig = PianoConfig()
     var screenStateFlow = MutableStateFlow(
         PianoScreenState(
             PianoState.NO_RECORD,
@@ -76,6 +77,10 @@ class PianoViewModel(
                 Toast.makeText(context, "You played nothing)", Toast.LENGTH_LONG).show()
             }
         }
+    }
+
+    suspend fun getPianoSize(): Float {
+        return settingsRepository.getSettings().pianoSize
     }
 
     private suspend fun onRecordFinished() {

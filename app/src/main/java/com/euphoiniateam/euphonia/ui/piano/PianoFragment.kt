@@ -26,7 +26,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.euphoiniateam.euphonia.R
-import com.euphoiniateam.euphonia.data.repos.SettingsRepositoryImpl
 import com.euphoiniateam.euphonia.databinding.FragmentPianoBinding
 import com.euphoiniateam.euphonia.ui.MidiFile
 import com.euphoiniateam.euphonia.ui.creation.CreationFragment
@@ -43,11 +42,10 @@ class PianoFragment : Fragment() {
             requireContext()
         )
     }
-    // настройки
-    private val settingsRepository = context?.let { SettingsRepositoryImpl(it) }
     private var binding: FragmentPianoBinding? = null
     private var sndPool: SoundPool = SoundPool.Builder().setMaxStreams(5).build()
     private var noteMap: MutableMap<Int, Int> = mutableMapOf()
+    private var pianoSize = 1f
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -56,6 +54,9 @@ class PianoFragment : Fragment() {
     ): View? {
         requireActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE)
         binding = FragmentPianoBinding.inflate(inflater, container, false)
+        viewLifecycleOwner.lifecycleScope.launch {
+            pianoSize = viewModel.getPianoSize()
+        }
         viewModel.setStaveChosen()
         initKeyboard2()
         initOverlay()
@@ -112,6 +113,11 @@ class PianoFragment : Fragment() {
                     colorScheme = darkColorScheme()
                 ) {
                     PianoKeyboard(
+                        viewModel.pianoConfig,
+                        whiteWidth = viewModel.pianoConfig.defaultWhiteWidth +
+                                viewModel.pianoConfig.defaultWhiteWidth * (pianoSize / 100),
+                        blackWidth = viewModel.pianoConfig.defaultBlackWidth +
+                                viewModel.pianoConfig.defaultBlackWidth * (pianoSize / 100),
                         onKeyDown = { octave: Int, pitch: Int -> onKeyboardKeyDown(octave, pitch) },
                         onKeyUp = { octave: Int, pitch: Int -> onKeyboardKeyUp(octave, pitch) }
                     )
