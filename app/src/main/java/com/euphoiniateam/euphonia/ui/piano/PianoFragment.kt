@@ -115,9 +115,9 @@ class PianoFragment : Fragment() {
                     PianoKeyboard(
                         viewModel.pianoConfig,
                         whiteWidth = viewModel.pianoConfig.defaultWhiteWidth +
-                                viewModel.pianoConfig.defaultWhiteWidth * (pianoSize / 100),
+                            viewModel.pianoConfig.defaultWhiteWidth * (pianoSize / 100),
                         blackWidth = viewModel.pianoConfig.defaultBlackWidth +
-                                viewModel.pianoConfig.defaultBlackWidth * (pianoSize / 100),
+                            viewModel.pianoConfig.defaultBlackWidth * (pianoSize / 100),
                         onKeyDown = { octave: Int, pitch: Int -> onKeyboardKeyDown(octave, pitch) },
                         onKeyUp = { octave: Int, pitch: Int -> onKeyboardKeyUp(octave, pitch) }
                     )
