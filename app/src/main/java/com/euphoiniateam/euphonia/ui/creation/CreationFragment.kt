@@ -11,13 +11,22 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.requiredHeight
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.TextField
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.ViewCompositionStrategy
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -85,6 +94,46 @@ class CreationFragment : Fragment() {
         modifier: Modifier = Modifier
     ) {
         val context = LocalContext.current
+        var showDialog by remember { mutableStateOf(false) }
+        var songName by remember { mutableStateOf(TextFieldValue("")) }
+
+        if (showDialog) {
+            AlertDialog(
+                onDismissRequest = { showDialog = false },
+                title = { Text("Enter Song Name") },
+                text = {
+                    TextField(
+                        value = songName,
+                        onValueChange = { songName = it },
+                        label = { Text("Song Name") }
+                    )
+                },
+                confirmButton = {
+                    TextButton(
+                        onClick = {
+                            viewModel.saveGeneratedToStorage(
+                                context.contentResolver,
+                                uri,
+                                "${songName.text}.mid"
+                            )
+                            Toast.makeText(
+                                context,
+                                "Saved as ${songName.text}",
+                                Toast.LENGTH_LONG
+                            ).show()
+                            showDialog = false
+                        }
+                    ) {
+                        Text("Save")
+                    }
+                },
+                dismissButton = {
+                    TextButton(onClick = { showDialog = false }) {
+                        Text("Cancel")
+                    }
+                }
+            )
+        }
         Column(
             modifier = modifier,
             verticalArrangement = Arrangement.SpaceBetween
@@ -112,12 +161,7 @@ class CreationFragment : Fragment() {
                 onExitClick = onExitClick,
                 onPlayClick = { viewModel.togglePlayPause(context) },
                 onSaveClick = {
-                    viewModel.saveGeneratedToStorage(
-                        requireContext().contentResolver,
-                        uri,
-                        "Song.mid"
-                    )
-                    Toast.makeText(context, "saved as song", Toast.LENGTH_LONG).show()
+                    showDialog = true
                 },
                 onShareClick = {
                     viewModel.shareFile(context, uri)
