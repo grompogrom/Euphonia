@@ -34,7 +34,7 @@ internal class StaveRemoteDataSourceImp(
             uri = saveMidiFileToCache(
                 context,
                 newTrackBytes.inputStream(),
-                "outfile.mid"
+                "${token}_gen.mid"
             ) ?: Uri.EMPTY
         )
     }
