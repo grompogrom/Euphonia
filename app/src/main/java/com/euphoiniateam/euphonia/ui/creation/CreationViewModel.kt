@@ -135,10 +135,10 @@ class CreationViewModel(
         }
     }
 
-    fun shareFile(context: Context, uri: Uri) {
+    fun shareFile(context: Context) {
         val shareIntent: Intent = Intent().apply {
             action = Intent.ACTION_SEND
-            putExtra(Intent.EXTRA_STREAM, uri)
+            putExtra(Intent.EXTRA_STREAM, currentTrackState.value)
             type = "audio/midi"
         }
         shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)

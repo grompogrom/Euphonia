@@ -164,7 +164,7 @@ class CreationFragment : Fragment() {
                     showDialog = true
                 },
                 onShareClick = {
-                    viewModel.shareFile(context, uri)
+                    viewModel.shareFile(context)
                 },
                 onGenerateClick = { viewModel.generateNewPart(context, uri) },
                 isPlaying = viewModel.screenState.isPlaying,
