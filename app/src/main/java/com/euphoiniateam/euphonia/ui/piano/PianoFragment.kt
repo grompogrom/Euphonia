@@ -31,6 +31,7 @@ import com.euphoiniateam.euphonia.ui.MidiFile
 import com.euphoiniateam.euphonia.ui.creation.CreationFragment
 import com.euphoiniateam.euphonia.ui.creation.stave.StaveView
 import com.euphoiniateam.euphonia.ui.creation.synthesia.SynthesiaView
+import kotlin.concurrent.thread
 import kotlinx.coroutines.launch
 
 private val notes = arrayOf("C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B")
@@ -45,6 +46,7 @@ class PianoFragment : Fragment() {
     private var binding: FragmentPianoBinding? = null
     private var sndPool: SoundPool = SoundPool.Builder().setMaxStreams(5).build()
     private var noteMap: MutableMap<Int, Int> = mutableMapOf()
+    private var noteLengthData: MutableList<NoteLenght> = mutableListOf()
     private var pianoSize = 1f
 
     override fun onCreateView(
@@ -79,7 +81,13 @@ class PianoFragment : Fragment() {
                 0,
                 1.0f
             )
-        }
+        }?.let {
+            NoteLenght(
+                pitch,
+                octave,
+                it
+            )
+        }?.let { noteLengthData.add(it) }
 
         viewModel.onPushKey(
             PianoEvent(
@@ -92,7 +100,26 @@ class PianoFragment : Fragment() {
     }
 
     private fun onKeyboardKeyUp(octave: Int, pitch: Int) {
+
+        val candidate = noteLengthData.first { it.keyNum == pitch && it.pitch == octave }
+        slowVolumeDown(candidate.player)
+        noteLengthData.removeAll { it == candidate }
         viewModel.onRealiseKey(pitch, octave)
+    }
+
+    fun slowVolumeDown(streamId: Int) {
+        var V = 1F
+        thread {
+            try {
+                while (V > 0.1F) {
+                    V -= 0.1F
+                    sndPool.setVolume(streamId, V, V)
+                    Thread.sleep(50)
+                }
+                sndPool.stop(streamId)
+            } catch (_: Exception) {
+            }
+        }
     }
 
     private fun initKeyboard2() {
@@ -320,3 +347,9 @@ private fun pianoKey(key: String, octave: Int): Int {
     }
     return resource
 }
+
+data class NoteLenght(
+    val keyNum: Int,
+    val pitch: Int,
+    val player: Int
+)
